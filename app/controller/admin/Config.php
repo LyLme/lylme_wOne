@@ -45,6 +45,11 @@ class Config extends Base
             return $this->error('非法请求');
         }
 
+        // 编辑角色不允许修改站点配置
+        if (($this->adminInfo['role'] ?? 1) === \app\model\AdminUser::ROLE_EDITOR) {
+            return $this->error('编辑角色无权限修改站点配置');
+        }
+
         $data = $this->request->post();
 
         // 过滤掉空值和系统字段
@@ -70,6 +75,11 @@ class Config extends Base
     {
         if (!$this->request->isPost()) {
             return $this->error('非法请求');
+        }
+
+        // 编辑角色不允许修改站点配置
+        if (($this->adminInfo['role'] ?? 1) === \app\model\AdminUser::ROLE_EDITOR) {
+            return $this->error('编辑角色无权限修改站点配置');
         }
 
         $data = $this->request->post();
@@ -136,6 +146,11 @@ class Config extends Base
      */
     public function reset()
     {
+        // 编辑角色不允许修改站点配置
+        if (($this->adminInfo['role'] ?? 1) === \app\model\AdminUser::ROLE_EDITOR) {
+            return $this->error('编辑角色无权限修改站点配置');
+        }
+
         $key = $this->request->post('key', '');
         if (empty($key)) {
             return $this->error('请指定要重置的配置项');

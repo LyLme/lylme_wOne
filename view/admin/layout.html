@@ -39,10 +39,12 @@
                 <span>仪表盘</span>
             </a>
 
+            {if ($admin_info.role ?? 1) != 2}
             <a href="/{$admin_path}/config" class="nav-item {if $controller == 'config'}active{/if}">
                 <i class="fa fa-cogs"></i>
                 <span>站点配置</span>
             </a>
+            {/if}
 
             {if ($admin_info.role ?? 1) == 0}
             <a href="/{$admin_path}/admin-user" class="nav-item {if $controller == 'admin'}active{/if}">

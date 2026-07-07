@@ -45,14 +45,18 @@ class Login extends Base
             return $this->error('请输入用户名和密码');
         }
 
-        // 查询管理员
+        // 查询管理员（先不限制状态，以便区分"账号禁用"和"密码错误"）
         $admin = Db::name('admin_user')
             ->where('username', $username)
-            ->where('status', 1)
             ->find();
 
         if (!$admin) {
             return $this->error('用户名或密码错误');
+        }
+
+        // 检查账号是否已被禁用
+        if ((int)$admin['status'] !== 1) {
+            return $this->error('该账号已被禁用，请联系超级管理员');
         }
 
         // 验证密码

@@ -38,7 +38,7 @@ CREATE TABLE `lylmew_admin_user` (
 
 INSERT INTO `lylmew_admin_user` (`id`, `username`, `password`, `nickname`, `avatar`, `status`, `role`, `last_login_time`, `last_login_ip`, `create_time`, `update_time`) VALUES
 (1, 'admin', '$2y$10$LcVuvcDhGsNw0KVxCMo96.WSuv8s4CFNsBAwYDAjLJvDcVThsDMPC', '超级管理员', '', 1, 0, '2026-07-06 20:08:42', '127.0.0.1', '2026-07-05 20:25:28', '2026-07-05 20:25:28'),
-(2, 'lylme', '$2y$10$PAe.PThuoht9yqUJItaZ.ea12NKQWrBjAwP5ACIiHnCn8G7fArOvm', '六零', '', 1, 2, NULL, '', '2026-07-06 18:46:37', '2026-07-06 18:46:37');
+(2, 'lylme', '$2y$10$PAe.PThuoht9yqUJItaZ.ea12NKQWrBjAwP5ACIiHnCn8G7fArOvm', '六零', '', 0, 2, NULL, '', '2026-07-06 18:46:37', '2026-07-06 18:46:37');
 
 DROP TABLE IF EXISTS `lylmew_article`;
 CREATE TABLE `lylmew_article` (

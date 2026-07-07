@@ -233,7 +233,12 @@ $(function () {
         $pane.find('input[name], textarea[name], select[name]').each(function () {
             var name = $(this).attr('name');
             if (name && name.indexOf('[]') === -1) {
-                data[name] = $(this).val();
+                var $el = $(this);
+                if ($el.attr('type') === 'checkbox') {
+                    data[name] = $el.is(':checked') ? '1' : '0';
+                } else {
+                    data[name] = $el.val();
+                }
             }
         });
 
