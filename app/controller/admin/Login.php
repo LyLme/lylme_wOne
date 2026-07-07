@@ -25,6 +25,7 @@ class Login extends Base
 
         return View::fetch('admin/login/index', [
             'page_title' => '后台登录',
+            'admin_path' => config('app.admin_path', 'admin'),
         ]);
     }
 
