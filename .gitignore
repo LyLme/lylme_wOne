@@ -2,7 +2,8 @@
 
 
 # 环境配置
-#.env
+.env
+install.lock
 
 # 运行时
 /runtime/
