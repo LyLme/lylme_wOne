@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://github.com/lylme/lylmew" target="_blank">
-    <img src="https://img.shields.io/badge/GitHub-lylme/lylmew-181717?style=flat-square&logo=github" alt="GitHub">
+  <a href="https://github.com/lylme/lylme_wOne" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-lylme/lylme_wOne-181717?style=flat-square&logo=github" alt="GitHub">
   </a>
   <img src="https://img.shields.io/badge/PHP-8.1+-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP">
   <img src="https://img.shields.io/badge/ThinkPHP-8.0-67C23A?style=flat-square" alt="ThinkPHP">
@@ -84,8 +84,8 @@
 ### 2. 下载项目
 
 ```bash
-git clone https://github.com/lylme/lylmew.git
-cd lylmew
+git clone https://github.com/lylme/lylme_wOne.git
+cd lylme_wOne
 ```
 
 ### 3. 配置 Web 服务器
