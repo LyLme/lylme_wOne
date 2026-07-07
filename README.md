@@ -280,6 +280,12 @@ lylmew/
 
 ---
 
+## 🤖 AI 声明
+
+本项目部分代码由 AI 辅助生成。由于 AI 生成内容可能存在缺陷或错误，**作者不对 AI 生成代码的准确性、完整性和安全性承担任何责任**，使用者应自行评估风险。如您对此有顾虑，请勿使用本项目。
+
+---
+
 <p align="center">
   <sub>Built with ❤️ using ThinkPHP 8 · Layui · Bootstrap 5</sub>
 </p>
