@@ -1,4 +1,4 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="css"}
 <style>
@@ -338,7 +338,7 @@ $(function(){
 
     // 加载会话
     function loadConversation(msgId) {
-        $.get('/admin/message/conversation', {id: msgId}, function(res){
+        $.get(ADMIN_PATH + '/message/conversation', {id: msgId}, function(res){
             if (res.code === 0 && res.data && res.data.thread) {
                 $('#vConversation').html(renderConversation(res.data.thread));
             }
@@ -379,7 +379,7 @@ $(function(){
         var id = $('#replyId').val(), content = $('#replyContent').val().trim();
         if (!content) { toastr.warning('请输入回复内容'); return; }
         var $btn = $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 发送中...');
-        $.post('/admin/message/reply', {id:id, reply_content:content}, function(res){
+        $.post(ADMIN_PATH + '/message/reply', {id:id, reply_content:content}, function(res){
             if (res.code===0) {
                 toastr.success(res.msg);
                 replyModal.hide();
@@ -395,7 +395,7 @@ $(function(){
     $(document).on('click', '.read-btn', function(){
         var id = $(this).data('id');
         var $btn = $(this).prop('disabled', true);
-        $.post('/admin/message/markRead', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/message/markRead', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
             else { toastr.error(res.msg); $btn.prop('disabled', false); }
         }, 'json');
@@ -404,7 +404,7 @@ $(function(){
     $(document).on('click', '.delete-btn', function(){
         var id = $(this).data('id');
         if (!confirm('确定删除该留言及全部会话记录吗？')) return;
-        $.post('/admin/message/delete', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/message/delete', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
             else toastr.error(res.msg);
         }, 'json');

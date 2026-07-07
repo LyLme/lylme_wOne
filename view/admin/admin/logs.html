@@ -1,10 +1,10 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="content"}
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h5 class="mb-0"><i class="fa fa-history text-primary me-2"></i>操作日志</h5>
-        <form action="/admin/admin-user/logs" method="get" class="d-flex gap-2 flex-wrap">
+        <form action="/{$admin_path}/admin-user/logs" method="get" class="d-flex gap-2 flex-wrap">
             <select name="action" class="form-select form-select-sm" style="width:140px;">
                 <option value="">全部操作</option>
                 {foreach $actions as $a}

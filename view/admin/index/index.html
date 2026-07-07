@@ -118,25 +118,25 @@
             </div>
             <div class="card-body">
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="/admin/config" class="btn btn-primary">
+                    <a href="/{$admin_path}/config" class="btn btn-primary">
                         <i class="fa fa-cogs"></i> 站点配置
                     </a>
-                    <a href="/admin/banner" class="btn btn-outline-primary">
+                    <a href="/{$admin_path}/banner" class="btn btn-outline-primary">
                         <i class="fa fa-images"></i> Banner管理
                     </a>
-                    <a href="/admin/product" class="btn btn-outline-primary">
+                    <a href="/{$admin_path}/product" class="btn btn-outline-primary">
                         <i class="fa fa-boxes"></i> 产品管理
                     </a>
-                    <a href="/admin/article?type=news" class="btn btn-outline-primary">
+                    <a href="/{$admin_path}/article?type=news" class="btn btn-outline-primary">
                         <i class="fa fa-newspaper"></i> 新闻管理
                     </a>
-                    <a href="/admin/article?type=case" class="btn btn-outline-primary">
+                    <a href="/{$admin_path}/article?type=case" class="btn btn-outline-primary">
                         <i class="fa fa-briefcase"></i> 案例管理
                     </a>
-                    <a href="/admin/message" class="btn btn-outline-primary">
+                    <a href="/{$admin_path}/message" class="btn btn-outline-primary">
                         <i class="fa fa-comments"></i> 留言管理
                     </a>
-                    <a href="/admin/partner" class="btn btn-outline-primary">
+                    <a href="/{$admin_path}/partner" class="btn btn-outline-primary">
                         <i class="fa fa-handshake"></i> 合作伙伴
                     </a>
                     <button class="btn btn-outline-secondary" id="clearCacheBtn">
@@ -162,7 +162,7 @@ $(function () {
         $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 清除中...');
 
         $.ajax({
-            url: '/admin/clear-cache',
+            url: ADMIN_PATH + '/clear-cache',
             type: 'POST',
             dataType: 'json',
             success: function (res) {

@@ -11,6 +11,13 @@
 // 根目录入口文件
 namespace think;
 
+// 检查是否已安装（install.lock 位于项目根目录）
+$installLock = __DIR__ . '/../install.lock';
+if (!file_exists($installLock) && !str_contains($_SERVER['REQUEST_URI'] ?? '', 'install.php')) {
+    header('Location: /install.php');
+    exit;
+}
+
 // 定义项目根目录
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT_PATH', __DIR__ . DS);

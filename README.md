@@ -1,6 +1,6 @@
-# 六零同城售后管理系统
+# 六零同城企服 — 企业官网售后管理系统
 
-基于 ThinkPHP 8 + Layui + Bootstrap 5 + MySQL 构建的企业官网系统。
+基于 ThinkPHP 8 + Layui + Bootstrap 5 + MySQL 构建的同城企业售后服务平台，集企业官网展示、产品介绍、在线报修工单于一体。
 
 ## 技术栈
 
@@ -26,7 +26,7 @@ lylmew/
 │   └── validate/           # 验证器
 ├── config/                 # 配置文件
 ├── database/               # 数据库文件
-│   └── lylmew.sql            # 完整数据库结构+初始数据
+│   └── install.sql            # 完整数据库结构+初始数据
 ├── public/                 # 网站根目录
 │   ├── index.php           # 入口文件
 │   ├── static/             # 前台静态资源

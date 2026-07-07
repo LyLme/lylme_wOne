@@ -34,64 +34,64 @@
         <nav class="sidebar-nav">
             <div class="nav-section">管理导航</div>
 
-            <a href="/admin/index" class="nav-item {if $controller == 'index'}active{/if}">
+            <a href="/{$admin_path}/index" class="nav-item {if $controller == 'index'}active{/if}">
                 <i class="fa fa-tachometer-alt"></i>
                 <span>仪表盘</span>
             </a>
 
-            <a href="/admin/config" class="nav-item {if $controller == 'config'}active{/if}">
+            <a href="/{$admin_path}/config" class="nav-item {if $controller == 'config'}active{/if}">
                 <i class="fa fa-cogs"></i>
                 <span>站点配置</span>
             </a>
 
             {if ($admin_info.role ?? 1) == 0}
-            <a href="/admin/admin-user" class="nav-item {if $controller == 'admin'}active{/if}">
+            <a href="/{$admin_path}/admin-user" class="nav-item {if $controller == 'admin'}active{/if}">
                 <i class="fa fa-users-cog"></i>
                 <span>管理员管理</span>
             </a>
             {/if}
 
-            <a href="/admin/admin-user/logs" class="nav-item {if $controller == 'admin' && ($action ?? '') == 'logs'}active{/if}">
+            <a href="/{$admin_path}/admin-user/logs" class="nav-item {if $controller == 'admin' && ($action ?? '') == 'logs'}active{/if}">
                 <i class="fa fa-history"></i>
                 <span>操作日志</span>
             </a>
 
             <div class="nav-section">内容管理</div>
 
-            <a href="/admin/banner" class="nav-item {if $controller == 'banner'}active{/if}">
+            <a href="/{$admin_path}/banner" class="nav-item {if $controller == 'banner'}active{/if}">
                 <i class="fa fa-images"></i>
                 <span>Banner管理</span>
             </a>
-            <a href="/admin/product-category" class="nav-item {if $controller == 'productcategory'}active{/if}">
+            <a href="/{$admin_path}/product-category" class="nav-item {if $controller == 'productcategory'}active{/if}">
                 <i class="fa fa-list"></i>
                 <span>产品分类</span>
             </a>
-            <a href="/admin/product" class="nav-item {if $controller == 'product'}active{/if}">
+            <a href="/{$admin_path}/product" class="nav-item {if $controller == 'product'}active{/if}">
                 <i class="fa fa-boxes"></i>
                 <span>产品管理</span>
             </a>
 
-            <a href="/admin/article-category" class="nav-item {if $controller == 'articlecategory'}active{/if}">
+            <a href="/{$admin_path}/article-category" class="nav-item {if $controller == 'articlecategory'}active{/if}">
                 <i class="fa fa-folder"></i>
                 <span>文章分类</span>
             </a>
-            <a href="/admin/article?type=news" class="nav-item {if $controller == 'article' and ($type ?? 'news') == 'news'}active{/if}">
+            <a href="/{$admin_path}/article?type=news" class="nav-item {if $controller == 'article' and ($type ?? 'news') == 'news'}active{/if}">
                 <i class="fa fa-newspaper"></i>
                 <span>新闻管理</span>
             </a>
-            <a href="/admin/article?type=case" class="nav-item {if $controller == 'article' and ($type ?? 'news') == 'case'}active{/if}">
+            <a href="/{$admin_path}/article?type=case" class="nav-item {if $controller == 'article' and ($type ?? 'news') == 'case'}active{/if}">
                 <i class="fa fa-briefcase"></i>
                 <span>案例管理</span>
             </a>
-            <a href="/admin/message" class="nav-item {if $controller == 'message'}active{/if}">
+            <a href="/{$admin_path}/message" class="nav-item {if $controller == 'message'}active{/if}">
                 <i class="fa fa-comments"></i>
                 <span>留言管理</span>
             </a>
-            <a href="/admin/repair" class="nav-item {if $controller == 'repair'}active{/if}">
+            <a href="/{$admin_path}/repair" class="nav-item {if $controller == 'repair'}active{/if}">
                 <i class="fa fa-wrench"></i>
                 <span>报修工单</span>
             </a>
-            <a href="/admin/partner" class="nav-item {if $controller == 'partner'}active{/if}">
+            <a href="/{$admin_path}/partner" class="nav-item {if $controller == 'partner'}active{/if}">
                 <i class="fa fa-handshake"></i>
                 <span>合作伙伴</span>
             </a>
@@ -123,10 +123,10 @@
                             <span class="badge {:app\\model\\AdminUser::getRoleColor($admin_info.role ?? 1)} ms-1">{:app\\model\\AdminUser::getRoleText($admin_info.role ?? 1)}</span>
                         </span></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/admin/admin-user/password">
+                        <li><a class="dropdown-item" href="/{$admin_path}/admin-user/password">
                             <i class="fa fa-key"></i> 修改密码
                         </a></li>
-                        <li><a class="dropdown-item" href="/admin/logout">
+                        <li><a class="dropdown-item" href="/{$admin_path}/logout">
                             <i class="fa fa-sign-out-alt"></i> 退出登录
                         </a></li>
                     </ul>
@@ -158,6 +158,7 @@
 <script src="/static/lib/toastr/2.1.4/toastr.min.js"></script>
 <!-- 后台JS -->
 <script src="/static/admin/js/admin.js?v=20250706"></script>
+<script>var ADMIN_PATH = '/{$admin_path}';</script>
 {block name="js"}{/block}
 
 </body>

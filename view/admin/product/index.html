@@ -1,4 +1,4 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="content"}
 
@@ -8,7 +8,7 @@
         <small class="text-muted">管理所有产品信息</small>
     </div>
     <div class="d-flex gap-2">
-        <a href="/admin/product-category" class="btn btn-outline-secondary btn-sm">
+        <a href="/{$admin_path}/product-category" class="btn btn-outline-secondary btn-sm">
             <i class="fa fa-list"></i> 分类管理
         </a>
         <button class="btn btn-primary" id="addBtn">
@@ -324,7 +324,7 @@ $(function(){
 
     function uploadFile(file, cb){
         var fd = new FormData(); fd.append('file', file);
-        $.ajax({url:'/admin/product/upload',type:'POST',data:fd,processData:false,contentType:false,dataType:'json',
+        $.ajax({url:ADMIN_PATH + '/product/upload',type:'POST',data:fd,processData:false,contentType:false,dataType:'json',
             success:function(res){ if(res.code===0&&res.data.url) cb(res.data.url); else toastr.error(res.msg); },
             error:function(){ toastr.error('上传失败'); }
         });
@@ -388,7 +388,7 @@ $(function(){
             sort: $('#prodSort').val(), status: $('#prodStatus').val()
         };
 
-        var url = isEdit ? '/admin/product/update' : '/admin/product/add';
+        var url = isEdit ? ADMIN_PATH + '/product/update' : ADMIN_PATH + '/product/add';
         if (isEdit) data.id = editId;
 
         var $btn = $(this).prop('disabled', true);
@@ -401,7 +401,7 @@ $(function(){
     $(document).on('click', '.delete-btn', function(){
         var id = $(this).data('id');
         if (!confirm('确定删除该产品吗？')) return;
-        $.post('/admin/product/delete', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/product/delete', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
             else toastr.error(res.msg);
         }, 'json');
@@ -409,7 +409,7 @@ $(function(){
 
     $(document).on('change', '.status-toggle', function(){
         var $t = $(this), id = $t.data('id'), status = $t.is(':checked') ? 1 : 0;
-        $.post('/admin/product/toggle-status', {id:id, status:status}, function(res){
+        $.post(ADMIN_PATH + '/product/toggle-status', {id:id, status:status}, function(res){
             if (res.code !== 0) { $t.prop('checked', !status); toastr.error(res.msg); }
         }, 'json');
     });

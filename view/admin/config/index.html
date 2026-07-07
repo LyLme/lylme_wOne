@@ -1,4 +1,4 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="css"}
 <style>
@@ -1526,7 +1526,7 @@ $(function () {
         var fd = new FormData();
         fd.append('file', file);
         $.ajax({
-            url: '/admin/config/upload',
+            url: ADMIN_PATH + '/config/upload',
             type: 'POST',
             data: fd,
             processData: false,
@@ -1552,7 +1552,7 @@ $(function () {
 
     // ========== 公司联系方式管理（tab-contact 内） ==========
     function loadContactInfo() {
-        $.getJSON('/admin/contact-info/list', function(res) {
+        $.getJSON(ADMIN_PATH + '/contact-info/list', function(res) {
             var tbody = $('#contactInfoTbody');
             if (res.code !== 0 || !res.data || res.data.length === 0) {
                 tbody.html('<tr><td colspan="5" class="text-center text-muted py-3">暂无联系方式，点击"添加"按钮新增</td></tr>');
@@ -1591,7 +1591,7 @@ $(function () {
             else alert('类型和联系方式不能为空');
             return;
         }
-        var url = id ? '/admin/contact-info/update' : '/admin/contact-info/add';
+        var url = id ? ADMIN_PATH + '/contact-info/update' : ADMIN_PATH + '/contact-info/add';
         var btn = $(this).prop('disabled', true);
         $.post(url, data, function(res) {
             btn.prop('disabled', false);
@@ -1614,7 +1614,7 @@ $(function () {
         var row = $(this).closest('tr');
         var id = row.data('id');
         var btn = $(this).prop('disabled', true);
-        $.post('/admin/contact-info/delete', {id: id}, function(res) {
+        $.post(ADMIN_PATH + '/contact-info/delete', {id: id}, function(res) {
             btn.prop('disabled', false);
             if (res.code === 0) {
                 if (typeof toastr !== 'undefined') toastr.success('已删除');

@@ -1,4 +1,4 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="content"}
 
@@ -235,7 +235,7 @@ $(function() {
             fd.append('file', file);
 
             $.ajax({
-                url: '/admin/banner/upload',
+                url: ADMIN_PATH + '/banner/upload',
                 type: 'POST',
                 data: fd,
                 processData: false,
@@ -299,7 +299,7 @@ $(function() {
             status: $('#bannerStatus').val()
         };
 
-        var url = isEdit ? '/admin/banner/update' : '/admin/banner/add';
+        var url = isEdit ? ADMIN_PATH + '/banner/update' : ADMIN_PATH + '/banner/add';
         if (isEdit) data.id = editId;
 
         var origHtml = $btn.html();
@@ -337,7 +337,7 @@ $(function() {
         $btn.prop('disabled', true);
 
         $.ajax({
-            url: '/admin/banner/delete',
+            url: ADMIN_PATH + '/banner/delete',
             type: 'POST',
             data: { id: id },
             dataType: 'json',
@@ -364,7 +364,7 @@ $(function() {
         var status = $toggle.is(':checked') ? 1 : 0;
 
         $.ajax({
-            url: '/admin/banner/toggle-status',
+            url: ADMIN_PATH + '/banner/toggle-status',
             type: 'POST',
             data: { id: id, status: status },
             dataType: 'json',

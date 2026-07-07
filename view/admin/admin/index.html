@@ -1,11 +1,11 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="content"}
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h5 class="mb-0"><i class="fa fa-users-cog text-primary me-2"></i>管理员管理</h5>
         <div class="d-flex gap-2">
-            <form action="/admin/admin-user" method="get" class="d-flex gap-2">
+            <form action="/{$admin_path}/admin-user" method="get" class="d-flex gap-2">
                 <input type="text" name="keyword" class="form-control form-control-sm" placeholder="用户名/昵称" value="{$keyword|default=''}">
                 <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa fa-search"></i></button>
             </form>
@@ -170,7 +170,7 @@
         if (!data.username) return alert('请输入用户名');
         if (!isEdit && !data.password) return alert('请输入密码');
 
-        var url = isEdit ? '/admin/admin-user/update' : '/admin/admin-user/add';
+        var url = isEdit ? ADMIN_PATH + '/admin-user/update' : ADMIN_PATH + '/admin-user/add';
         if (isEdit) data.id = $('#editId').val();
 
         btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 保存中');
@@ -193,7 +193,7 @@
         var id = $(this).data('id');
         var name = $(this).data('name');
         if (confirm('确定删除管理员「' + name + '」吗？此操作不可恢复。')) {
-            $.post('/admin/admin-user/delete', {id: id}, function(res) {
+            $.post(ADMIN_PATH + '/admin-user/delete', {id: id}, function(res) {
                 alert(res.msg);
                 if (res.code === 0) location.reload();
             }, 'json');

@@ -62,17 +62,26 @@ Route::group('/', function () {
 });
 
 // ==================== 后台路由 ====================
-Route::group('admin', function () {
+// 支持自定义后台路径（在 .env 中配置 ADMIN_PATH，默认 admin）
+$adminPath = env('APP.ADMIN_PATH', 'admin');
+$adminPath = $adminPath ? trim($adminPath, '/') : 'admin';
+// 安全校验：禁止使用前台路由路径作为后台入口
+$reservedPaths = ['home', 'index', 'products', 'product', 'services', 'service', 'cases', 'case', 'news', 'article', 'about', 'contact', 'repair', 'search', 'captcha', 'sitemap.xml', 'robots.txt', 'login', 'logout'];
+if (in_array(strtolower($adminPath), $reservedPaths)) {
+    $adminPath = 'admin';
+}
+
+Route::group($adminPath, function () {
     // 登录
-    Route::get('/', function () {
-        return redirect((string) url('admin/index'));
-    });
     Route::get('login', 'admin.Login/index')->name('admin_login');
     Route::post('login', 'admin.Login/doLogin')->name('admin_dologin');
     Route::get('logout', 'admin.Login/logout')->name('admin_logout');
 
-    // 仪表盘
-    Route::get('/', 'admin.Index/index')->name('admin_index');
+    // 后台首页：访问 /admin 或 /admin/ 自动跳转到 /admin/index
+    Route::get('/', function() {
+        $adminPath = config('app.admin_path', 'admin');
+        return redirect('/' . $adminPath . '/index');
+    });
     Route::get('index', 'admin.Index/index');
     Route::post('clear-cache', 'admin.Index/clearCache')->name('admin_clear_cache');
 

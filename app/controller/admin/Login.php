@@ -20,7 +20,7 @@ class Login extends Base
         // 已登录跳转至仪表盘
         $adminInfo = Session::get('admin_info');
         if (!empty($adminInfo['id'])) {
-            return redirect('/admin/index');
+            return redirect('/' . config('app.admin_path', 'admin') . '/index');
         }
 
         return View::fetch('admin/login/index', [
@@ -103,6 +103,6 @@ class Login extends Base
             );
         }
         Session::delete('admin_info');
-        return redirect('/admin/login');
+        return redirect('/' . config('app.admin_path', 'admin') . '/login');
     }
 }

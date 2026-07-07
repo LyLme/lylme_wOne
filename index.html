@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>六零同城企服 - 部署引导</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.8;
+        }
+        /* 顶部横幅 */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .hero p {
+            font-size: 15px;
+            opacity: 0.85;
+            margin-top: 10px;
+        }
+        .hero .badge {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 6px 16px;
+            background: rgba(255,255,255,.15);
+            border-radius: 20px;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        /* 警告条 */
+        .warning-banner {
+            background: #fffbe6;
+            border-bottom: 1px solid #ffe58f;
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #ad6800;
+        }
+        .warning-banner svg {
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        .warning-banner code {
+            background: #fef3c7;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d46b08;
+        }
+        /* 主容器 */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        /* 区块标题 */
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .section-header {
+            padding: 20px 28px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-header .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .icon-require {
+            background: #e6f7ff;
+            color: #1677ff;
+        }
+        .icon-server {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+        .icon-rewrite {
+            background: #fff7e6;
+            color: #fa8c16;
+        }
+        .icon-start {
+            background: #f9f0ff;
+            color: #722ed1;
+        }
+        .icon-info {
+            background: #f0f5ff;
+            color: #2f54eb;
+        }
+        .section-header h2 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .section-body {
+            padding: 24px 28px;
+        }
+        /* 需求表格 */
+        .req-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .req-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .req-table td:first-child {
+            font-weight: 500;
+            color: #555;
+            width: 180px;
+        }
+        .req-table td:last-child {
+            color: #1890ff;
+        }
+        .status-pass {
+            display: inline-block;
+            padding: 2px 10px;
+            background: #f6ffed;
+            color: #52c41a;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-required {
+            display: inline-block;
+            padding: 2px 10px;
+            background: #fff7e6;
+            color: #fa8c16;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        /* 步骤卡片 */
+        .step {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 24px;
+        }
+        .step:last-child {
+            margin-bottom: 0;
+        }
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #1677ff;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .step h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .step p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        /* 代码块 */
+        pre {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            border-radius: 8px;
+            padding: 18px 20px;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 10px 0;
+            position: relative;
+        }
+        pre .comment {
+            color: #6c7086;
+        }
+        pre .key {
+            color: #89b4fa;
+        }
+        pre .val {
+            color: #a6e3a1;
+        }
+        pre .str {
+            color: #f9e2af;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: rgba(255,255,255,.1);
+            border: none;
+            color: #a0aec0;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all .2s;
+        }
+        .copy-btn:hover {
+            background: rgba(255,255,255,.2);
+            color: #fff;
+        }
+        /* Tab 切换 */
+        .tab-nav {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .tab-nav button {
+            padding: 8px 20px;
+            background: none;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+            color: #999;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all .2s;
+            font-family: inherit;
+        }
+        .tab-nav button.active {
+            color: #1677ff;
+            border-bottom-color: #1677ff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* 功能列表 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+        .feature-item {
+            padding: 10px 14px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #555;
+        }
+        .feature-item::before {
+            content: "✅ ";
+        }
+        /* 提示卡片 */
+        .tip-card {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 13px;
+            color: #0050b3;
+            margin-bottom: 16px;
+        }
+        .tip-card strong {
+            color: #003eb3;
+        }
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+            font-size: 12px;
+        }
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 24px;
+            }
+            .container {
+                padding: 20px 12px;
+            }
+            .section-body {
+                padding: 16px;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部横幅 -->
+<div class="hero">
+    <h1>🏢 六零同城企服</h1>
+    <p>同城企业售后服务平台 &mdash; 官网展示 · 产品介绍 · 在线报修 · 工单管理</p>
+    <span class="badge">部署引导文档</span>
+</div>
+
+<!-- 警告条 -->
+<div class="warning-banner">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#faad14"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+    请将网站运行目录设置为 <code>public</code>，不要直接使用项目根目录！
+</div>
+
+<!-- 主内容 -->
+<div class="container">
+
+    <!-- ========== 版本要求 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-require">📋</div>
+            <h2>运行环境要求</h2>
+        </div>
+        <div class="section-body">
+            <table class="req-table">
+                <tr>
+                    <td>PHP 版本</td>
+                    <td><span class="status-required">必须</span> &ge; 8.1</td>
+                </tr>
+                <tr>
+                    <td>MySQL 版本</td>
+                    <td><span class="status-required">必须</span> &ge; 8.0</td>
+                </tr>
+                <tr>
+                    <td>Web 服务器</td>
+                    <td><span class="status-required">推荐</span> Nginx &ge; 1.18（也支持 Apache / IIS）</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（pdo_mysql）</td>
+                    <td><span class="status-required">必须</span> 数据库驱动</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（mbstring）</td>
+                    <td><span class="status-required">必须</span> 多字节字符串</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（fileinfo）</td>
+                    <td><span class="status-required">必须</span> 文件类型检测</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（openssl）</td>
+                    <td><span class="status-required">必须</span> 加密通信</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（gd）</td>
+                    <td><span class="status-required">必须</span> 图片处理</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（json）</td>
+                    <td><span class="status-required">必须</span> JSON 处理</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（xml）</td>
+                    <td><span class="status-required">必须</span> XML 解析</td>
+                </tr>
+                <tr>
+                    <td>PHP 扩展（curl）</td>
+                    <td><span class="status-required">必须</span> HTTP 请求</td>
+                </tr>
+                <tr>
+                    <td>Redis（可选）</td>
+                    <td><span class="status-pass">可选</span> 缓存加速（不安装则使用文件缓存）</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========== 设置运行目录 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-server">⚙️</div>
+            <h2>第一步：设置网站运行目录</h2>
+        </div>
+        <div class="section-body">
+            <div class="tip-card">
+                <strong>⚠ 重要：</strong>出于安全考虑，必须将网站运行目录（网站根目录）指向 <strong>public</strong> 子目录，而不是项目根目录。这样可以防止核心代码、配置文件等被直接访问。
+            </div>
+
+            <div class="tab-nav">
+                <button class="active" onclick="switchTab(event, 'tab-bt')">宝塔面板</button>
+                <button onclick="switchTab(event, 'tab-nginx')">Nginx</button>
+                <button onclick="switchTab(event, 'tab-apache')">Apache</button>
+                <button onclick="switchTab(event, 'tab-iis')">IIS</button>
+            </div>
+
+            <!-- 宝塔面板 -->
+            <div id="tab-bt" class="tab-content active">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>添加站点</h3>
+                    <p>宝塔面板 → 网站 → 站点设置 → 在"网站目录"一栏中，设置运行目录为 <code>public</code><p>
+                    <pre>
+<span class="comment"># 注意：一定要包含 /public 路径</span></pre>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>伪静态选择</h3>
+                    <p>宝塔面板 → 网站 → 站点设置 → 伪静态 → 选择 <strong>thinkphp</strong></p>
+                </div>
+            </div>
+
+            <!-- Nginx -->
+            <div id="tab-nginx" class="tab-content">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>定位配置文件</h3>
+                    <p>找到 Nginx 站点配置文件（通常位于 <code>/etc/nginx/conf.d/</code> 或 <code>/etc/nginx/sites-available/</code>）</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>设置 root 为 public 目录</h3>
+                    <pre><span class="comment"># 将 root 指向 public 目录</span>
+<span class="key">root</span> /path/to/lylmew<span class="comment">/public</span>;
+
+<span class="comment"># ❌ 错误示例（不要这样设置）：</span>
+<span class="comment"># root /path/to/lylmew;</span></pre>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>重启 Nginx</h3>
+                    <pre>nginx -t && nginx -s reload</pre>
+                </div>
+            </div>
+
+            <!-- Apache -->
+            <div id="tab-apache" class="tab-content">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>修改虚拟主机配置</h3>
+                    <pre>&lt;VirtualHost *:80&gt;
+    <span class="key">DocumentRoot</span> <span class="str">"/path/to/lylmew/public"</span>
+    ServerName www.your-domain.com
+
+    &lt;Directory <span class="str">"/path/to/lylmew/public"</span>&gt;
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</pre>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>重启 Apache</h3>
+                    <pre>sudo systemctl restart apache2
+<span class="comment"># 或</span>
+sudo systemctl restart httpd</pre>
+                </div>
+            </div>
+
+            <!-- IIS -->
+            <div id="tab-iis" class="tab-content">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>IIS 中设置物理路径</h3>
+                    <p>打开 IIS 管理器 → 右键站点 → 管理网站 → 高级设置 → 物理路径 → 设置为 <code>E:\ltkj\web\public</code>（请根据实际路径修改）</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>IIS 伪静态规则</h3>
+                    <p>需要安装 <strong>URL Rewrite</strong> 模块，然后导入 <code>public/web.config</code> 中的规则（如未提供，可参考下方 Apache 规则自行转换）。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 伪静态规则 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-rewrite">🔗</div>
+            <h2>第二步：配置伪静态规则（URL 重写）</h2>
+        </div>
+        <div class="section-body">
+            <div class="tab-nav">
+                <button class="active" onclick="switchTab2(event, 'r-nginx')">Nginx</button>
+                <button onclick="switchTab2(event, 'r-apache')">Apache</button>
+                <button onclick="switchTab2(event, 'r-iis')">IIS</button>
+            </div>
+
+            <div id="r-nginx" class="tab-content active">
+                <p style="font-size:13px;color:#666;margin-bottom:10px">将以下规则添加到 Nginx 配置文件中的 <code>server</code> 块内（ThinkPHP 8 官方规则）：</p>
+                <pre>
+<span class="key">location</span> / {
+    <span class="key">if</span> (!-e $request_filename) {
+        <span class="key">rewrite</span> ^(.*)$ /index.php?s=$1 <span class="key">last</span>;
+        <span class="key">break</span>;
+    }
+}</pre>
+            </div>
+
+            <div id="r-apache" class="tab-content">
+                <p style="font-size:13px;color:#666;margin-bottom:10px">如果是 Apache，public 目录下已自带 <code>.htaccess</code> 文件，无需额外配置。文件内容如下：</p>
+                <pre>&lt;IfModule mod_rewrite.c&gt;
+  Options +FollowSymlinks -Multiviews
+  RewriteEngine On
+
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.*)$ index.php?s=$1 [QSA,PT,L]
+&lt;/IfModule&gt;</pre>
+            </div>
+
+            <div id="r-iis" class="tab-content">
+                <p style="font-size:13px;color:#666;margin-bottom:10px">需要安装 <strong>URL Rewrite 模块</strong>，然后在 <code>public/web.config</code> 中添加：</p>
+                <pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;configuration&gt;
+    &lt;system.webServer&gt;
+        &lt;rewrite&gt;
+            &lt;rules&gt;
+                &lt;rule name="ThinkPHP" stopProcessing="true"&gt;
+                    &lt;match url="^(.*)$" /&gt;
+                    &lt;conditions logicalGrouping="MatchAll"&gt;
+                        &lt;add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" /&gt;
+                        &lt;add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" /&gt;
+                    &lt;/conditions&gt;
+                    &lt;action type="Rewrite" url="index.php?s={R:1}" /&gt;
+                &lt;/rule&gt;
+            &lt;/rules&gt;
+        &lt;/rewrite&gt;
+    &lt;/system.webServer&gt;
+&lt;/configuration&gt;</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 安装步骤 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-start">🚀</div>
+            <h2>第三步：运行安装程序</h2>
+        </div>
+        <div class="section-body">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>访问安装向导</h3>
+                <p>部署完成后，在浏览器中访问：</p>
+                <pre>http://your-domain.com/install.php</pre>
+                <p style="color:#999;font-size:12px">系统会自动检测环境、引导填写数据库信息并完成安装。</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>填写数据库信息</h3>
+                <p>按照安装向导提示，填写数据库主机、端口、用户名、密码、数据库名等信息。</p>
+                <p style="color:#999;font-size:12px">如果数据库不存在，系统将自动创建。</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>完成安装</h3>
+                <p>安装成功后，安装程序将自动写入 <code>.env</code> 配置文件，并在项目根目录下创建 <code>install.lock</code> 锁定文件。</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>访问系统</h3>
+                <p>
+                    <strong>前台首页：</strong><code>http://your-domain.com</code><br>
+                    <strong>后台管理：</strong><code>http://your-domain.com/admin</code>（可在 <code>.env</code> 中修改 <code>ADMIN_PATH</code> 自定义后台路径）
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 默认账户 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-info">🔑</div>
+            <h2>默认管理员账户</h2>
+        </div>
+        <div class="section-body">
+            <table class="req-table">
+                <tr>
+                    <td>用户名</td>
+                    <td><code style="background:#f0f5ff;padding:4px 10px;border-radius:4px">admin</code></td>
+                </tr>
+                <tr>
+                    <td>密码</td>
+                    <td><code style="background:#f0f5ff;padding:4px 10px;border-radius:4px">admin123</code></td>
+                </tr>
+            </table>
+            <div class="tip-card" style="margin-top:16px;margin-bottom:0;background:#fff2f0;border-color:#ffccc7;color:#cf1322;">
+                <strong>⚠ 安全警告：</strong>首次登录后请立即修改密码！
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 重新安装 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-rewrite">🔄</div>
+            <h2>如何重新安装？</h2>
+        </div>
+        <div class="section-body">
+            <p style="font-size:13px;color:#666;">
+                如需重新安装系统，请删除<code>install.lock</code>文件后再次访问安装程序：
+            </p>
+            <pre>rm -f install.lock</pre>
+            <p style="font-size:13px;color:#666;">
+                然后重新访问 <code>http://your-domain.com/install.php</code> 即可。
+            </p>
+        </div>
+    </div>
+
+    <!-- ========== 功能清单 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-info">📦</div>
+            <h2>功能清单</h2>
+        </div>
+        <div class="section-body">
+            <h3 style="font-size:15px;color:#333;margin-bottom:12px;">前台（8个页面）</h3>
+            <div class="feature-grid">
+                <div class="feature-item">首页（Banner轮播、服务入口）</div>
+                <div class="feature-item">产品中心（分类筛选、搜索、详情）</div>
+                <div class="feature-item">服务支持（5大服务模块）</div>
+                <div class="feature-item">在线报修（表单提交、工单号生成）</div>
+                <div class="feature-item">客户案例（行业分类、案例详情）</div>
+                <div class="feature-item">新闻资讯（分类筛选、上下篇）</div>
+                <div class="feature-item">关于我们（公司简介、发展历程）</div>
+                <div class="feature-item">联系我们（百度地图、在线留言）</div>
+            </div>
+
+            <h3 style="font-size:15px;color:#333;margin:24px 0 12px;">后台管理（15个模块）</h3>
+            <div class="feature-grid">
+                <div class="feature-item">仪表盘（访问统计、工单趋势）</div>
+                <div class="feature-item">权限管理（RBAC：管理员、角色、菜单）</div>
+                <div class="feature-item">内容管理（栏目、文章、单页、Banner）</div>
+                <div class="feature-item">产品管理（分类、CRUD、批量操作）</div>
+                <div class="feature-item">案例管理（分类、CRUD）</div>
+                <div class="feature-item">报修工单（状态流转、处理备注）</div>
+                <div class="feature-item">留言管理（回复、已读/未读）</div>
+                <div class="feature-item">系统设置（站点信息、SEO）</div>
+                <div class="feature-item">文件管理（上传管理）</div>
+                <div class="feature-item">数据备份（备份/恢复）</div>
+                <div class="feature-item">缓存管理</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 技术栈 ========== -->
+    <div class="section">
+        <div class="section-header">
+            <div class="icon icon-require">🛠</div>
+            <h2>技术栈</h2>
+        </div>
+        <div class="section-body">
+            <table class="req-table">
+                <tr><td>后端框架</td><td>PHP 8.1+ / ThinkPHP 8.0</td></tr>
+                <tr><td>后台UI</td><td>Layui 2.9</td></tr>
+                <tr><td>前台UI</td><td>Bootstrap 5 + 自定义CSS</td></tr>
+                <tr><td>数据库</td><td>MySQL 8.0+</td></tr>
+                <tr><td>缓存</td><td>Redis（可选）/ File</td></tr>
+                <tr><td>Web服务器</td><td>Nginx</td></tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>六零同城企服 &copy; 2026</p>
+</div>
+
+<script>
+function switchTab(e, targetId) {
+    var parent = e.target.parentElement;
+    parent.querySelectorAll('button').forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+    e.target.classList.add('active');
+
+    var section = parent.parentElement;
+    section.querySelectorAll('.tab-content').forEach(function(tab) {
+        tab.classList.remove('active');
+    });
+    document.getElementById(targetId).classList.add('active');
+}
+
+function switchTab2(e, targetId) {
+    var parent = e.target.parentElement;
+    parent.querySelectorAll('button').forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+    e.target.classList.add('active');
+
+    var section = parent.parentElement;
+    section.querySelectorAll('.tab-content').forEach(function(tab) {
+        tab.classList.remove('active');
+    });
+    document.getElementById(targetId).classList.add('active');
+}
+</script>
+</body>
+</html>

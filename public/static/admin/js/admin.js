@@ -69,7 +69,7 @@ $(function () {
             $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
 
             $.ajax({
-                url: '/admin/config/upload',
+                url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/upload',
                 type: 'POST',
                 data: fd,
                 processData: false,
@@ -250,7 +250,7 @@ $(function () {
 
         // 3. AJAX 提交
         $.ajax({
-            url: '/admin/config/save',
+            url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/save',
             type: 'POST',
             data: data,
             dataType: 'json',
@@ -301,7 +301,7 @@ $(function () {
 
         // 先保存配置字段
         $.ajax({
-            url: '/admin/config/save',
+            url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/save',
             type: 'POST',
             data: configData,
             dataType: 'json',
@@ -315,7 +315,7 @@ $(function () {
                 }
                 // 再批量保存联系列表
                 $.ajax({
-                    url: '/admin/contact-info/batch-save',
+                    url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/contact-info/batch-save',
                     type: 'POST',
                     data: { items: JSON.stringify(items) },
                     dataType: 'json',
@@ -584,7 +584,7 @@ $(function () {
         $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i>');
 
         $.ajax({
-            url: '/admin/config/get-default-templates',
+            url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/get-default-templates',
             type: 'GET',
             dataType: 'json',
             success: function (res) {
@@ -618,7 +618,7 @@ $(function () {
 
         var channel = $('#testChannel').val();
         $.ajax({
-            url: '/admin/config/test-notify',
+            url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/test-notify',
             type: 'POST',
             data: { channel: channel },
             dataType: 'json',

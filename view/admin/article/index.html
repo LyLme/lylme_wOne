@@ -1,4 +1,4 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="content"}
 
@@ -13,8 +13,8 @@
         <small class="text-muted">管理{if $isCase}客户案例{else}新闻资讯{/if}内容</small>
     </div>
     <div class="d-flex gap-2">
-        <a href="/admin/article-category" class="btn btn-outline-secondary btn-sm"><i class="fa fa-folder"></i> 分类管理</a>
-        <a href="/admin/article?type={if $isCase}news{else}case{/if}" class="btn btn-outline-info btn-sm">
+        <a href="/{$admin_path}/article-category" class="btn btn-outline-secondary btn-sm"><i class="fa fa-folder"></i> 分类管理</a>
+        <a href="/{$admin_path}/article?type={if $isCase}news{else}case{/if}" class="btn btn-outline-info btn-sm">
             <i class="fa fa-exchange-alt"></i> 切换到{if $isCase}新闻{else}案例{/if}
         </a>
         <button class="btn btn-primary" id="addBtn"><i class="fa fa-plus"></i> 新增{if $isCase}案例{else}新闻{/if}</button>
@@ -258,7 +258,7 @@ $(function(){
         fi.on('change', function(){
             var file = this.files[0]; if(!file){fi.remove();return;}
             var fd = new FormData(); fd.append('file', file);
-            $.ajax({url:'/admin/article/upload',type:'POST',data:fd,processData:false,contentType:false,dataType:'json',
+            $.ajax({url:ADMIN_PATH + '/article/upload',type:'POST',data:fd,processData:false,contentType:false,dataType:'json',
                 success:function(res){ if(res.code===0&&res.data.url) cb(res.data.url); else toastr.error(res.msg); },
                 error:function(){ toastr.error('上传失败'); }
             });
@@ -341,7 +341,7 @@ $(function(){
 
         // AJAX 获取文章详情（正文 + 案例图片）
         $.ajax({
-            url: '/admin/article/detail?id=' + editId + '&type=' + ($('#artType').val() || ''),
+            url: ADMIN_PATH + '/article/detail?id=' + editId + '&type=' + ($('#artType').val() || ''),
             type: 'GET',
             dataType: 'json',
             success: function(res) {
@@ -425,7 +425,7 @@ $(function(){
             data.cover = $('#caseCover').val().trim();
         }
 
-        var url = isEdit ? '/admin/article/update' : '/admin/article/add';
+        var url = isEdit ? ADMIN_PATH + '/article/update' : ADMIN_PATH + '/article/add';
         if (isEdit) data.id = editId;
         var $btn = $(this).prop('disabled', true);
         $.post(url, data, function(res){
@@ -437,7 +437,7 @@ $(function(){
     $(document).on('click', '.delete-btn', function(){
         var id = $(this).data('id');
         if (!confirm('确定删除吗？')) return;
-        $.post('/admin/article/delete', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/article/delete', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
             else toastr.error(res.msg);
         }, 'json');
@@ -445,7 +445,7 @@ $(function(){
 
     $(document).on('change', '.status-toggle', function(){
         var $t = $(this), id = $t.data('id'), status = $t.is(':checked') ? 1 : 0;
-        $.post('/admin/article/toggle-status', {id:id, status:status}, function(res){
+        $.post(ADMIN_PATH + '/article/toggle-status', {id:id, status:status}, function(res){
             if (res.code !== 0) { $t.prop('checked', !status); toastr.error(res.msg); }
         }, 'json');
     });

@@ -198,7 +198,7 @@ class Index extends FrontBase
         $domain = $this->request->domain();
         $content  = 'User-agent: *' . PHP_EOL;
         $content .= 'Allow: /' . PHP_EOL;
-        $content .= 'Disallow: /admin/' . PHP_EOL;
+        $content .= 'Disallow: /' . config('app.admin_path', 'admin') . '/' . PHP_EOL;
         $content .= 'Disallow: /static/uploads/' . PHP_EOL;
         $content .= 'Disallow: /route/' . PHP_EOL;
         $content .= 'Disallow: /config/' . PHP_EOL;

@@ -1,4 +1,4 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="css"}
 <style>
@@ -521,7 +521,7 @@ $(function(){
     // ============ 查看详情（含时间轴） ============
     $(document).on('click', '.view-btn', function(){
         var id = $(this).data('id');
-        $.get('/admin/repair/detail', {id:id}, function(res){
+        $.get(ADMIN_PATH + '/repair/detail', {id:id}, function(res){
             if (res.code !== 0) { toastr.error(res.msg); return; }
             var d = res.data;
             renderDetail(d);
@@ -613,7 +613,7 @@ $(function(){
         var id = $(this).data('id');
         if (!confirm('确定接单该工单吗？')) return;
         var btn = $(this).prop('disabled', true);
-        $.post('/admin/repair/accept', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/repair/accept', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); reloadPage(); }
             else toastr.error(res.msg);
         }, 'json').always(function(){ btn.prop('disabled', false); });
@@ -627,7 +627,7 @@ $(function(){
     });
     $('#pauseSaveBtn').click(function(){
         var id = $('#pauseId').val(), reason = $('#pauseReason').val().trim(), btn = $(this).prop('disabled', true);
-        $.post('/admin/repair/pause', {id:id, reason:reason}, function(res){
+        $.post(ADMIN_PATH + '/repair/pause', {id:id, reason:reason}, function(res){
             if (res.code===0) { toastr.success(res.msg); pauseModal.hide(); reloadPage(); }
             else toastr.error(res.msg);
         }, 'json').always(function(){ btn.prop('disabled', false); });
@@ -638,7 +638,7 @@ $(function(){
         var id = $(this).data('id');
         if (!confirm('确定恢复处理该工单吗？')) return;
         var btn = $(this).prop('disabled', true);
-        $.post('/admin/repair/resume', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/repair/resume', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); reloadPage(); }
             else toastr.error(res.msg);
         }, 'json').always(function(){ btn.prop('disabled', false); });
@@ -659,7 +659,7 @@ $(function(){
             price = $('#completePrice').val(),
             btn = $(this).prop('disabled', true);
         if (!receipt) { toastr.warning('请填写完成回执'); btn.prop('disabled', false); return; }
-        $.post('/admin/repair/complete', {id:id, receipt:receipt, price:price}, function(res){
+        $.post(ADMIN_PATH + '/repair/complete', {id:id, receipt:receipt, price:price}, function(res){
             if (res.code===0) { toastr.success(res.msg); completeModal.hide(); reloadPage(); }
             else toastr.error(res.msg);
         }, 'json').always(function(){ btn.prop('disabled', false); });
@@ -676,7 +676,7 @@ $(function(){
             remark = $('#remarkContent').val().trim(),
             btn = $(this).prop('disabled', true);
         if (!remark) { toastr.warning('请输入备注内容'); btn.prop('disabled', false); return; }
-        $.post('/admin/repair/addRemark', {id:id, remark:remark}, function(res){
+        $.post(ADMIN_PATH + '/repair/addRemark', {id:id, remark:remark}, function(res){
             if (res.code===0) { toastr.success(res.msg); remarkModal.hide(); reloadPage(); }
             else toastr.error(res.msg);
         }, 'json').always(function(){ btn.prop('disabled', false); });
@@ -686,7 +686,7 @@ $(function(){
     $(document).on('click', '.delete-btn', function(){
         var id = $(this).data('id');
         if (!confirm('确定删除该工单及其时间轴记录吗？此操作不可恢复！')) return;
-        $.post('/admin/repair/delete', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/repair/delete', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); reloadPage(); }
             else toastr.error(res.msg);
         }, 'json');

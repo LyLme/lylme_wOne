@@ -120,13 +120,13 @@ $(function () {
         $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 登录中...');
 
         $.ajax({
-            url: '/admin/login',
+            url: ADMIN_PATH + '/login',
             type: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
             success: function (res) {
                 if (res.code === 0) {
-                    window.location.href = '/admin/index';
+                    window.location.href = ADMIN_PATH + '/index';
                 } else {
                     $err.text(res.msg).slideDown();
                     $btn.prop('disabled', false).html('<i class="fa fa-sign-in-alt"></i> 登 录');

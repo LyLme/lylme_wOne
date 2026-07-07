@@ -31,6 +31,9 @@ abstract class Base extends BaseController
             $this->checkLogin();
         }
 
+        // 后台路径
+        $adminPath = config('app.admin_path', 'admin');
+
         // 加载站点配置（从数据库读取，提供兜底默认值）
         $siteCfg = \app\model\Config::getAllConfig();
         // 关键字段兜底
@@ -48,6 +51,7 @@ abstract class Base extends BaseController
             'action'              => strtolower($this->request->action()),
             'company_name_short'  => $siteCfg['company_name_short'] ?? $siteCfg['company_name'] ?? '后台',
             'company_icon'        => $siteCfg['company_icon'] ?? '',
+            'admin_path'          => $adminPath,
         ]);
     }
 
@@ -62,7 +66,7 @@ abstract class Base extends BaseController
                 $this->error('请先登录', 401, null)->send();
                 exit;
             }
-            redirect('/admin/login')->send();
+            redirect('/' . config('app.admin_path', 'admin') . '/login')->send();
             exit;
         }
         $this->adminInfo = $adminInfo;

@@ -28,4 +28,6 @@ return [
     'show_error_msg'   => true,
     // 自动多应用模式
     'auto_multi_app'   => false,
+    // 后台路径（默认 admin，可改为自定义路径增强安全性）
+    'admin_path'       => env('APP.ADMIN_PATH', 'admin'),
 ];

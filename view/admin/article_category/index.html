@@ -1,4 +1,4 @@
-{extend name="admin/layout" /}
+﻿{extend name="admin/layout" /}
 
 {block name="content"}
 
@@ -141,7 +141,7 @@ $(function(){
             name: name, slug: $('#catSlug').val().trim(), type: $('#catType').val(),
             sort: $('#catSort').val(), status: $('#catStatus').val()
         };
-        var url = isEdit ? '/admin/article-category/update' : '/admin/article-category/add';
+        var url = isEdit ? ADMIN_PATH + '/article-category/update' : ADMIN_PATH + '/article-category/add';
         if (isEdit) data.id = editId;
         var $btn = $(this).prop('disabled', true);
         $.post(url, data, function(res){
@@ -153,7 +153,7 @@ $(function(){
     $(document).on('click', '.delete-btn', function(){
         var id = $(this).data('id');
         if (!confirm('确定删除该分类吗？')) return;
-        $.post('/admin/article-category/delete', {id:id}, function(res){
+        $.post(ADMIN_PATH + '/article-category/delete', {id:id}, function(res){
             if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
             else toastr.error(res.msg);
         }, 'json');
