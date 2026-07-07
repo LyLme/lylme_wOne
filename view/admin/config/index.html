@@ -1,0 +1,1776 @@
+{extend name="admin/layout" /}
+
+{block name="css"}
+<style>
+    /* 图标输入组 */
+    .icon-preview {
+        width: 34px;
+        justify-content: center;
+        padding: 0;
+    }
+    .icon-preview i {
+        font-size: 14px;
+        color: #4b5563;
+    }
+    .icon-picker-btn {
+        padding: 0 8px;
+    }
+    .icon-picker-btn i {
+        font-size: 14px;
+    }
+
+    /* 颜色输入组 */
+    .color-input-group .color-picker {
+        width: 40px;
+        min-width: 40px;
+        padding: 2px;
+        border-radius: 4px 0 0 4px;
+        cursor: pointer;
+    }
+    .color-input-group .color-preview {
+        border-left: 0;
+        border-radius: 0 4px 4px 0;
+    }
+
+    /* 图标选择器弹窗 */
+    .icon-picker-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+        gap: 8px;
+        max-height: 360px;
+        overflow-y: auto;
+        padding: 4px;
+    }
+    .icon-picker-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        aspect-ratio: 1;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: #fff;
+        color: #374151;
+        font-size: 20px;
+    }
+    .icon-picker-item:hover,
+    .icon-picker-item.selected {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        color: #2563eb;
+    }
+</style>
+{/block}
+
+{block name="content"}
+
+<!-- Tab 导航（纯JS切换，不依赖Bootstrap） -->
+<ul class="nav nav-tabs config-tabs mb-4" id="configTabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-tab="tab-base" href="javascript:;">
+            <i class="fa fa-building"></i> 基础信息
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-contact" href="javascript:;">
+            <i class="fa fa-phone"></i> 联系方式
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-seo" href="javascript:;">
+            <i class="fa fa-globe"></i> SEO设置
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-nav" href="javascript:;">
+            <i class="fa fa-bars"></i> 导航菜单
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-home" href="javascript:;">
+            <i class="fa fa-home"></i> 首页数据
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-service" href="javascript:;">
+            <i class="fa fa-tools"></i> 服务支持
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-about" href="javascript:;">
+            <i class="fa fa-info-circle"></i> 关于我们
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-footer" href="javascript:;">
+            <i class="fa fa-window-maximize"></i> 页脚设置
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-notify" href="javascript:;">
+            <i class="fa fa-bell"></i> 消息通知
+        </a>
+    </li>
+</ul>
+
+<!-- ===================================================================== -->
+<!--                             Tab 内容区                                  -->
+<!-- ===================================================================== -->
+
+<!-- ========== Tab 1: 基础信息 ========== -->
+<div class="config-pane active" id="tab-base">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">公司全称 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="company_name" value="{$config.company_name|default=''}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">公司简称</label>
+                    <input type="text" class="form-control" name="company_name_short" value="{$config.company_name_short|default=''}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">公司英文名称</label>
+                    <input type="text" class="form-control" name="company_name_en" value="{$config.company_name_en|default=''}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">公司口号</label>
+                    <input type="text" class="form-control" name="company_slogan" value="{$config.company_slogan|default=''}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">成立年份</label>
+                    <input type="text" class="form-control" name="company_founded" value="{$config.company_founded|default=''}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">所在城市</label>
+                    <input type="text" class="form-control" name="company_city" value="{$config.company_city|default=''}">
+                </div>
+                <!-- LOGO 图片上传 -->
+                <div class="col-md-12">
+                    <label class="form-label">公司 LOGO</label>
+                    <div class="img-upload-group {if !empty($config.company_icon)}has-img{/if}" data-accept="image/*">
+                        <div class="img-upload-preview">
+                            <img src="{$config.company_icon|default=''}" style="display:{if !empty($config.company_icon)}block{else}none{/if};">
+                        </div>
+                        <div class="img-upload-actions">
+                            <button type="button" class="btn btn-sm btn-outline-primary img-upload-btn">
+                                <i class="fa fa-upload"></i> 选择图片
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger img-upload-clear" style="display:{if !empty($config.company_icon)}inline-block{else}none{/if};">
+                                <i class="fa fa-trash"></i> 清除
+                            </button>
+                            <input type="hidden" class="img-upload-val" name="company_icon" value="{$config.company_icon|default=''}">
+                            <small class="text-muted d-block">建议尺寸：200x60px，PNG 透明底</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">SEO关键词</label>
+                    <input type="text" class="form-control" name="company_keywords" value="{$config.company_keywords|default=''}">
+                    <small class="text-muted">逗号分隔多个关键词</small>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">SEO描述</label>
+                    <textarea class="form-control" rows="2" name="company_desc">{$config.company_desc|default=''}</textarea>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">地图链接</label>
+                    <input type="text" class="form-control" name="map_src" value="{$config.map_src|default=''}">
+                    <small class="text-muted">百度/高德地图 iframe 嵌入链接，留空不显示</small>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white text-end">
+            <button type="button" class="btn btn-primary save-group-btn" data-group="tab-base">
+                <i class="fa fa-save"></i> 保存基础信息
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== Tab 2: 联系方式 ========== -->
+<div class="config-pane" id="tab-contact">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">联系电话</label>
+                    <input type="text" class="form-control" name="contact_phone" value="{$config.contact_phone|default=''}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">联系邮箱</label>
+                    <input type="text" class="form-control" name="contact_email" value="{$config.contact_email|default=''}">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">联系地址</label>
+                    <input type="text" class="form-control" name="contact_address" value="{$config.contact_address|default=''}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">工作时间</label>
+                    <input type="text" class="form-control" name="contact_hours" value="{$config.contact_hours|default=''}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">ICP备案号</label>
+                    <input type="text" class="form-control" name="icp_number" value="{$config.icp_number|default=''}">
+                </div>
+                <!-- 微信二维码上传 -->
+                <div class="col-md-12">
+                    <label class="form-label">微信公众号二维码</label>
+                    <div class="img-upload-group {if !empty($config.wechat_qrcode)}has-img{/if}">
+                        <div class="img-upload-preview">
+                            <img src="{$config.wechat_qrcode|default=''}" style="display:{if !empty($config.wechat_qrcode)}block{else}none{/if};">
+                        </div>
+                        <div class="img-upload-actions">
+                            <button type="button" class="btn btn-sm btn-outline-primary img-upload-btn">
+                                <i class="fa fa-upload"></i> 选择图片
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger img-upload-clear" style="display:{if !empty($config.wechat_qrcode)}inline-block{else}none{/if};">
+                                <i class="fa fa-trash"></i> 清除
+                            </button>
+                            <input type="hidden" class="img-upload-val" name="wechat_qrcode" value="{$config.wechat_qrcode|default=''}">
+                            <small class="text-muted d-block">建议正方形图片</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 公司联系方式（多种） -->
+        <div class="card border-0 shadow-sm mt-3">
+            <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="mb-0"><i class="fa fa-address-book text-primary me-2"></i>公司联系方式（多种）</h6>
+                    <small class="text-muted">手机号、微信、QQ、邮件等；按排序显示，顶部服务热线读取上方“联系电话”</small>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="addContactInfoBtn">
+                    <i class="fa fa-plus"></i> 添加
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0" id="contactInfoTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:70px;">排序</th>
+                                <th>联系方式类型</th>
+                                <th>联系方式</th>
+                                <th>联系人称呼</th>
+                                <th style="width:120px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactInfoTbody">
+                            <tr id="contactInfoEmpty"><td colspan="5" class="text-center text-muted py-3">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white text-end">
+            <button type="button" class="btn btn-primary save-group-btn" data-group="tab-contact">
+                <i class="fa fa-save"></i> 保存联系方式
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== Tab 3: SEO设置 ========== -->
+<div class="config-pane" id="tab-seo">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Meta 描述 (meta_description)</label>
+                <textarea class="form-control" rows="3" name="meta_description">{$config.meta_description|default=''}</textarea>
+                <small class="text-muted">浏览器搜索结果中显示的页面描述，建议 120-160 字符</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Meta 关键词 (meta_keywords)</label>
+                <textarea class="form-control" rows="2" name="meta_keywords">{$config.meta_keywords|default=''}</textarea>
+                <small class="text-muted">逗号分隔，建议 5-10 个核心关键词</small>
+            </div>
+        </div>
+        <div class="card-footer bg-white text-end">
+            <button type="button" class="btn btn-primary save-group-btn" data-group="tab-seo">
+                <i class="fa fa-save"></i> 保存SEO设置
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== Tab 4: 导航菜单 ========== -->
+<div class="config-pane" id="tab-nav">
+    <div class="card border-0 shadow-sm mb-3">
+         <div class="card-body">*注意：该菜单仅用于前端导航，若不理解含义请勿修改</div>
+        <div class="card-header bg-white">
+         
+            <h6 class="mb-0">导航菜单项</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="navMenusTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:50px;">#</th>
+                            <th>菜单名称</th>
+                            <th>链接地址</th>
+                            <th>激活标识</th>
+                            <th style="width:80px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.nav_menus)}
+                        {foreach $config.nav_menus as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm menu-name" value="{$item.name|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm menu-url" value="{$item.url|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm menu-active" value="{$item.active|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm menu-name"></td>
+                            <td><input type="text" class="form-control form-control-sm menu-url"></td>
+                            <td><input type="text" class="form-control form-control-sm menu-active"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="navMenusTable">
+                <i class="fa fa-plus"></i> 添加菜单项
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">控制器-导航映射</h6>
+            <small class="text-muted">控制器名 => 导航 active 值，用于自动高亮当前菜单</small>
+        </div>
+        <div class="card-body">
+            <textarea class="form-control font-monospace" rows="6" name="nav_controller_map" style="font-size:13px;">{:json_encode($config.nav_controller_map ?? [], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)}</textarea>
+        </div>
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-primary save-group-btn" data-group="tab-nav">
+            <i class="fa fa-save"></i> 保存导航设置
+        </button>
+    </div>
+</div>
+
+<!-- ========== Tab 5: 首页数据 ========== -->
+<div class="config-pane" id="tab-home">
+    <!-- 核心数据统计条 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">核心数据统计条</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="coreDataTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>数字</th><th>单位</th><th>标签文字</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.home_core_data)}
+                        {foreach $config.home_core_data as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm w-sm core-number" value="{$item.number|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm w-sm core-unit" value="{$item.unit|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm core-label" value="{$item.label|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm w-sm core-number"></td>
+                            <td><input type="text" class="form-control form-control-sm w-sm core-unit"></td>
+                            <td><input type="text" class="form-control form-control-sm core-label"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="coreDataTable">
+                <i class="fa fa-plus"></i> 添加统计项
+            </button>
+        </div>
+    </div>
+
+    <!-- 服务入口卡片 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">服务入口卡片</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="homeServicesTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>图标</th><th>标题</th><th>描述</th><th>链接</th><th>颜色</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.home_services)}
+                        {foreach $config.home_services as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa {$item.icon|default='fa-circle'}"></i></span>
+                                    <input type="text" class="form-control svc-icon" value="{$item.icon|default=''}" placeholder="fa-print">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm svc-title" value="{$item.title|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm svc-desc" value="{$item.desc|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm svc-url" value="{$item.url|default=''}"></td>
+                            <td>
+                                <div class="input-group input-group-sm color-input-group">
+                                    <input type="color" class="form-control form-control-sm color-picker" value="{$item.color|default='#1A5FDC'}" style="width:40px;min-width:40px;padding:2px;">
+                                    <input type="text" class="form-control svc-color" value="{$item.color|default=''}" placeholder="#1A5FDC">
+                                    <span class="input-group-text color-preview" style="background-color:{$item.color|default='transparent'};width:30px;border:1px solid #ddd;"></span>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa fa-circle"></i></span>
+                                    <input type="text" class="form-control svc-icon" placeholder="fa-print">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm svc-title"></td>
+                            <td><input type="text" class="form-control form-control-sm svc-desc"></td>
+                            <td><input type="text" class="form-control form-control-sm svc-url"></td>
+                            <td>
+                                <div class="input-group input-group-sm color-input-group">
+                                    <input type="color" class="form-control form-control-sm color-picker" value="#1A5FDC" style="width:40px;min-width:40px;padding:2px;">
+                                    <input type="text" class="form-control svc-color" placeholder="#1A5FDC">
+                                    <span class="input-group-text color-preview" style="width:30px;border:1px solid #ddd;"></span>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="homeServicesTable">
+                <i class="fa fa-plus"></i> 添加服务卡片
+            </button>
+        </div>
+    </div>
+
+    <!-- 服务优势 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">服务优势</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="homeAdvantagesTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>图标</th><th>标题</th><th>描述</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.home_advantages)}
+                        {foreach $config.home_advantages as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa {$item.icon|default='fa-circle'}"></i></span>
+                                    <input type="text" class="form-control adv-icon" value="{$item.icon|default=''}" placeholder="fa-truck">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm adv-title" value="{$item.title|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm adv-desc" value="{$item.desc|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa fa-circle"></i></span>
+                                    <input type="text" class="form-control adv-icon" placeholder="fa-truck">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm adv-title"></td>
+                            <td><input type="text" class="form-control form-control-sm adv-desc"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="homeAdvantagesTable">
+                <i class="fa fa-plus"></i> 添加优势项
+            </button>
+        </div>
+    </div>
+
+    <!-- 关于简介 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">首页关于我们简介</h6>
+        </div>
+        <div class="card-body">
+            <textarea class="form-control" rows="3" name="home_about_text">{$config.home_about_text|default=''}</textarea>
+        </div>
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-primary save-group-btn" data-group="tab-home">
+            <i class="fa fa-save"></i> 保存首页数据
+        </button>
+    </div>
+</div>
+
+<!-- ========== Tab 6: 服务支持 ========== -->
+<div class="config-pane" id="tab-service">
+    <!-- 服务分类 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between">
+            <div>
+                <h6 class="mb-0">服务分类</h6>
+                <small class="text-muted">Key 用于 URL 标识（如 device-sales），建议英文+连字符</small>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="serviceTypesTable">
+                <i class="fa fa-plus"></i> 添加分类
+            </button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="serviceTypesTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:130px;">Key</th>
+                            <th style="width:120px;">名称</th>
+                            <th style="width:180px;">图标</th>
+                            <th>描述</th>
+                            <th style="width:100px;">颜色</th>
+                            <th style="width:220px;">特性</th>
+                            <th style="width:70px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.service_types)}
+                        {foreach $config.service_types as $key=>$item}
+                        <tr>
+                            <td><input type="text" class="form-control form-control-sm st-key" value="{$key}"></td>
+                            <td><input type="text" class="form-control form-control-sm st-name" value="{$item.name|default=''}"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa {$item.icon|default='fa-circle'}"></i></span>
+                                    <input type="text" class="form-control st-icon" value="{$item.icon|default=''}" placeholder="fa-cogs">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm st-desc" value="{$item.desc|default=''}"></td>
+                            <td>
+                                <div class="input-group input-group-sm color-input-group">
+                                    <input type="color" class="form-control form-control-sm color-picker" value="{$item.color|default='#1A5FDC'}">
+                                    <input type="text" class="form-control st-color" value="{$item.color|default=''}" placeholder="#1A5FDC">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="st-features d-flex flex-wrap gap-1 align-items-center">
+                                    {foreach $item.features ?? [] as $f}
+                                    <span class="badge bg-light text-dark border st-feature-tag">
+                                        {$f} <i class="fa fa-times ms-1" style="cursor:pointer;"></i>
+                                        <input type="hidden" value="{$f}">
+                                    </span>
+                                    {/foreach}
+                                    <input type="text" class="form-control form-control-sm st-feature-input" placeholder="回车添加" style="width:80px;">
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td><input type="text" class="form-control form-control-sm st-key" placeholder="device-sales"></td>
+                            <td><input type="text" class="form-control form-control-sm st-name"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa fa-circle"></i></span>
+                                    <input type="text" class="form-control st-icon" placeholder="fa-cogs">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm st-desc"></td>
+                            <td>
+                                <div class="input-group input-group-sm color-input-group">
+                                    <input type="color" class="form-control form-control-sm color-picker" value="#1A5FDC">
+                                    <input type="text" class="form-control st-color" placeholder="#1A5FDC">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="st-features d-flex flex-wrap gap-1 align-items-center">
+                                    <input type="text" class="form-control form-control-sm st-feature-input" placeholder="回车添加" style="width:80px;">
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 服务流程 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">服务流程步骤</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="flowStepsTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>图标</th><th>标题</th><th>描述</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.service_flow_steps)}
+                        {foreach $config.service_flow_steps as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa {$item.icon|default='fa-circle'}"></i></span>
+                                    <input type="text" class="form-control flow-icon" value="{$item.icon|default=''}" placeholder="fa-phone">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm flow-title" value="{$item.title|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm flow-desc" value="{$item.desc|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa fa-circle"></i></span>
+                                    <input type="text" class="form-control flow-icon" placeholder="fa-phone">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><input type="text" class="form-control form-control-sm flow-title"></td>
+                            <td><input type="text" class="form-control form-control-sm flow-desc"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="flowStepsTable">
+                <i class="fa fa-plus"></i> 添加步骤
+            </button>
+        </div>
+    </div>
+
+    <!-- 服务详情内容 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">服务详情页内容</h6>
+            <small class="text-muted">按服务分类编辑详情页介绍与内容区块</small>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="serviceDetailAccordion">
+                {php}
+                $serviceTypes = isset($config['service_types']) ? $config['service_types'] : [];
+                $serviceDetail = isset($config['service_detail_content']) ? $config['service_detail_content'] : [];
+                {/php}
+                {foreach $serviceTypes as $key=>$type}
+                {php}$detail = isset($serviceDetail[$key]) ? $serviceDetail[$key] : ['intro'=>'','sections'=>[]];{/php}
+                <div class="accordion-item sd-category" data-key="{$key}">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button {if $key != array_keys($serviceTypes)[0]}collapsed{/if}" type="button" data-bs-toggle="collapse" data-bs-target="#sd-{$key}">
+                            <i class="fa {$type.icon|default='fa-circle'} me-2" style="color:{$type.color|default='#1A5FDC'}"></i>
+                            {$type.name|default=$key} <small class="text-muted ms-2">({$key})</small>
+                        </button>
+                    </h2>
+                    <div id="sd-{$key}" class="accordion-collapse collapse {if $key == array_keys($serviceTypes)[0]}show{/if}" data-bs-parent="#serviceDetailAccordion">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <label class="form-label">服务简介</label>
+                                <textarea class="form-control sd-intro" rows="3">{$detail.intro|default=''}</textarea>
+                            </div>
+                            <div class="sd-sections">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <label class="form-label mb-0">内容区块</label>
+                                    <button type="button" class="btn btn-sm btn-outline-primary add-section-btn"><i class="fa fa-plus"></i> 添加区块</button>
+                                </div>
+                                {foreach $detail.sections ?? [] as $idx=>$section}
+                                <div class="sd-section card mb-3 border">
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <label class="form-label small text-muted">区块标题</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control sd-section-title" value="{$section.title|default=''}" placeholder="如：服务优势">
+                                                <button type="button" class="btn btn-outline-danger remove-section-btn"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                        </div>
+                                        <table class="table table-bordered table-sm sd-item-table">
+                                            <thead class="table-light">
+                                                <tr><th style="width:150px;">图标</th><th>标题</th><th>描述</th><th style="width:60px;">操作</th></tr>
+                                            </thead>
+                                            <tbody>
+                                                {foreach $section.items ?? [] as $it}
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-group input-group-sm">
+                                                            <span class="input-group-text icon-preview"><i class="fa {$it.icon|default='fa-circle'}"></i></span>
+                                                            <input type="text" class="form-control sdi-icon" value="{$it.icon|default=''}" placeholder="fa-check">
+                                                            <button type="button" class="btn btn-outline-secondary icon-picker-btn"><i class="fa fa-smile"></i></button>
+                                                        </div>
+                                                    </td>
+                                                    <td><input type="text" class="form-control form-control-sm sdi-title" value="{$it.title|default=''}"></td>
+                                                    <td><input type="text" class="form-control form-control-sm sdi-desc" value="{$it.desc|default=''}"></td>
+                                                    <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                                                </tr>
+                                                {/foreach}
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary add-item-btn"><i class="fa fa-plus"></i> 添加条目</button>
+                                    </div>
+                                </div>
+                                {/foreach}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-primary save-group-btn" data-group="tab-service">
+            <i class="fa fa-save"></i> 保存服务设置
+        </button>
+    </div>
+</div>
+
+<!-- ========== Tab 7: 关于我们 ========== -->
+<div class="config-pane" id="tab-about">
+    <!-- 公司简介（富文本编辑器） -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">公司简介 (about_intro)</h6>
+            <small class="text-muted">支持 HTML 标签，可使用 <i>:company_founded</i>、<i>:company_city</i> 等占位符</small>
+        </div>
+        <div class="card-body">
+            <textarea class="form-control rich-editor-sm" id="aboutIntroEditor" name="about_intro">{$config.about_intro|default=''}</textarea>
+        </div>
+    </div>
+
+    <!-- 发展历程 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">发展历程</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="timelineTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>年份</th><th>标题</th><th>描述</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.about_timeline)}
+                        {foreach $config.about_timeline as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm w-sm tl-year" value="{$item.year|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm tl-title" value="{$item.title|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm tl-desc" value="{$item.desc|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm w-sm tl-year"></td>
+                            <td><input type="text" class="form-control form-control-sm tl-title"></td>
+                            <td><input type="text" class="form-control form-control-sm tl-desc"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="timelineTable">
+                <i class="fa fa-plus"></i> 添加里程碑
+            </button>
+        </div>
+    </div>
+
+    <!-- 资质荣誉 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">资质荣誉</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="qualificationsTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>名称</th><th>图标</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.about_qualifications)}
+                        {foreach $config.about_qualifications as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm qual-name" value="{$item.name|default=''}"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa {$item.icon|default='fa-circle'}"></i></span>
+                                    <input type="text" class="form-control qual-icon" value="{$item.icon|default=''}" placeholder="fa-file-alt">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm qual-name"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa fa-circle"></i></span>
+                                    <input type="text" class="form-control qual-icon" placeholder="fa-file-alt">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="qualificationsTable">
+                <i class="fa fa-plus"></i> 添加资质
+            </button>
+        </div>
+    </div>
+
+    <!-- 核心团队 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">核心团队</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="teamTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>姓名</th><th>职位</th><th>描述</th><th>头像</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.about_team)}
+                        {foreach $config.about_team as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm team-name" value="{$item.name|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm team-title" value="{$item.title|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm team-desc" value="{$item.desc|default=''}"></td>
+                            <td>
+                                <div class="img-upload-group {if !empty($item.avatar)}has-img{/if}" style="flex-wrap:nowrap;">
+                                    <div class="img-upload-preview" style="width:48px;height:48px;">
+                                        <img src="{$item.avatar|default=''}" style="display:{if !empty($item.avatar)}block{else}none{/if};">
+                                    </div>
+                                    <div class="img-upload-actions">
+                                        <button type="button" class="btn btn-xs btn-outline-primary img-upload-btn" style="font-size:11px;padding:2px 6px;">
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                        <input type="hidden" class="img-upload-val" value="{$item.avatar|default=''}">
+                                        <input type="hidden" class="team-avatar" value="{$item.avatar|default=''}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm team-name"></td>
+                            <td><input type="text" class="form-control form-control-sm team-title"></td>
+                            <td><input type="text" class="form-control form-control-sm team-desc"></td>
+                            <td>
+                                <div class="img-upload-group" style="flex-wrap:nowrap;">
+                                    <div class="img-upload-preview" style="width:48px;height:48px;">
+                                        <img src="" style="display:none;">
+                                    </div>
+                                    <div class="img-upload-actions">
+                                        <button type="button" class="btn btn-xs btn-outline-primary img-upload-btn" style="font-size:11px;padding:2px 6px;">
+                                            <i class="fa fa-upload"></i>
+                                        </button>
+                                        <input type="hidden" class="img-upload-val" value="">
+                                        <input type="hidden" class="team-avatar" value="">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="teamTable">
+                <i class="fa fa-plus"></i> 添加成员
+            </button>
+        </div>
+    </div>
+
+    <!-- 招投标信息 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">招投标信息</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="biddingTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>标题</th><th>描述</th><th>图标</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.about_bidding)}
+                        {foreach $config.about_bidding as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm bid-title" value="{$item.title|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm bid-desc" value="{$item.desc|default=''}"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa {$item.icon|default='fa-circle'}"></i></span>
+                                    <input type="text" class="form-control bid-icon" value="{$item.icon|default=''}" placeholder="fa-gavel">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm bid-title"></td>
+                            <td><input type="text" class="form-control form-control-sm bid-desc"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text icon-preview"><i class="fa fa-circle"></i></span>
+                                    <input type="text" class="form-control bid-icon" placeholder="fa-gavel">
+                                    <button type="button" class="btn btn-outline-secondary icon-picker-btn" title="选择图标"><i class="fa fa-smile"></i></button>
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="biddingTable">
+                <i class="fa fa-plus"></i> 添加招标信息
+            </button>
+        </div>
+    </div>
+
+    <!-- 合作伙伴已移至独立管理 /admin/partner -->
+
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-primary save-group-btn" data-group="tab-about">
+            <i class="fa fa-save"></i> 保存关于我们
+        </button>
+    </div>
+</div>
+
+<!-- ========== Tab 8: 页脚设置 ========== -->
+<div class="config-pane" id="tab-footer">
+    <!-- 客户案例行业分类 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">客户案例行业分类</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="caseIndustriesTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>Key（英文标识）</th><th>名称</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.case_industries)}
+                        {php}$ci = 0;{/php}
+                        {foreach $config.case_industries as $k=>$v}
+                        <tr>
+                            <td>{php}echo ++$ci;{/php}</td>
+                            <td><input type="text" class="form-control form-control-sm ci-key" value="{$k|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm ci-name" value="{$v|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm ci-key"></td>
+                            <td><input type="text" class="form-control form-control-sm ci-name"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="caseIndustriesTable">
+                <i class="fa fa-plus"></i> 添加分类
+            </button>
+        </div>
+    </div>
+
+    <!-- 页脚服务链接 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">页脚服务链接</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="footerServiceTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>名称</th><th>链接</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.footer_service_links)}
+                        {foreach $config.footer_service_links as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm fs-name" value="{$item.name|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm fs-url" value="{$item.url|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm fs-name"></td>
+                            <td><input type="text" class="form-control form-control-sm fs-url"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="footerServiceTable">
+                <i class="fa fa-plus"></i> 添加链接
+            </button>
+        </div>
+    </div>
+
+    <!-- 页脚快速导航 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">页脚快速导航</h6>
+            <small class="text-muted">留空则自动使用导航菜单</small>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0" id="footerQuickTable">
+                    <thead class="table-light">
+                        <tr><th style="width:50px;">#</th><th>名称</th><th>链接</th><th style="width:80px;">操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($config.footer_quick_links)}
+                        {foreach $config.footer_quick_links as $k=>$item}
+                        <tr>
+                            <td>{$k+1}</td>
+                            <td><input type="text" class="form-control form-control-sm fq-name" value="{$item.name|default=''}"></td>
+                            <td><input type="text" class="form-control form-control-sm fq-url" value="{$item.url|default=''}"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm fq-name"></td>
+                            <td><input type="text" class="form-control form-control-sm fq-url"></td>
+                            <td><button type="button" class="btn btn-sm btn-danger del-row-btn"><i class="fa fa-trash"></i></button></td>
+                        </tr>
+                        {/if}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <button type="button" class="btn btn-sm btn-outline-primary add-row-btn" data-target="footerQuickTable">
+                <i class="fa fa-plus"></i> 添加链接
+            </button>
+        </div>
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-primary save-group-btn" data-group="tab-footer">
+            <i class="fa fa-save"></i> 保存页脚设置
+        </button>
+    </div>
+</div>
+
+<!-- ========== Tab 9: 消息通知 ========== -->
+<div class="config-pane" id="tab-notify">
+    <div class="alert alert-info mb-3">
+        <i class="fa fa-info-circle"></i> 当有新报修工单、新留言或用户追评时，系统可通过以下渠道自动通知管理员。
+    </div>
+
+    <!-- 总开关 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">通知开关</h6>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <label class="form-label mb-0">启用消息通知</label>
+                    <small class="text-muted d-block">关闭后所有渠道均不发送</small>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" name="notification_enabled" value="1" {if !empty($config.notification_enabled)}checked{/if}>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 渠道选择 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">通知渠道</h6>
+            <small class="text-muted">勾选要启用的渠道，可同时启用多个</small>
+            {php}
+            $channels = $config['notification_channels'] ?? [];
+            if (is_string($channels)) $channels = json_decode($channels, true) ?: [];
+            {/php}
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card border">
+                        <div class="card-body text-center">
+                            <div class="form-check form-switch d-inline-block mb-2">
+                                <input class="form-check-input notify-channel-switch" type="checkbox" value="dingtalk" {if in_array('dingtalk', $channels)}checked{/if}>
+                            </div>
+                            <h6><i class="fa fa-brand fa-dingtalk text-primary" style="font-size:20px;"></i> 钉钉机器人</h6>
+                            <small class="text-muted">通过钉钉群Webhook发送</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border">
+                        <div class="card-body text-center">
+                            <div class="form-check form-switch d-inline-block mb-2">
+                                <input class="form-check-input notify-channel-switch" type="checkbox" value="email" {if in_array('email', $channels)}checked{/if}>
+                            </div>
+                            <h6><i class="fa fa-envelope text-warning" style="font-size:20px;"></i> 邮件通知</h6>
+                            <small class="text-muted">通过SMTP邮件发送</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border">
+                        <div class="card-body text-center">
+                            <div class="form-check form-switch d-inline-block mb-2">
+                                <input class="form-check-input notify-channel-switch" type="checkbox" value="wecom" {if in_array('wecom', $channels)}checked{/if}>
+                            </div>
+                            <h6><i class="fa fa-weixin text-success" style="font-size:20px;"></i> 企业微信</h6>
+                            <small class="text-muted">通过企业微信机器人发送</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 钉钉配置 -->
+    <div class="card border-0 shadow-sm mb-3 notify-cfg" id="notify-dingtalk-cfg" style="display:{if !in_array('dingtalk', $channels)}none{else}block{/if};">
+        <div class="card-header bg-white">
+            <h6 class="mb-0"><i class="fa fa-brand fa-dingtalk text-primary me-2"></i>钉钉机器人配置</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Webhook 地址</label>
+                    <input type="text" class="form-control" name="notification_dingtalk_webhook" value="{$config.notification_dingtalk_webhook|default=''}" placeholder="https://oapi.dingtalk.com/robot/send?access_token=xxx">
+                    <small class="text-muted">钉钉群 → 群设置 → 智能群助手 → 添加机器人 → 自定义 → 获取Webhook地址</small>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">加签密钥（选填，建议填写）</label>
+                    <input type="text" class="form-control" name="notification_dingtalk_secret" value="{$config.notification_dingtalk_secret|default=''}" placeholder="SECxxx...">
+                    <small class="text-muted">安全设置 → 加签 → 复制密钥</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 邮件配置 -->
+    <div class="card border-0 shadow-sm mb-3 notify-cfg" id="notify-email-cfg" style="display:{if !in_array('email', $channels)}none{else}block{/if};">
+        <div class="card-header bg-white">
+            <h6 class="mb-0"><i class="fa fa-envelope text-warning me-2"></i>邮件配置（SMTP）</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">SMTP 服务器</label>
+                    <input type="text" class="form-control" name="notification_email_host" value="{$config.notification_email_host|default=''}" placeholder="smtp.qq.com">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">端口</label>
+                    <input type="number" class="form-control" name="notification_email_port" value="{$config.notification_email_port|default='587'}" placeholder="587">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">加密方式</label>
+                    <select class="form-select" name="notification_email_encryption">
+                        <option value="" {if ($config.notification_email_encryption ?? '') == ''}selected{/if}>无加密 (25)</option>
+                        <option value="tls" {if ($config.notification_email_encryption ?? '') == 'tls'}selected{/if}>TLS (587)</option>
+                        <option value="ssl" {if ($config.notification_email_encryption ?? '') == 'ssl'}selected{/if}>SSL (465)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">发件邮箱账号</label>
+                    <input type="text" class="form-control" name="notification_email_user" value="{$config.notification_email_user|default=''}" placeholder="your@qq.com">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">授权码</label>
+                    <input type="password" class="form-control" name="notification_email_pass" value="{$config.notification_email_pass|default=''}" placeholder="QQ邮箱 → 设置 → 账户 → POP3/SMTP → 生成授权码">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">发件人显示名称</label>
+                    <input type="text" class="form-control" name="notification_email_from" value="{$config.notification_email_from|default=''}" placeholder="系统通知">
+                    <small class="text-muted">仅用于邮件中的发件人显示名，发件地址使用上方账号</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">收件邮箱（多人用英文逗号分隔）</label>
+                    <input type="text" class="form-control" name="notification_email_to" value="{$config.notification_email_to|default=''}" placeholder="admin@qq.com,admin2@qq.com">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 企业微信配置 -->
+    <div class="card border-0 shadow-sm mb-3 notify-cfg" id="notify-wecom-cfg" style="display:{if !in_array('wecom', $channels)}none{else}block{/if};">
+        <div class="card-header bg-white">
+            <h6 class="mb-0"><i class="fa fa-weixin text-success me-2"></i>企业微信机器人配置</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Webhook 地址</label>
+                    <input type="text" class="form-control" name="notification_wecom_webhook" value="{$config.notification_wecom_webhook|default=''}" placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxx">
+                    <small class="text-muted">企业微信群 → 群设置 → 群机器人 → 添加机器人 → 复制Webhook地址</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息模板 - Markdown（钉钉 & 企业微信） -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">消息模板 - Markdown</h6>
+            <small class="text-muted">用于钉钉 / 企业微信推送，支持变量替换</small>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="fa fa-wrench me-1"></i> 报修通知模板
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none reset-template-btn" data-target="notification_template_repair" data-type="md_repair">
+                            <i class="fa fa-undo"></i> 恢复默认
+                        </button>
+                    </label>
+                    <textarea class="form-control font-monospace" rows="8" name="notification_template_repair" style="font-size:12px;">{if !empty($config.notification_template_repair)}{$config.notification_template_repair}{else}## [报修] 新报修工单
+
+> **工单号**：{order_no}
+
+> **联系人**：{client_name}
+
+> **电　话**：{phone}
+
+> **单　位**：{company}
+
+> **地　址**：{address}
+
+> **故障描述**：{description}
+
+> **提交时间**：{create_time}{/if}</textarea>
+                    <small class="text-muted">变量：{order_no}, {client_name}, {phone}, {company}, {address}, {description}, {create_time}</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="fa fa-comment me-1"></i> 留言通知模板
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none reset-template-btn" data-target="notification_template_message" data-type="md_message">
+                            <i class="fa fa-undo"></i> 恢复默认
+                        </button>
+                    </label>
+                    <textarea class="form-control font-monospace" rows="8" name="notification_template_message" style="font-size:12px;">{if !empty($config.notification_template_message)}{$config.notification_template_message}{else}## [留言] 新留言通知
+
+> **姓　名**：{name}
+
+> **电　话**：{phone}
+
+> **内　容**：{content}
+
+> **时　间**：{create_time}{/if}</textarea>
+                    <small class="text-muted">变量：{name}, {phone}, {content}, {create_time}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息模板 - HTML 邮件 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">消息模板 - HTML 邮件</h6>
+            <small class="text-muted">用于邮件推送，支持 HTML + CSS 样式</small>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="fa fa-wrench me-1"></i> 报修邮件模板
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none reset-template-btn" data-target="notification_email_template_repair" data-type="email_repair">
+                            <i class="fa fa-undo"></i> 恢复默认
+                        </button>
+                    </label>
+                    <textarea class="form-control rich-email-editor" name="notification_email_template_repair" id="emailRepairEditor" style="height:300px;">{if !empty($config.notification_email_template_repair)}{$config.notification_email_template_repair|raw}{else}
+<table style="width:100%;border-collapse:collapse;font-size:14px;">
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;width:90px;color:#666;">工单号</td><td style="padding:8px 12px;border-bottom:1px solid #eee;"><strong>{order_no}</strong></td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">联系人</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{client_name}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">电话</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{phone}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">单位</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{company}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">地址</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{address}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">故障描述</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{description}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;color:#666;">提交时间</td><td style="padding:8px 12px;">{create_time}</td></tr>
+</table>{/if}</textarea>
+                    <small class="text-muted">变量同上报修，使用富文本编辑器自由排版</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <i class="fa fa-comment me-1"></i> 留言邮件模板
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none reset-template-btn" data-target="notification_email_template_message" data-type="email_message">
+                            <i class="fa fa-undo"></i> 恢复默认
+                        </button>
+                    </label>
+                    <textarea class="form-control rich-email-editor" name="notification_email_template_message" id="emailMsgEditor" style="height:300px;">{if !empty($config.notification_email_template_message)}{$config.notification_email_template_message|raw}{else}
+<table style="width:100%;border-collapse:collapse;font-size:14px;">
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;width:60px;color:#666;">姓名</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{name}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">电话</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{phone}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">内容</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{content}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;color:#666;">时间</td><td style="padding:8px 12px;">{create_time}</td></tr>
+</table>{/if}</textarea>
+                    <small class="text-muted">变量同上留言，使用富文本编辑器自由排版</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 测试发送 -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white">
+            <h6 class="mb-0">发送测试</h6>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-end g-3">
+                <div class="col-md-6">
+                    <label class="form-label">测试渠道</label>
+                    <select class="form-select" id="testChannel">
+                        <option value="dingtalk">钉钉机器人</option>
+                        <option value="email">邮件</option>
+                        <option value="wecom">企业微信</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-outline-primary" id="testNotifyBtn">
+                        <i class="fa fa-paper-plane"></i> 发送测试消息
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-primary save-group-btn" data-group="tab-notify">
+            <i class="fa fa-save"></i> 保 存
+        </button>
+    </div>
+</div>
+
+<!-- 图标选择器弹窗 -->
+<div class="modal fade" id="iconPickerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><i class="fa fa-smile me-2"></i>选择图标</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="iconPickerSearch" placeholder="搜索图标，如 print、phone、user">
+                </div>
+                <div class="icon-picker-grid" id="iconPickerGrid"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="iconPickerConfirm">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+<script>
+$(function () {
+    // ========== 初始化 Summernote 富文本编辑器 ==========
+    if (typeof $.fn.summernote === 'undefined') {
+        console.warn('[config] Summernote 未加载，富文本编辑器不可用');
+    } else {
+        $('#aboutIntroEditor').summernote({
+            height: 250,
+            lang: 'zh-CN',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['insert', ['link', 'picture', 'table', 'hr']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '30', '36'],
+            styleTags: ['p', 'h3', 'h4', 'h5', 'blockquote', 'pre'],
+            callbacks: {
+                onImageUpload: function (files) {
+                    var editor = $(this);
+                    uploadSummernoteImage(files[0], editor);
+                }
+            }
+        });
+
+        // 邮件模板富文本编辑器（共享配置）
+        var emailSummernoteCfg = {
+            height: 300,
+            lang: 'zh-CN',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'hr']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '30', '36'],
+            callbacks: {
+                onImageUpload: function (files) {
+                    var editor = $(this);
+                    uploadSummernoteImage(files[0], editor);
+                }
+            }
+        };
+        $('#emailRepairEditor').summernote(emailSummernoteCfg);
+        $('#emailMsgEditor').summernote(emailSummernoteCfg);
+    }
+
+    function uploadSummernoteImage(file, editor) {
+        var fd = new FormData();
+        fd.append('file', file);
+        $.ajax({
+            url: '/admin/config/upload',
+            type: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function (res) {
+                if (res.code === 0 && res.data && res.data.url) {
+                    editor.summernote('insertImage', res.data.url);
+                } else {
+                    if (typeof toastr !== 'undefined') toastr.error(res.msg || '上传失败');
+                }
+            },
+            error: function () {
+                if (typeof toastr !== 'undefined') toastr.error('图片上传失败');
+            }
+        });
+    }
+
+    // 同步头像/logo 隐藏字段（事件触发时更新）
+    $(document).on('change', '#teamTable .img-upload-val', function () {
+        $(this).closest('tr').find('.team-avatar').val($(this).val());
+    });
+
+    // ========== 公司联系方式管理（tab-contact 内） ==========
+    function loadContactInfo() {
+        $.getJSON('/admin/contact-info/list', function(res) {
+            var tbody = $('#contactInfoTbody');
+            if (res.code !== 0 || !res.data || res.data.length === 0) {
+                tbody.html('<tr><td colspan="5" class="text-center text-muted py-3">暂无联系方式，点击"添加"按钮新增</td></tr>');
+                return;
+            }
+            var html = '';
+            res.data.forEach(function(item, i) {
+                html += '<tr data-id="' + item.id + '">';
+                html += '<td><input type="number" class="form-control form-control-sm ci-sort" value="' + (item.sort || 0) + '" style="width:60px;"></td>';
+                html += '<td><input type="text" class="form-control form-control-sm ci-type" value="' + (item.type || '') + '" placeholder="手机号/微信/QQ/邮件"></td>';
+                html += '<td><input type="text" class="form-control form-control-sm ci-value" value="' + (item.value || '') + '" placeholder="账号/电话号码"></td>';
+                html += '<td><input type="text" class="form-control form-control-sm ci-person" value="' + (item.contact_person || '') + '" placeholder="联系人称呼（选填）"></td>';
+                html += '<td>';
+                html += '<button type="button" class="btn btn-sm btn-outline-primary ci-save-btn me-1" title="保存"><i class="fa fa-save"></i></button>';
+                html += '<button type="button" class="btn btn-sm btn-outline-danger ci-del-btn" title="删除"><i class="fa fa-trash"></i></button>';
+                html += '</td>';
+                html += '</tr>';
+            });
+            tbody.html(html);
+        });
+    }
+
+    // 保存单条
+    $(document).on('click', '.ci-save-btn', function() {
+        var row = $(this).closest('tr');
+        var id = row.data('id');
+        var data = {
+            id: id || 0,
+            type: row.find('.ci-type').val().trim(),
+            value: row.find('.ci-value').val().trim(),
+            contact_person: row.find('.ci-person').val().trim(),
+            sort: parseInt(row.find('.ci-sort').val()) || 0
+        };
+        if (!data.type || !data.value) {
+            if (typeof toastr !== 'undefined') toastr.warning('类型和联系方式不能为空');
+            else alert('类型和联系方式不能为空');
+            return;
+        }
+        var url = id ? '/admin/contact-info/update' : '/admin/contact-info/add';
+        var btn = $(this).prop('disabled', true);
+        $.post(url, data, function(res) {
+            btn.prop('disabled', false);
+            if (res.code === 0) {
+                if (typeof toastr !== 'undefined') toastr.success(res.msg || '保存成功');
+                loadContactInfo();
+            } else {
+                if (typeof toastr !== 'undefined') toastr.error(res.msg);
+                else alert(res.msg);
+            }
+        }, 'json').fail(function() {
+            btn.prop('disabled', false);
+            if (typeof toastr !== 'undefined') toastr.error('请求失败');
+        });
+    });
+
+    // 删除
+    $(document).on('click', '.ci-del-btn', function() {
+        if (!confirm('确定删除该联系方式？')) return;
+        var row = $(this).closest('tr');
+        var id = row.data('id');
+        var btn = $(this).prop('disabled', true);
+        $.post('/admin/contact-info/delete', {id: id}, function(res) {
+            btn.prop('disabled', false);
+            if (res.code === 0) {
+                if (typeof toastr !== 'undefined') toastr.success('已删除');
+                loadContactInfo();
+            } else {
+                if (typeof toastr !== 'undefined') toastr.error(res.msg);
+                else alert(res.msg);
+            }
+        }, 'json').fail(function() {
+            btn.prop('disabled', false);
+            if (typeof toastr !== 'undefined') toastr.error('请求失败');
+        });
+    });
+
+    // 添加新行
+    $('#addContactInfoBtn').on('click', function() {
+        var tbody = $('#contactInfoTbody');
+        // 追加空行
+        var emptyRow = '<tr data-id="0">';
+        emptyRow += '<td><input type="number" class="form-control form-control-sm ci-sort" value="0" style="width:60px;"></td>';
+        emptyRow += '<td><input type="text" class="form-control form-control-sm ci-type" value="" placeholder="手机号/微信/QQ/邮件"></td>';
+        emptyRow += '<td><input type="text" class="form-control form-control-sm ci-value" value="" placeholder="账号/电话号码"></td>';
+        emptyRow += '<td><input type="text" class="form-control form-control-sm ci-person" value="" placeholder="联系人称呼（选填）"></td>';
+        emptyRow += '<td>';
+        emptyRow += '<button type="button" class="btn btn-sm btn-outline-primary ci-save-btn me-1" title="保存"><i class="fa fa-save"></i></button>';
+        emptyRow += '<button type="button" class="btn btn-sm btn-outline-danger ci-del-btn" title="删除"><i class="fa fa-trash"></i></button>';
+        emptyRow += '</td></tr>';
+        if (tbody.find('td[colspan]').length) tbody.empty();
+        tbody.prepend(emptyRow);
+    });
+
+    // Tab 切换到关于我们时加载
+    var origSwitchTab = window.switchConfigTab || function(){};
+    window.switchConfigTab = function(tabId) {
+        origSwitchTab(tabId);
+        if (tabId === 'tab-contact') {
+            setTimeout(loadContactInfo, 100);
+        }
+    };
+
+    // 如果联系方式tab是默认激活的，页面加载时也加载
+    if ($('#tab-contact').hasClass('active')) {
+        loadContactInfo();
+    }
+    // 点击tab-contact标签时也加载
+    $(document).on('click', '[data-tab="tab-contact"]', function() {
+        setTimeout(loadContactInfo, 100);
+    });
+
+    // ========== 图标选择器 ==========
+    var iconList = [
+        'fa-print', 'fa-laptop', 'fa-desktop', 'fa-mobile-alt', 'fa-tablet-alt', 'fa-keyboard', 'fa-mouse', 'fa-wifi',
+        'fa-network-wired', 'fa-server', 'fa-hdd', 'fa-database', 'fa-memory', 'fa-microchip', 'fa-headset',
+        'fa-phone', 'fa-phone-alt', 'fa-mobile', 'fa-fax', 'fa-envelope', 'fa-at', 'fa-map-marker-alt', 'fa-globe',
+        'fa-tools', 'fa-wrench', 'fa-screwdriver', 'fa-hammer', 'fa-toolbox', 'fa-cog', 'fa-cogs', 'fa-sliders-h',
+        'fa-shield-alt', 'fa-lock', 'fa-user-shield', 'fa-shield-virus', 'fa-fire-extinguisher', 'fa-bell',
+        'fa-truck', 'fa-shipping-fast', 'fa-box', 'fa-boxes', 'fa-pallet', 'fa-warehouse', 'fa-parachute-box',
+        'fa-user', 'fa-users', 'fa-user-tie', 'fa-user-cog', 'fa-user-check', 'fa-user-clock', 'fa-handshake',
+        'fa-bolt', 'fa-plug', 'fa-lightbulb', 'fa-solar-panel', 'fa-battery-full', 'fa-battery-half', 'fa-power-off',
+        'fa-chart-line', 'fa-chart-bar', 'fa-chart-pie', 'fa-chart-area', 'fa-percentage', 'fa-calculator',
+        'fa-file-alt', 'fa-file-contract', 'fa-file-signature', 'fa-file-invoice', 'fa-clipboard-check', 'fa-list-check',
+        'fa-check', 'fa-check-circle', 'fa-check-square', 'fa-times', 'fa-times-circle', 'fa-plus', 'fa-plus-circle', 'fa-minus',
+        'fa-arrow-right', 'fa-arrow-left', 'fa-arrow-up', 'fa-arrow-down', 'fa-chevron-right', 'fa-chevron-left',
+        'fa-star', 'fa-heart', 'fa-thumbs-up', 'fa-medal', 'fa-trophy', 'fa-award', 'fa-certificate', 'fa-gem',
+        'fa-graduation-cap', 'fa-book', 'fa-book-open', 'fa-graduation-cap', 'fa-chalkboard-teacher', 'fa-university',
+        'fa-smile', 'fa-smile', 'fa-laugh', 'fa-meh', 'fa-frown', 'fa-grin', 'fa-sun', 'fa-moon', 'fa-cloud',
+        'fa-question-circle', 'fa-info-circle', 'fa-exclamation-circle', 'fa-exclamation-triangle', 'fa-lightbulb',
+        'fa-home', 'fa-building', 'fa-industry', 'fa-city', 'fa-store', 'fa-hospital', 'fa-school', 'fa-hotel',
+        'fa-search', 'fa-filter', 'fa-sort', 'fa-sort-amount-down', 'fa-sort-alpha-down', 'fa-ellipsis-h', 'fa-ellipsis-v',
+        'fa-edit', 'fa-trash', 'fa-trash-alt', 'fa-save', 'fa-download', 'fa-upload', 'fa-sync', 'fa-redo', 'fa-undo',
+        'fa-eye', 'fa-eye-slash', 'fa-copy', 'fa-paste', 'fa-cut', 'fa-link', 'fa-external-link-alt', 'fa-qrcode',
+        'fa-image', 'fa-images', 'fa-video', 'fa-camera', 'fa-music', 'fa-play', 'fa-pause', 'fa-stop', 'fa-forward'
+    ];
+    var iconModal = new bootstrap.Modal('#iconPickerModal');
+    var $iconPickerTarget = null;
+
+    function renderIconPicker(keyword) {
+        var kw = (keyword || '').toLowerCase().trim();
+        var html = '';
+        iconList.forEach(function(icon) {
+            if (!kw || icon.indexOf(kw) !== -1) {
+                html += '<div class="icon-picker-item" data-icon="' + icon + '" title="' + icon + '"><i class="fa ' + icon + '"></i></div>';
+            }
+        });
+        $('#iconPickerGrid').html(html || '<p class="text-muted text-center">未找到图标</p>');
+    }
+
+    $('#iconPickerSearch').on('input', function() {
+        renderIconPicker($(this).val());
+    });
+
+    $(document).on('click', '.icon-picker-btn', function() {
+        $iconPickerTarget = $(this).closest('td').find('input[type="text"].svc-icon, input[type="text"].adv-icon, input[type="text"].flow-icon, input[type="text"].qual-icon, input[type="text"].bid-icon');
+        $('#iconPickerSearch').val('');
+        renderIconPicker();
+        iconModal.show();
+    });
+
+    $(document).on('click', '.icon-picker-item', function() {
+        $('.icon-picker-item').removeClass('selected');
+        $(this).addClass('selected');
+    });
+
+    $('#iconPickerConfirm').on('click', function() {
+        var $selected = $('#iconPickerGrid .selected');
+        if (!$selected.length) { iconModal.hide(); return; }
+        var icon = $selected.data('icon');
+        if ($iconPickerTarget && $iconPickerTarget.length) {
+            $iconPickerTarget.val(icon);
+            updateIconPreview($iconPickerTarget);
+        }
+        iconModal.hide();
+    });
+
+    function updateIconPreview($input) {
+        var icon = $input.val() || 'fa-circle';
+        $input.closest('td').find('.icon-preview i').attr('class', 'fa ' + icon);
+    }
+
+    $(document).on('input', 'input[type="text"].svc-icon, input[type="text"].adv-icon, input[type="text"].flow-icon, input[type="text"].qual-icon, input[type="text"].bid-icon', function() {
+        updateIconPreview($(this));
+    });
+
+    // ========== 颜色选择器 ==========
+    function updateColorPreview($group) {
+        var $text = $group.find('.svc-color');
+        var $picker = $group.find('.color-picker');
+        var $preview = $group.find('.color-preview');
+        var color = ($text.val() || '').trim() || $picker.val();
+        if (color && color.match(/^#[0-9A-Fa-f]{3,6}$/)) {
+            $picker.val(color);
+            $preview.css('background-color', color);
+        } else if (!color) {
+            $preview.css('background-color', 'transparent');
+        }
+    }
+
+    $(document).on('input', '.color-picker', function() {
+        var $group = $(this).closest('.color-input-group');
+        $group.find('.svc-color').val($(this).val());
+        updateColorPreview($group);
+    });
+
+    $(document).on('input', '.svc-color', function() {
+        updateColorPreview($(this).closest('.color-input-group'));
+    });
+
+    // 初始化现有颜色预览
+    $('.color-input-group').each(function() {
+        updateColorPreview($(this));
+    });
+
+    // 初始化现有图标预览
+    $('input[type="text"].svc-icon, input[type="text"].adv-icon, input[type="text"].flow-icon, input[type="text"].qual-icon, input[type="text"].bid-icon').each(function() {
+        updateIconPreview($(this));
+    });
+});
+</script>
+{/block}

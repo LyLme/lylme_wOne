@@ -1,0 +1,41 @@
+{
+    "name": "lylmew/lylmew-website",
+    "description": "大理市上云六零科技有限公司企业官网",
+    "type": "project",
+    "keywords": ["thinkphp", "cms", "enterprise"],
+    "require": {
+        "php": ">=8.1.0",
+        "topthink/framework": "^8.0",
+        "topthink/think-orm": "^3.0",
+        "topthink/think-view": "^2.0",
+        "topthink/think-captcha": "^3.0",
+        "topthink/think-filesystem": "^2.0",
+        "topthink/think-migration": "^3.0",
+        "firebase/php-jwt": "^6.10",
+        "phpoffice/phpspreadsheet": "^2.0"
+    },
+    "require-dev": {
+        "topthink/think-tracing": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app"
+        },
+        "psr-0": {
+            "": "extend/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "optimize-autoloader": true
+    },
+    "extra": {
+        "think": {
+            "services": [
+                "app\\AppService"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

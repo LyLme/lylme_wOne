@@ -1,0 +1,204 @@
+{extend name="admin/layout" /}
+
+{block name="content"}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h5 class="mb-0"><i class="fa fa-users-cog text-primary me-2"></i>管理员管理</h5>
+        <div class="d-flex gap-2">
+            <form action="/admin/admin-user" method="get" class="d-flex gap-2">
+                <input type="text" name="keyword" class="form-control form-control-sm" placeholder="用户名/昵称" value="{$keyword|default=''}">
+                <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa fa-search"></i></button>
+            </form>
+            {if ($admin_info.role ?? 1) == 0}
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#adminModal" id="addAdminBtn">
+                <i class="fa fa-plus"></i> 新增管理员
+            </button>
+            {/if}
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;">ID</th>
+                        <th>用户名</th>
+                        <th>昵称</th>
+                        <th>角色</th>
+                        <th>状态</th>
+                        <th>最后登录</th>
+                        <th>登录IP</th>
+                        <th style="width:160px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="list" id="item"}
+                    <tr>
+                        <td>{$item.id}</td>
+                        <td><span class="fw-medium">{$item.username}</span></td>
+                        <td>{$item.nickname|default='-'}</td>
+                        <td><span class="badge {:app\\model\\AdminUser::getRoleColor($item.role)}">{:app\\model\\AdminUser::getRoleText($item.role)}</span></td>
+                        <td>
+                            {if $item.status == 1}
+                            <span class="badge bg-success">正常</span>
+                            {else}
+                            <span class="badge bg-secondary">禁用</span>
+                            {/if}
+                        </td>
+                        <td>{$item.last_login_time|default='-'}</td>
+                        <td>{$item.last_login_ip|default='-'}</td>
+                        <td>
+                            {if ($admin_info.role ?? 1) == 0 && $item.id != ($admin_info.id ?? 0)}
+                            <button type="button" class="btn btn-sm btn-outline-primary me-1 edit-btn" data-admin='{:json_encode($item)}'>
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-btn" data-id="{$item.id}" data-name="{$item.username}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            {else}
+                            <span class="text-muted small">当前账号/受保护</span>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {if $list->lastPage() > 1}
+    <div class="card-footer bg-white">
+        {$list|raw}
+    </div>
+    {/if}
+</div>
+
+<!-- 新增/编辑弹窗 -->
+<div class="modal fade" id="adminModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="adminModalTitle">新增管理员</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+                <div class="mb-3">
+                    <label class="form-label">用户名 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="username" maxlength="50">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">昵称</label>
+                    <input type="text" class="form-control" id="nickname" maxlength="50">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">密码 <span class="text-danger" id="passwordRequired">*</span></label>
+                    <input type="password" class="form-control" id="password" placeholder="编辑时留空表示不修改">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">角色 <span class="text-danger">*</span></label>
+                    <select class="form-select" id="role">
+                        <option value="{:app\\model\\AdminUser::ROLE_ADMIN}">普通管理员</option>
+                        <option value="{:app\\model\\AdminUser::ROLE_EDITOR}">编辑</option>
+                        <option value="{:app\\model\\AdminUser::ROLE_SUPER}">超级管理员</option>
+                    </select>
+                    <small class="text-muted">超级管理员可管理其他管理员；编辑仅可管理内容</small>
+                </div>
+                <div class="mb-3" id="statusWrap">
+                    <label class="form-label">状态</label>
+                    <select class="form-select" id="status">
+                        <option value="1">正常</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveAdminBtn"><i class="fa fa-save"></i> 保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+(function() {
+    var modal = new bootstrap.Modal('#adminModal');
+    var isEdit = false;
+
+    function resetModal() {
+        isEdit = false;
+        $('#adminModalTitle').text('新增管理员');
+        $('#editId').val('');
+        $('#username').val('').prop('disabled', false);
+        $('#nickname').val('');
+        $('#password').val('').prop('placeholder', '请输入密码');
+        $('#passwordRequired').show();
+        $('#role').val('{:app\\model\\AdminUser::ROLE_ADMIN}');
+        $('#status').val('1');
+        $('#statusWrap').hide();
+    }
+
+    $('#addAdminBtn').on('click', function() {
+        resetModal();
+    });
+
+    $(document).on('click', '.edit-btn', function() {
+        var admin = $(this).data('admin');
+        isEdit = true;
+        $('#adminModalTitle').text('编辑管理员');
+        $('#editId').val(admin.id);
+        $('#username').val(admin.username).prop('disabled', true);
+        $('#nickname').val(admin.nickname);
+        $('#password').val('').prop('placeholder', '留空表示不修改');
+        $('#passwordRequired').hide();
+        $('#role').val(admin.role);
+        $('#status').val(admin.status);
+        $('#statusWrap').show();
+        modal.show();
+    });
+
+    $('#saveAdminBtn').on('click', function() {
+        var btn = $(this);
+        var data = {
+            username: $('#username').val().trim(),
+            nickname: $('#nickname').val().trim(),
+            password: $('#password').val(),
+            role: $('#role').val(),
+            status: $('#status').val()
+        };
+        if (!data.username) return alert('请输入用户名');
+        if (!isEdit && !data.password) return alert('请输入密码');
+
+        var url = isEdit ? '/admin/admin-user/update' : '/admin/admin-user/add';
+        if (isEdit) data.id = $('#editId').val();
+
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 保存中');
+        $.post(url, data, function(res) {
+            btn.prop('disabled', false).html('<i class="fa fa-save"></i> 保存');
+            if (res.code === 0) {
+                alert(res.msg);
+                modal.hide();
+                location.reload();
+            } else {
+                alert(res.msg);
+            }
+        }, 'json').fail(function() {
+            btn.prop('disabled', false).html('<i class="fa fa-save"></i> 保存');
+            alert('请求失败');
+        });
+    });
+
+    $(document).on('click', '.delete-btn', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        if (confirm('确定删除管理员「' + name + '」吗？此操作不可恢复。')) {
+            $.post('/admin/admin-user/delete', {id: id}, function(res) {
+                alert(res.msg);
+                if (res.code === 0) location.reload();
+            }, 'json');
+        }
+    });
+})();
+</script>
+{/block}

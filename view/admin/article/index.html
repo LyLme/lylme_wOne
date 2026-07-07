@@ -1,0 +1,455 @@
+{extend name="admin/layout" /}
+
+{block name="content"}
+
+{php}$isCase = $type === 'case';{/php}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-0">
+            <i class="fa {if $isCase}fa-briefcase{else}fa-newspaper{/if} text-primary me-2"></i>
+            {if $isCase}案例管理{else}新闻管理{/if}
+        </h5>
+        <small class="text-muted">管理{if $isCase}客户案例{else}新闻资讯{/if}内容</small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/admin/article-category" class="btn btn-outline-secondary btn-sm"><i class="fa fa-folder"></i> 分类管理</a>
+        <a href="/admin/article?type={if $isCase}news{else}case{/if}" class="btn btn-outline-info btn-sm">
+            <i class="fa fa-exchange-alt"></i> 切换到{if $isCase}新闻{else}案例{/if}
+        </a>
+        <button class="btn btn-primary" id="addBtn"><i class="fa fa-plus"></i> 新增{if $isCase}案例{else}新闻{/if}</button>
+    </div>
+</div>
+
+<!-- 筛选栏 -->
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body py-2">
+        <form class="row g-2 align-items-center" method="get">
+            <input type="hidden" name="type" value="{$type}">
+            <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm" name="keyword" value="{$keyword}" placeholder="搜索标题...">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select form-select-sm" name="category_id">
+                    <option value="0">全部分类</option>
+                    {foreach $categories as $c}
+                    <option value="{$c.id}" {if $category_id==$c.id}selected{/if}>{$c.name}</option>
+                    {/foreach}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-sm btn-outline-primary w-100"><i class="fa fa-search"></i> 筛选</button>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="?type={$type}" class="btn btn-sm btn-link text-muted">重置</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 列表 -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;">#</th>
+                        <th style="width:100px;">封面图</th>
+                        <th>标题</th>
+                        {if $isCase}<th>行业</th>{/if}
+                        <th style="width:80px;">排序</th>
+                        <th style="width:100px;">状态</th>
+                        <th style="width:140px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $list->count()}
+                    {php}$k = ($list->currentPage()-1) * $list->listRows();{/php}
+                    {foreach $list as $a}
+                    {php}$k++;{/php}
+                    {php}$ci = $isCase && isset($case_infos[$a['id']]) ? $case_infos[$a['id']] : null; $ciIndustry = $ci['industry'] ?? 'other'; $ciImgs = !empty($ci['images']) ? htmlentities(is_array($ci['images']) ? json_encode($ci['images']) : $ci['images']) : '[]'; $ciClient = htmlentities($ci['client_name'] ?? ''); $ciDevices = htmlentities($ci['devices'] ?? ''); $ciServiceDate = htmlentities($ci['service_date'] ?? ''); $ciRequirement = htmlentities($ci['requirement'] ?? ''); $ciSolution = htmlentities($ci['solution'] ?? ''); $ciResult = htmlentities($ci['result'] ?? ''); $ciCover = htmlentities($ci['cover'] ?? '');{/php}
+                    <tr data-id="{$a.id}" data-title="{$a.title|htmlentities}" data-category="{$a.category_id}" data-type="{$a.type}" data-summary="{$a.summary|htmlentities}" data-image="{$a.image}" data-sort="{$a.sort}" data-status="{$a.status}"
+                        {if $isCase}data-industry="{$ciIndustry}" data-case_imgs="{$ciImgs}" data-client_name="{$ciClient}" data-devices="{$ciDevices}" data-service_date="{$ciServiceDate}" data-requirement="{$ciRequirement}" data-solution="{$ciSolution}" data-result="{$ciResult}" data-cover="{$ciCover}"{/if}>
+                        <td>{$k}</td>
+                        <td>
+                            {if $a.image}
+                            <img src="{$a.image}" alt="{$a.title}" class="rounded" style="width:80px;height:50px;object-fit:cover;">
+                            {else}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:80px;height:50px;"><i class="fa fa-image text-muted"></i></div>
+                            {/if}
+                        </td>
+                        <td><span class="fw-bold">{$a.title}</span></td>
+                        {if $isCase}
+                        <td>
+                            {php}$industries = ['government'=>'政府机关','education'=>'教育机构','enterprise'=>'企业单位','medical'=>'医疗机构','finance'=>'金融机构','other'=>'其他行业'];{/php}
+                            <span class="badge bg-info">{if $ci}{$industries[$ciIndustry] ?? $ciIndustry}{else}其他行业{/if}</span>
+                        </td>
+                        {/if}
+                        <td><span class="badge bg-light text-dark">{$a.sort}</span></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input status-toggle" type="checkbox" data-id="{$a.id}" {if $a.status}checked{/if}>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary edit-btn" data-id="{$a.id}"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{$a.id}"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    {else}
+                    <tr><td colspan="{if $isCase}8{else}7{/if}" class="text-center py-5 text-muted"><i class="fa fa-inbox fa-3x d-block mb-2"></i>暂无数据</td></tr>
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {if $list->count()}
+    <div class="card-footer bg-light">{$list|raw}</div>
+    {/if}
+</div>
+
+<!-- 新增/编辑弹窗 -->
+<div class="modal fade" id="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><span id="modalTitle">新增{if $isCase}案例{else}新闻{/if}</span></h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+                <input type="hidden" id="editId" value="">
+                <input type="hidden" id="artType" value="{$type}">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label class="form-label">标题 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="artTitle" placeholder="请输入标题">
+                    </div>
+                    {if $isCase}
+                    <div class="col-md-4">
+                        <label class="form-label">行业分类</label>
+                        {php}$industries = ['government'=>'政府机关','education'=>'教育机构','enterprise'=>'企业单位','medical'=>'医疗机构','finance'=>'金融机构','other'=>'其他行业'];{/php}
+                        <select class="form-select" id="artIndustry">
+                            {foreach $industries as $k=>$v}
+                            <option value="{$k}">{$v}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div class="d-none">
+                        <select class="form-select" id="artCategory">
+                            <option value="0">请选择分类</option>
+                            {foreach $categories as $c}
+                            <option value="{$c.id}">{$c.name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    {else}
+                    <div class="col-md-4">
+                        <label class="form-label">分类 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="artCategory">
+                            <option value="0">请选择分类</option>
+                            {foreach $categories as $c}
+                            <option value="{$c.id}">{$c.name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    {/if}
+                    <div class="col-md-4">
+                        <label class="form-label">排序</label>
+                        <input type="number" class="form-control" id="artSort" value="0" min="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" id="artStatus">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">封面图</label>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="artImgBtn"><i class="fa fa-upload"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="artImgClear" style="display:none;"><i class="fa fa-trash"></i></button>
+                        </div>
+                        <input type="hidden" id="artImage" value="">
+                        <div class="mt-1"><img id="artImgPreview" src="" style="display:none;max-width:200px;max-height:80px;" class="rounded"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">摘要</label>
+                        <textarea class="form-control" id="artSummary" rows="2" placeholder="文章摘要（可选）"></textarea>
+                    </div>
+
+                    <!-- 案例专属字段 -->
+                    {if $isCase}
+                    <div class="col-md-6">
+                        <label class="form-label">案例图片</label>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="caseImgBtn"><i class="fa fa-upload"></i> 添加图片</button>
+                        </div>
+                        <div id="caseImgsContainer" class="d-flex flex-wrap gap-2 mt-2"></div>
+                        <input type="hidden" id="caseImgs" value="">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">背景/封面图</label>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="caseCoverBtn"><i class="fa fa-upload"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="caseCoverClear" style="display:none;"><i class="fa fa-trash"></i></button>
+                        </div>
+                        <input type="hidden" id="caseCover" value="">
+                        <div class="mt-1"><img id="caseCoverPreview" src="" style="display:none;max-width:200px;max-height:80px;" class="rounded"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">客户名称</label>
+                        <input type="text" class="form-control" id="caseClientName" placeholder="客户名称">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">使用设备</label>
+                        <input type="text" class="form-control" id="caseDevices" placeholder="使用设备">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">服务时间</label>
+                        <input type="text" class="form-control" id="caseServiceDate" placeholder="如：2026年7月6日">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">需求背景</label>
+                        <textarea class="form-control" id="caseRequirement" rows="3" placeholder="客户需求背景"></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">解决方案</label>
+                        <textarea class="form-control" id="caseSolution" rows="3" placeholder="解决方案"></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">服务成果</label>
+                        <textarea class="form-control" id="caseResult" rows="3" placeholder="服务成果"></textarea>
+                    </div>
+                    {/if}
+
+                    <div class="col-md-12">
+                        <label class="form-label">正文内容</label>
+                        <textarea class="form-control rich-editor" id="artContent" rows="8"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveBtn"><i class="fa fa-save"></i> 保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+<script>
+var isCase = {$isCase ? 'true' : 'false'};
+{literal}
+$(function(){
+    if (typeof bootstrap === 'undefined') { console.error('Bootstrap JS 未加载，页面功能不可用'); return; }
+    var modal = new bootstrap.Modal('#modal'), isEdit = false, editId = null;
+    if ($.fn.summernote) { $('#artContent').summernote({lang:'zh-CN',height:300,toolbar:[['style',['bold','italic','underline','clear']],['fontsize',['fontsize']],['color',['color']],['para',['ul','ol','paragraph']],['insert',['link','picture']],['view',['codeview']]]}); }
+    else { $.fn.summernote = function(op, val) { if (op === 'code') return val === undefined ? '' : this; return this; }; console.warn('Summernote 未加载，富文本编辑不可用'); }
+
+    function uploadFile(cb){
+        var fi = $('<input type="file" accept="image/*" style="display:none;">').appendTo('body');
+        fi.on('change', function(){
+            var file = this.files[0]; if(!file){fi.remove();return;}
+            var fd = new FormData(); fd.append('file', file);
+            $.ajax({url:'/admin/article/upload',type:'POST',data:fd,processData:false,contentType:false,dataType:'json',
+                success:function(res){ if(res.code===0&&res.data.url) cb(res.data.url); else toastr.error(res.msg); },
+                error:function(){ toastr.error('上传失败'); }
+            });
+            fi.remove();
+        }).trigger('click');
+    }
+
+    function resetForm(){
+        isEdit = false; editId = null;
+        $('#modalTitle').text('新增' + (isCase ? '案例' : '新闻'));
+        $('#editId').val(''); $('#artTitle').val(''); $('#artCategory').val('0');
+        $('#artSort').val('0'); $('#artStatus').val('1');
+        $('#artImage').val(''); $('#artImgPreview').hide(); $('#artImgClear').hide();
+        $('#artSummary').val(''); $('#artContent').summernote('reset');
+        if (isCase) {
+            $('#artIndustry').val('other');
+            $('#caseImgs').val(''); $('#caseImgsContainer').empty();
+            $('#caseCover').val(''); $('#caseCoverPreview').hide(); $('#caseCoverClear').hide();
+            $('#caseClientName').val(''); $('#caseDevices').val(''); $('#caseServiceDate').val('');
+            $('#caseRequirement').val(''); $('#caseSolution').val(''); $('#caseResult').val('');
+        }
+    }
+
+    $('#artImgBtn').click(function(e){ e.preventDefault(); uploadFile(function(url){ $('#artImage').val(url); $('#artImgPreview').attr('src',url).show(); $('#artImgClear').show(); }); });
+    $('#artImgClear').click(function(){ $('#artImage').val(''); $('#artImgPreview').hide(); $(this).hide(); });
+
+    if (isCase) {
+        $('#caseCoverBtn').click(function(e){ e.preventDefault(); uploadFile(function(url){ $('#caseCover').val(url); $('#caseCoverPreview').attr('src',url).show(); $('#caseCoverClear').show(); }); });
+        $('#caseCoverClear').click(function(){ $('#caseCover').val(''); $('#caseCoverPreview').hide(); $(this).hide(); });
+        $('#caseImgBtn').click(function(e){
+            e.preventDefault();
+            uploadFile(function(url){
+                var urls = getCaseImgs(); urls.push(url);
+                $('#caseImgs').val(JSON.stringify(urls));
+                $('#caseImgsContainer').append('<div class="position-relative d-inline-block"><img src="'+url+'" class="rounded" style="width:60px;height:45px;object-fit:cover;"><button class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle p-0 case-img-remove" style="width:18px;height:18px;font-size:10px;line-height:18px;" data-url="'+url+'">×</button></div>');
+            });
+        });
+        $(document).on('click', '.case-img-remove', function(e){
+            e.preventDefault();
+            var url = $(this).data('url');
+            var urls = getCaseImgs().filter(function(u){ return u !== url; });
+            $('#caseImgs').val(JSON.stringify(urls)); $(this).parent().remove();
+        });
+        function getCaseImgs(){
+            try { return JSON.parse($('#caseImgs').val() || '[]'); } catch(e) { return []; }
+        }
+    }
+
+    $('#addBtn').click(function(){ resetForm(); modal.show(); });
+
+    $(document).on('click', '.edit-btn', function(){
+        var $row = $(this).closest('tr');
+        isEdit = true; editId = $(this).data('id');
+        $('#modalTitle').text('编辑' + (isCase ? '案例' : '新闻'));
+        $('#editId').val(editId); $('#artTitle').val($row.data('title'));
+        $('#artCategory').val($row.data('category'));
+        $('#artSort').val($row.data('sort')); $('#artStatus').val($row.data('status'));
+        var img = $row.data('image');
+        if (img) { $('#artImage').val(img); $('#artImgPreview').attr('src',img).show(); $('#artImgClear').show(); }
+        else { $('#artImage').val(''); $('#artImgPreview').hide(); $('#artImgClear').hide(); }
+        $('#artSummary').val($row.data('summary'));
+        if (isCase) {
+            $('#artIndustry').val($row.data('industry') || 'other');
+            $('#caseClientName').val($row.data('client_name') || '');
+            $('#caseDevices').val($row.data('devices') || '');
+            $('#caseServiceDate').val($row.data('service_date') || '');
+            $('#caseRequirement').val($row.data('requirement') || '');
+            $('#caseSolution').val($row.data('solution') || '');
+            $('#caseResult').val($row.data('result') || '');
+            var cover = $row.data('cover') || '';
+            $('#caseCover').val(cover);
+            if (cover) { $('#caseCoverPreview').attr('src', cover).show(); $('#caseCoverClear').show(); }
+            else { $('#caseCoverPreview').hide(); $('#caseCoverClear').hide(); }
+        }
+
+        // 先显示弹窗和 loading，再 AJAX 拉取正文和案例图片
+        $('#artContent').summernote('code', '<p style="text-align:center;color:#999;">加载中…</p>');
+        if (isCase) { $('#caseImgs').val(''); $('#caseImgsContainer').empty(); }
+        modal.show();
+
+        // AJAX 获取文章详情（正文 + 案例图片）
+        $.ajax({
+            url: '/admin/article/detail?id=' + editId + '&type=' + ($('#artType').val() || ''),
+            type: 'GET',
+            dataType: 'json',
+            success: function(res) {
+                if (res.code === 0 && res.data) {
+                    // 加载正文到编辑器
+                    if (res.data.content) {
+                        $('#artContent').summernote('code', res.data.content);
+                    } else {
+                        $('#artContent').summernote('code', '');
+                    }
+                    // 加载案例图片
+                    if (isCase && res.data.case_info) {
+                        $('#artIndustry').val(res.data.case_info.industry || 'other');
+                        var imgs = res.data.case_info.images || [];
+                        if (Array.isArray(imgs) && imgs.length > 0) {
+                            $('#caseImgs').val(JSON.stringify(imgs));
+                            imgs.forEach(function(u){
+                                $('#caseImgsContainer').append('<div class="position-relative d-inline-block"><img src="'+u+'" class="rounded" style="width:60px;height:45px;object-fit:cover;"><button class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle p-0 case-img-remove" style="width:18px;height:18px;font-size:10px;line-height:18px;" data-url="'+u+'">×</button></div>');
+                            });
+                        }
+                        // 补充加载扩展字段（优先使用已渲染的 data 属性，避免重复）
+                        if (!$('#caseClientName').val()) $('#caseClientName').val(res.data.case_info.client_name || '');
+                        if (!$('#caseDevices').val()) $('#caseDevices').val(res.data.case_info.devices || '');
+                        if (!$('#caseServiceDate').val()) $('#caseServiceDate').val(res.data.case_info.service_date || '');
+                        if (!$('#caseRequirement').val()) $('#caseRequirement').val(res.data.case_info.requirement || '');
+                        if (!$('#caseSolution').val()) $('#caseSolution').val(res.data.case_info.solution || '');
+                        if (!$('#caseResult').val()) $('#caseResult').val(res.data.case_info.result || '');
+                        if (!$('#caseCover').val()) {
+                            var cover = res.data.case_info.cover || '';
+                            $('#caseCover').val(cover);
+                            if (cover) { $('#caseCoverPreview').attr('src', cover).show(); $('#caseCoverClear').show(); }
+                        }
+                    }
+                } else {
+                    $('#artContent').summernote('code', '');
+                }
+            },
+            error: function() {
+                $('#artContent').summernote('code', '');
+            }
+        });
+    });
+
+    $('#saveBtn').click(function(){
+        var title = $('#artTitle').val().trim(), cat = $('#artCategory').val();
+        if (!title) { toastr.warning('请输入标题'); return; }
+        if (!isCase && (!cat || cat === '0')) { toastr.warning('请选择分类'); return; }
+
+        var data = {
+            title: title, category_id: cat, type: $('#artType').val(),
+            summary: $('#artSummary').val().trim(), image: $('#artImage').val(),
+            content: $('#artContent').summernote('code'),
+            sort: $('#artSort').val(), status: $('#artStatus').val()
+        };
+        if (isCase) {
+            data.industry = $('#artIndustry').val();
+            // 根据行业分类自动匹配文章分类
+            var industryMap = {'government':'政府机关','education':'教育机构','enterprise':'企业单位','medical':'医疗机构','finance':'金融机构','other':'其他行业'};
+            var industryName = industryMap[data.industry] || '';
+            var matched = false;
+            if (industryName) {
+                $('#artCategory option').each(function(){
+                    if ($(this).text().trim() === industryName) {
+                        data.category_id = $(this).val();
+                        matched = true;
+                        return false;
+                    }
+                });
+            }
+            if (!matched) {
+                var firstVal = $('#artCategory option').eq(1).val();
+                if (firstVal) data.category_id = firstVal;
+            }
+            data.case_imgs = $('#caseImgs').val();
+            data.client_name = $('#caseClientName').val().trim();
+            data.devices = $('#caseDevices').val().trim();
+            data.service_date = $('#caseServiceDate').val().trim();
+            data.requirement = $('#caseRequirement').val().trim();
+            data.solution = $('#caseSolution').val().trim();
+            data.result = $('#caseResult').val().trim();
+            data.cover = $('#caseCover').val().trim();
+        }
+
+        var url = isEdit ? '/admin/article/update' : '/admin/article/add';
+        if (isEdit) data.id = editId;
+        var $btn = $(this).prop('disabled', true);
+        $.post(url, data, function(res){
+            if (res.code === 0) { toastr.success(res.msg); modal.hide(); setTimeout(function(){ location.reload(); }, 500); }
+            else toastr.error(res.msg);
+        }, 'json').always(function(){ $btn.prop('disabled', false); });
+    });
+
+    $(document).on('click', '.delete-btn', function(){
+        var id = $(this).data('id');
+        if (!confirm('确定删除吗？')) return;
+        $.post('/admin/article/delete', {id:id}, function(res){
+            if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
+            else toastr.error(res.msg);
+        }, 'json');
+    });
+
+    $(document).on('change', '.status-toggle', function(){
+        var $t = $(this), id = $t.data('id'), status = $t.is(':checked') ? 1 : 0;
+        $.post('/admin/article/toggle-status', {id:id, status:status}, function(res){
+            if (res.code !== 0) { $t.prop('checked', !status); toastr.error(res.msg); }
+        }, 'json');
+    });
+});
+{/literal}
+</script>
+{/block}

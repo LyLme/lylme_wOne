@@ -1,0 +1,43 @@
+# ThinkPHP 项目 .gitignore
+
+
+# 环境配置
+#.env
+
+# 运行时
+/runtime/
+*.runtime
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 上传文件（测试环境产物）
+/public/static/uploads/*
+!/public/static/uploads/.gitkeep
+
+# 日志
+*.log
+/runtime/log/
+/runtime/cache/
+/runtime/temp/
+
+# 备份
+/database/backup/
+*.sql.gz
+*.zip
+
+# Node
+node_modules/
+package-lock.json
+
+# 测试
+/tests/
+.phpunit.cache

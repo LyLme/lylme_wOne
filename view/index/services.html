@@ -1,0 +1,278 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .breadcrumb-nav {
+        background: transparent;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    .breadcrumb-nav .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    .breadcrumb-nav .breadcrumb-item.active {
+        color: #fff;
+    }
+    .service-list-section {
+        padding: 100px 0;
+        background: #F8FAFC;
+    }
+    .service-card-lg {
+        background: #fff;
+        border-radius: 12px;
+        padding: 40px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s;
+        height: 100%;
+        border: 2px solid transparent;
+        display: flex;
+        flex-direction: column;
+    }
+    .service-card-lg:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+        border-color: var(--card-color, #1A5FDC);
+    }
+    .service-card-lg .service-icon-lg {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: #fff;
+        margin-bottom: 20px;
+        transition: transform 0.3s;
+    }
+    .service-card-lg:hover .service-icon-lg {
+        transform: scale(1.1) rotate(-10deg);
+    }
+    .service-card-lg .service-title-lg {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #1F2937;
+    }
+    .service-card-lg .service-desc-lg {
+        color: #6B7280;
+        line-height: 1.8;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+    .service-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .service-features li {
+        padding: 4px 12px;
+        color: #1A5FDC;
+        background: #E8F0FE;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+    .service-features li i {
+        margin-right: 5px;
+    }
+    .service-card-lg .btn-service {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.3s;
+        align-self: flex-start;
+    }
+    .service-card-lg .btn-service:hover {
+        transform: translateX(5px);
+        color: #fff;
+    }
+    .service-card-lg .btn-service i {
+        transition: transform 0.3s;
+    }
+    .service-card-lg .btn-service:hover i {
+        transform: translateX(3px);
+    }
+    /* 服务流程图 */
+    .service-flow {
+        padding: 80px 0;
+        background: #fff;
+    }
+    .flow-steps {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        margin-top: 50px;
+    }
+    .flow-steps::before {
+        content: '';
+        position: absolute;
+        top: 40px;
+        left: 10%;
+        right: 10%;
+        height: 3px;
+        background: linear-gradient(90deg, #1A5FDC, #00B4D8, #10B981, #F59E0B, #1A5FDC);
+        z-index: 0;
+        border-radius: 2px;
+    }
+    .flow-step {
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        padding: 0 10px;
+    }
+    .flow-step .step-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid #1A5FDC;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #1A5FDC;
+        margin: 0 auto 15px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .flow-step:hover .step-icon {
+        background: #1A5FDC;
+        color: #fff;
+        transform: scale(1.1);
+    }
+    .flow-step .step-number {
+        position: absolute;
+        top: -8px;
+        right: 50%;
+        transform: translateX(50%);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #1A5FDC;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 30px;
+    }
+    .flow-step .step-title {
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 5px;
+        font-size: 16px;
+    }
+    .flow-step .step-desc {
+        font-size: 13px;
+        color: #6B7280;
+        line-height: 1.5;
+    }
+    @media (max-width: 768px) {
+        .flow-steps {
+            flex-direction: column;
+            gap: 25px;
+        }
+        .flow-steps::before {
+            display: none;
+        }
+        .service-card-lg {
+            padding: 25px 20px;
+        }
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item active">服务支持</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">服务支持</h1>
+        <p class="page-desc">专业团队，贴心服务，让您无后顾之忧</p>
+    </div>
+</section>
+
+<!-- 服务列表 -->
+<section class="service-list-section">
+    <div class="container">
+        <div class="row">
+            {foreach $service_types as $key=>$service}
+            <div class="col-lg-6">
+                <div class="service-card-lg" style="--card-color: {$service.color|default='#1A5FDC'};">
+                    <div class="service-icon-lg" style="background: {$service.color|default='#1A5FDC'};">
+                        <i class="fa {$service.icon}"></i>
+                    </div>
+                    <h3 class="service-title-lg">{$service.name}</h3>
+                    <p class="service-desc-lg">{$service.desc}</p>
+                    <ul class="service-features">
+                        {foreach $service.features as $feature}
+                        <li><i class="fa fa-check"></i> {$feature}</li>
+                        {/foreach}
+                    </ul>
+                    <a href="/services/{$key}" class="btn-service" style="background: {$service.color|default='#1A5FDC'};">
+                        查看详情 <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</section>
+
+<!-- 服务流程图 -->
+<section class="service-flow">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-subtitle">服务流程</span>
+            <h2 class="section-title">标准化服务流程</h2>
+            <p class="section-desc">每一个环节都严格把控，确保服务品质</p>
+        </div>
+
+        <div class="flow-steps">
+            {foreach $flow_steps as $i=>$step}
+            <div class="flow-step">
+                <div class="step-icon">
+                    <i class="fa {$step.icon}"></i>
+                </div>
+                <h5 class="step-title">{$step.title}</h5>
+                <p class="step-desc">{$step.desc}</p>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+    <div class="container text-center text-white">
+        <h2 class="mb-3">需要我们的服务？立即联系！</h2>
+        <p class="mb-4">专业团队为您提供一站式办公设备解决方案</p>
+        <a href="/repair" class="btn btn-lg me-3" style="background: #fff; border-color: #fff; color: #1A5FDC; font-weight: 600;">在线报修</a>
+        <a href="tel:{$contact_phone}" class="btn btn-outline-light btn-lg"><i class="fa fa-phone-alt"></i> 拨打电话</a>
+    </div>
+</section>
+{/block}

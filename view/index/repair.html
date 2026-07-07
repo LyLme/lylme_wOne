@@ -1,0 +1,969 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .repair-section {
+        padding: 60px 0;
+        background: #F8FAFC;
+    }
+    .repair-form-box {
+        background: #fff;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .repair-form-box .form-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #1A5FDC;
+    }
+    .repair-form-box .form-label {
+        font-weight: 500;
+        color: #1F2937;
+    }
+    .repair-form-box .required::after {
+        content: ' *';
+        color: #EF4444;
+    }
+    .repair-sidebar .info-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+    .repair-sidebar .info-card h5 {
+        color: #1F2937;
+        margin-bottom: 15px;
+    }
+    .repair-sidebar .info-card p {
+        color: #6B7280;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    .repair-sidebar .info-card p i {
+        color: #1A5FDC;
+        width: 20px;
+    }
+    .success-box {
+        text-align: center;
+        padding: 60px 40px;
+    }
+    .success-box .success-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #10B981;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        color: #fff;
+        margin: 0 auto 30px;
+    }
+
+    /* 选项卡 */
+    .repair-tabs {
+        background: #fff;
+        border-radius: 12px;
+        padding: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    .repair-tabs .nav-tabs {
+        border-bottom: 2px solid #e5e7eb;
+        padding: 0 40px;
+        background: #fafbfc;
+    }
+    .repair-tabs .nav-tabs .nav-link {
+        border: none;
+        padding: 16px 28px;
+        color: #6B7280;
+        font-weight: 500;
+        font-size: 15px;
+        position: relative;
+        background: transparent;
+        transition: all 0.2s;
+    }
+    .repair-tabs .nav-tabs .nav-link:hover {
+        color: #1A5FDC;
+    }
+    .repair-tabs .nav-tabs .nav-link.active {
+        color: #1A5FDC;
+        background: transparent;
+    }
+    .repair-tabs .nav-tabs .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 28px;
+        right: 28px;
+        height: 3px;
+        background: #1A5FDC;
+        border-radius: 3px 3px 0 0;
+    }
+    .repair-tabs .tab-content {
+        padding: 30px 40px;
+    }
+
+    /* 工单卡片 */
+    .order-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 0;
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+    }
+    .order-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .order-card-header {
+        padding: 16px 20px;
+        background: #f9fafb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .order-card-body {
+        padding: 20px;
+    }
+    .order-card-footer {
+        padding: 12px 20px;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* 时间轴 */
+    .timeline {
+        position: relative;
+        padding-left: 32px;
+        margin-top: 16px;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 11px;
+        top: 6px;
+        bottom: 6px;
+        width: 2px;
+        background: #e5e7eb;
+        border-radius: 1px;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 18px;
+    }
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+    .timeline-item .tl-dot {
+        position: absolute;
+        left: -24px;
+        top: 4px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: #fff;
+        z-index: 1;
+    }
+    .tl-created { background: #6366f1; }
+    .tl-accepted { background: #3b82f6; }
+    .tl-paused { background: #f59e0b; }
+    .tl-resumed { background: #06b6d4; }
+    .tl-completed { background: #10b981; }
+    .tl-cancelled { background: #9ca3af; }
+    .tl-edited { background: #8b5cf6; }
+    .tl-remark { background: #6b7280; }
+    .timeline-item .tl-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1F2937;
+    }
+    .timeline-item .tl-time {
+        font-size: 12px;
+        color: #9ca3af;
+    }
+    .timeline-item .tl-content {
+        font-size: 13px;
+        color: #6B7280;
+        margin-top: 4px;
+        white-space: pre-wrap;
+    }
+
+    /* 工单状态流程指示器 */
+    .flow-steps {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-wrap: wrap;
+        padding: 0;
+    }
+    .flow-step {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        color: #9ca3af;
+    }
+    .flow-step .step-dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        margin-right: 6px;
+        background: #e5e7eb;
+        color: #9ca3af;
+    }
+    .flow-step.active .step-dot {
+        background: #3b82f6;
+        color: #fff;
+    }
+    .flow-step.done .step-dot {
+        background: #10b981;
+        color: #fff;
+    }
+    .flow-step.cancelled .step-dot {
+        background: #ef4444;
+        color: #fff;
+    }
+    .flow-arrow {
+        margin: 0 8px;
+        color: #d1d5db;
+        font-size: 12px;
+    }
+    .flow-step.done + .flow-arrow,
+    .flow-step.active + .flow-arrow {
+        color: #10b981;
+    }
+    .flow-step.cancelled ~ .flow-step,
+    .flow-step.cancelled ~ .flow-arrow {
+        color: #d1d5db;
+    }
+    .flow-step.cancelled ~ .flow-step .step-dot {
+        background: #e5e7eb;
+        color: #9ca3af;
+    }
+
+    /* 订单详情弹窗 */
+    .detail-section {
+        margin-bottom: 20px;
+    }
+    .detail-section .detail-label {
+        font-size: 12px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    .detail-section .detail-value {
+        font-size: 14px;
+        color: #1F2937;
+    }
+    .receipt-box {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+    }
+    .receipt-box .receipt-title {
+        color: #16a34a;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .price-tag {
+        display: inline-block;
+        background: #fef3c7;
+        color: #d97706;
+        border: 1px solid #fde68a;
+        border-radius: 20px;
+        padding: 4px 16px;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    .status-badge-lg {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item active">在线报修</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">在线报修</h1>
+        <p class="page-desc">填写报修信息，我们将尽快与您联系</p>
+    </div>
+</section>
+
+<!-- 报修内容区域 -->
+<section class="repair-section">
+    <div class="container">
+        <div class="row">
+            <!-- 左侧：选项卡 -->
+            <div class="col-lg-8">
+                <div class="repair-tabs" id="repairTabs">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#tab-submit" role="tab">
+                                <i class="fa fa-pencil-square-o me-1"></i>提交报修
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#tab-orders" role="tab" id="ordersTabLink">
+                                <i class="fa fa-list-alt me-1"></i>我的工单 <span class="badge bg-primary ms-1 d-none" id="orderCountBadge">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- Tab1：提交报修 -->
+                        <div class="tab-pane fade show active" id="tab-submit" role="tabpanel">
+                            <h4 class="form-title"><i class="fa fa-wrench text-primary"></i> 报修信息填写</h4>
+                            <form id="repairForm" enctype="multipart/form-data">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label required">故障现象</label>
+                                        <textarea name="fault_desc" class="form-control" rows="5" placeholder="请详细描述设备故障现象..." required></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label required">联系人</label>
+                                        <input type="text" name="client_name" class="form-control" placeholder="请输入联系人姓名" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label required">联系电话</label>
+                                        <input type="tel" name="phone" class="form-control" placeholder="请输入手机号码" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">单位名称</label>
+                                        <input type="text" name="company" class="form-control" placeholder="请输入单位名称（选填）">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">服务地址</label>
+                                        <input type="text" name="address" class="form-control" placeholder="请输入设备所在地址">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">上传图片</label>
+                                        <input type="file" name="images[]" class="form-control" accept="image/*" multiple>
+                                        <small class="text-muted">可上传故障照片，支持多张（选填）</small>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label required">验证码</label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input type="text" name="captcha" class="form-control" style="width:120px;" placeholder="验证码" required maxlength="2">
+                                            <img src="/captcha" alt="验证码" class="captcha-img" onclick="this.src='/captcha?'+Math.random()" style="height:38px;cursor:pointer;border-radius:4px;border:1px solid #e5e7eb;">
+                                            <small class="text-muted">点击图片刷新</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                                        <i class="fa fa-paper-plane"></i> 提交报修
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Tab2：我的工单 -->
+                        <div class="tab-pane fade" id="tab-orders" role="tabpanel">
+                            <div id="myOrdersContainer">
+                                <div class="text-center py-5" id="ordersLoading">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">加载中...</span>
+                                    </div>
+                                    <p class="text-muted mt-2">正在加载工单...</p>
+                                </div>
+                                <div class="text-center py-5 d-none" id="ordersEmpty">
+                                    <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">暂无报修工单</p>
+                                </div>
+                                <div id="ordersList"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧边栏 -->
+            <div class="col-lg-4">
+                <div class="repair-sidebar">
+                    <div class="info-card">
+                        <h5><i class="fa fa-phone-alt text-primary"></i> 服务热线</h5>
+                        <p><i class="fa fa-phone"></i> {$service_phone|default=$contact_phone}</p>
+                        <p><i class="fa fa-clock"></i> {$contact_hours}</p>
+                    </div>
+                    <div class="info-card">
+                        <h5><i class="fa fa-list-check text-primary"></i> 报修须知</h5>
+                        <p>1. 请准确填写联系信息，以便我们与您联系</p>
+                        <p>2. 请详细描述故障现象，便于工程师预判</p>
+                        <p>3. 提交后请耐心等待，我们将尽快接单</p>
+                        <p>4. 紧急故障可直接拨打服务热线</p>
+                    </div>
+                    <div class="info-card">
+                        <h5><i class="fa fa-map-marker-alt text-primary"></i> 服务地址</h5>
+                        <p>{$contact_address}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 提交成功弹窗 -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="success-box">
+                    <div class="success-icon"><i class="fa fa-check"></i></div>
+                    <h3 class="text-success mb-3">报修提交成功！</h3>
+                    <p class="text-muted mb-2">您的工单号是：</p>
+                    <h4 class="text-primary mb-4" id="orderNoDisplay"></h4>
+                    <p class="text-muted">我们将尽快接单处理，请保持电话畅通。</p>
+                    <button class="btn btn-primary mt-3" data-bs-dismiss="modal" onclick="document.getElementById('ordersTabLink').click()">查看我的工单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 工单详情弹窗 -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><i class="fa fa-file-text-o me-2"></i>工单详情</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detailContent"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑工单弹窗 -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><i class="fa fa-pencil me-2"></i>编辑工单</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" enctype="multipart/form-data">
+                    <input type="hidden" id="editId">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">工单号</label>
+                            <input type="text" id="editOrderNo" class="form-control" readonly>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label required">故障现象</label>
+                            <textarea name="fault_desc" id="editFaultDesc" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required">联系人</label>
+                            <input type="text" name="client_name" id="editClientName" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label required">联系电话</label>
+                            <input type="tel" name="phone" id="editPhone" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">单位名称</label>
+                            <input type="text" name="company" id="editCompany" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">服务地址</label>
+                            <input type="text" name="address" id="editAddress" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">补充图片</label>
+                            <input type="file" name="images[]" class="form-control" accept="image/*" multiple>
+                            <small class="text-muted">新上传的图片将追加到已有图片中</small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="editSaveBtn"><i class="fa fa-save"></i> 保存修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 撤销确认弹窗 -->
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><i class="fa fa-ban text-danger me-2"></i>撤销工单</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="cancelId">
+                <p class="text-muted mb-3">确定要撤销该工单吗？撤销后将无法恢复。</p>
+                <div class="mb-3">
+                    <label class="form-label">撤销原因（选填）</label>
+                    <textarea class="form-control" id="cancelReason" rows="2" placeholder="请输入撤销原因..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="cancelConfirmBtn"><i class="fa fa-check"></i> 确认撤销</button>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+(function() {
+    var form = document.getElementById('repairForm');
+    var submitBtn = document.getElementById('submitBtn');
+    var detailModal = new bootstrap.Modal('#detailModal');
+    var editModal = new bootstrap.Modal('#editModal');
+    var cancelModal = new bootstrap.Modal('#cancelModal');
+
+    // 自动填充历史姓名/电话
+    if (window.lylmew && lylmew.fillVisitorForm) {
+        lylmew.fillVisitorForm('#repairForm');
+    }
+
+    // 获取访客标识
+    function getVisitorId() {
+        if (window.lylmew && lylmew.getVisitorInfo) {
+            var info = lylmew.getVisitorInfo();
+            return info.visitor_id || '';
+        }
+        return '';
+    }
+
+    // ============ 我的工单 ============
+    function loadMyOrders() {
+        var visitorId = getVisitorId();
+        if (!visitorId) {
+            document.getElementById('ordersLoading').classList.add('d-none');
+            document.getElementById('ordersEmpty').classList.remove('d-none');
+            return;
+        }
+
+        fetch('/repair/myOrders?visitor_id=' + encodeURIComponent(visitorId))
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            document.getElementById('ordersLoading').classList.add('d-none');
+            var ordersList = document.getElementById('ordersList');
+            var badge = document.getElementById('orderCountBadge');
+
+            if (data.code !== 0 || !data.data || data.data.length === 0) {
+                document.getElementById('ordersEmpty').classList.remove('d-none');
+                badge.classList.add('d-none');
+                return;
+            }
+
+            document.getElementById('ordersEmpty').classList.add('d-none');
+            badge.textContent = data.data.length;
+            badge.classList.remove('d-none');
+
+            var html = '';
+            data.data.forEach(function(order) {
+                html += renderOrderCard(order);
+            });
+            ordersList.innerHTML = html;
+
+            // 绑定事件
+            bindOrderEvents();
+        })
+        .catch(function() {
+            document.getElementById('ordersLoading').classList.add('d-none');
+            document.getElementById('ordersEmpty').classList.remove('d-none');
+        });
+    }
+
+    // 加载单个工单详情
+    function loadOrderDetail(id) {
+        var visitorId = getVisitorId();
+        return fetch('/repair/orderDetail?id=' + id + '&visitor_id=' + encodeURIComponent(visitorId))
+        .then(function(res) { return res.json(); });
+    }
+
+    // 渲染工单卡片
+    function renderOrderCard(order) {
+        var statusClass = getStatusClass(order.status);
+        var flowHtml = renderFlowSteps(order.status);
+
+        var canEdit = order.status === 0;
+        var canCancel = order.status === 0;
+
+        var timelineHtml = '';
+        if (order.timeline && order.timeline.length > 0) {
+            timelineHtml = '<div class="timeline">';
+            order.timeline.forEach(function(t) {
+                timelineHtml += '<div class="timeline-item">';
+                timelineHtml += '<div class="tl-dot tl-' + t.action + '"><i class="fa ' + t.icon + '"></i></div>';
+                timelineHtml += '<div class="tl-title">' + t.title + '</div>';
+                timelineHtml += '<div class="tl-time">' + t.create_time + ' · ' + t.operator_name + '</div>';
+                if (t.content) timelineHtml += '<div class="tl-content">' + t.content + '</div>';
+                timelineHtml += '</div>';
+            });
+            timelineHtml += '</div>';
+        }
+
+        var imagesHtml = '';
+        if (order.images && order.images.length > 0) {
+            imagesHtml = '<div class="d-flex gap-1 flex-wrap mt-2">';
+            order.images.forEach(function(img) {
+                imagesHtml += '<a href="' + img + '" target="_blank"><img src="' + img + '" style="width:50px;height:40px;object-fit:cover;border-radius:4px;"></a>';
+            });
+            imagesHtml += '</div>';
+        }
+
+        var receiptHtml = '';
+        if (order.status === 2 && (order.completion_receipt || parseFloat(order.service_price) > 0)) {
+            receiptHtml = '<div class="receipt-box mt-3">';
+            receiptHtml += '<div class="receipt-title"><i class="fa fa-check-circle me-1"></i>完成回执</div>';
+            if (parseFloat(order.service_price) > 0) {
+                receiptHtml += '<p class="mb-1"><span class="price-tag">¥' + parseFloat(order.service_price).toFixed(2) + '</span></p>';
+            }
+            if (order.completion_receipt) {
+                receiptHtml += '<p class="mb-0 text-success">' + order.completion_receipt + '</p>';
+            }
+            receiptHtml += '</div>';
+        }
+
+        var html = '<div class="order-card" data-id="' + order.id + '">';
+
+        // Header
+        html += '<div class="order-card-header">';
+        html += '<div>';
+        html += '<span class="fw-bold text-primary me-2">' + order.order_no + '</span>';
+        html += '<span class="status-badge-lg badge ' + statusClass + '"><i class="fa ' + order.status_icon + '"></i>' + order.status_text + '</span>';
+        html += '</div>';
+        html += '<div><small class="text-muted">' + order.create_time + '</small></div>';
+        html += '</div>';
+
+        // Body
+        html += '<div class="order-card-body">';
+        html += flowHtml;
+        html += '<div class="row g-3 mt-3">';
+        html += '<div class="col-md-6"><small class="text-muted">联系人</small><br><strong>' + order.client_name + '</strong></div>';
+        html += '<div class="col-md-6"><small class="text-muted">联系电话</small><br><strong>' + order.phone + '</strong></div>';
+        if (order.company) html += '<div class="col-md-6"><small class="text-muted">单位</small><br>' + order.company + '</div>';
+        if (order.address) html += '<div class="col-md-6"><small class="text-muted">服务地址</small><br>' + order.address + '</div>';
+        html += '<div class="col-12"><small class="text-muted">故障描述</small><br>' + order.description + '</div>';
+        html += '</div>';
+        html += imagesHtml;
+
+        if (order.remark && order.status !== 2) {
+            html += '<div class="mt-3 p-3 bg-light rounded"><small class="text-muted">处理备注</small><br><span class="text-success">' + order.remark + '</span></div>';
+        }
+        html += receiptHtml;
+        html += timelineHtml;
+        html += '</div>';
+
+        // Footer
+        html += '<div class="order-card-footer">';
+        html += '<div>';
+        html += '<button class="btn btn-sm btn-outline-info me-1 view-detail-btn" data-id="' + order.id + '"><i class="fa fa-eye"></i> 详情</button>';
+        if (canEdit) {
+            html += '<button class="btn btn-sm btn-outline-primary me-1 edit-btn" data-id="' + order.id + '" data-order=\'' + JSON.stringify(order) + '\'><i class="fa fa-pencil"></i> 编辑</button>';
+            html += '<button class="btn btn-sm btn-outline-danger cancel-btn" data-id="' + order.id + '"><i class="fa fa-ban"></i> 撤销</button>';
+        }
+        html += '</div>';
+        html += '<small class="text-muted">更新于 ' + (order.update_time || order.create_time) + '</small>';
+        html += '</div>';
+
+        html += '</div>';
+        return html;
+    }
+
+    // 渲染流程步骤
+    function renderFlowSteps(status) {
+        var steps = [
+            { key: 'created', label: '提交报修', icon: 'fa-edit' },
+            { key: 'accepted', label: '已接单', icon: 'fa-user-plus' },
+            { key: 'processing', label: '处理中', icon: 'fa-spinner' },
+            { key: 'completed', label: '已完成', icon: 'fa-check' }
+        ];
+
+        var statusOrder = { 0:0, 1:2, 4:2, 2:3, 3:-1 };
+        var currentIdx = statusOrder[status] !== undefined ? statusOrder[status] : -1;
+
+        if (status === 3) {
+            steps.splice(1);
+            steps.push({ key: 'cancelled', label: '已撤销', icon: 'fa-ban' });
+            currentIdx = 1;
+        }
+
+        var html = '<div class="flow-steps">';
+        steps.forEach(function(s, i) {
+            var cls = '';
+            if (status === 3 && i === 1) cls = 'cancelled';
+            else if (i < currentIdx) cls = 'done';
+            else if (i === currentIdx) cls = 'active';
+
+            html += '<div class="flow-step ' + cls + '">';
+            html += '<span class="step-dot"><i class="fa ' + s.icon + '"></i></span>';
+            html += s.label;
+            html += '</div>';
+            if (i < steps.length - 1) {
+                html += '<span class="flow-arrow"><i class="fa fa-chevron-right"></i></span>';
+            }
+        });
+        html += '</div>';
+        return html;
+    }
+
+    function getStatusClass(status) {
+        var map = {0:'bg-warning text-dark', 1:'bg-info', 2:'bg-success', 3:'bg-secondary', 4:'bg-danger'};
+        return map[status] || 'bg-secondary';
+    }
+
+    // 绑定工单卡片事件
+    function bindOrderEvents() {
+        // 查看详情
+        document.querySelectorAll('.view-detail-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = this.dataset.id;
+                loadOrderDetail(id).then(function(res) {
+                    if (res.code !== 0) { alert(res.msg); return; }
+                    renderDetailModal(res.data);
+                    detailModal.show();
+                });
+            });
+        });
+
+        // 编辑
+        document.querySelectorAll('.edit-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var order = JSON.parse(this.dataset.order);
+                openEditModal(order);
+            });
+        });
+
+        // 撤销
+        document.querySelectorAll('.cancel-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.getElementById('cancelId').value = this.dataset.id;
+                document.getElementById('cancelReason').value = '';
+                cancelModal.show();
+            });
+        });
+    }
+
+    // 渲染详情弹窗
+    function renderDetailModal(order) {
+        var statusClass = getStatusClass(order.status);
+        var html = '';
+
+        html += '<div class="detail-section">';
+        html += '<span class="status-badge-lg badge ' + statusClass + '"><i class="fa ' + order.status_icon + '"></i>' + order.status_text + '</span>';
+        html += '<span class="ms-2 fw-bold text-primary">' + order.order_no + '</span>';
+        html += '</div>';
+
+        html += '<div class="detail-section">' + renderFlowSteps(order.status) + '</div>';
+
+        html += '<div class="row g-3">';
+        html += '<div class="col-6"><div class="detail-label">联系人</div><div class="detail-value">' + order.client_name + '</div></div>';
+        html += '<div class="col-6"><div class="detail-label">联系电话</div><div class="detail-value">' + order.phone + '</div></div>';
+        if (order.company) html += '<div class="col-6"><div class="detail-label">单位名称</div><div class="detail-value">' + order.company + '</div></div>';
+        if (order.address) html += '<div class="col-6"><div class="detail-label">服务地址</div><div class="detail-value">' + order.address + '</div></div>';
+        html += '<div class="col-12"><div class="detail-label">故障描述</div><div class="p-3 bg-light rounded">' + order.description + '</div></div>';
+        html += '</div>';
+
+        if (order.images && order.images.length > 0) {
+            html += '<div class="detail-section mt-3"><div class="detail-label">图片</div><div class="d-flex gap-2 flex-wrap">';
+            order.images.forEach(function(img) {
+                html += '<a href="' + img + '" target="_blank"><img src="' + img + '" style="width:80px;height:60px;object-fit:cover;border-radius:6px;"></a>';
+            });
+            html += '</div></div>';
+        }
+
+        if (order.status === 2) {
+            if (parseFloat(order.service_price) > 0 || order.completion_receipt) {
+                html += '<div class="receipt-box">';
+                html += '<div class="receipt-title"><i class="fa fa-check-circle me-1"></i>完成回执</div>';
+                if (parseFloat(order.service_price) > 0) {
+                    html += '<p class="mb-1">服务价格：<span class="price-tag">¥' + parseFloat(order.service_price).toFixed(2) + '</span></p>';
+                }
+                if (order.completion_receipt) {
+                    html += '<p class="mb-0 text-success">' + order.completion_receipt + '</p>';
+                }
+                html += '</div>';
+            }
+        }
+
+        if (order.status === 3 && order.cancel_reason) {
+            html += '<div class="alert alert-warning mt-3">撤销原因：' + order.cancel_reason + '</div>';
+        }
+        if (order.status === 4 && order.pause_reason) {
+            html += '<div class="alert alert-danger mt-3">暂停原因：' + order.pause_reason + '</div>';
+        }
+
+        // 时间轴
+        if (order.timeline && order.timeline.length > 0) {
+            html += '<hr><div class="detail-label mb-3">处理时间轴</div>';
+            html += '<div class="timeline">';
+            order.timeline.forEach(function(t) {
+                html += '<div class="timeline-item">';
+                html += '<div class="tl-dot tl-' + t.action + '"><i class="fa ' + t.icon + '"></i></div>';
+                html += '<div class="tl-title">' + t.title + '</div>';
+                html += '<div class="tl-time">' + t.create_time + ' · ' + t.operator_name + '</div>';
+                if (t.content) html += '<div class="tl-content">' + t.content + '</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+
+        html += '<div class="mt-3 text-muted"><small>创建时间：' + order.create_time + ' | 更新时间：' + order.update_time + '</small></div>';
+
+        document.getElementById('detailContent').innerHTML = html;
+    }
+
+    // 编辑弹窗
+    function openEditModal(order) {
+        document.getElementById('editId').value = order.id;
+        document.getElementById('editOrderNo').value = order.order_no;
+        document.getElementById('editFaultDesc').value = order.description || '';
+        document.getElementById('editClientName').value = order.client_name || '';
+        document.getElementById('editPhone').value = order.phone || '';
+        document.getElementById('editCompany').value = order.company || '';
+        document.getElementById('editAddress').value = order.address || '';
+        editModal.show();
+    }
+
+    // ============ 事件绑定 ============
+
+    // 编辑保存
+    document.getElementById('editSaveBtn').addEventListener('click', function() {
+        var btn = this;
+        btn.disabled = true;
+        var formData = new FormData(document.getElementById('editForm'));
+        formData.set('id', document.getElementById('editId').value);
+        if (window.lylmew && lylmew.appendVisitorId) lylmew.appendVisitorId(formData);
+
+        fetch('/repair/editOrder', { method: 'POST', body: formData })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.disabled = false;
+            if (data.code === 0) {
+                alert('修改成功');
+                editModal.hide();
+                loadMyOrders();
+            } else {
+                alert(data.msg || '修改失败');
+            }
+        })
+        .catch(function() { btn.disabled = false; alert('请求失败'); });
+    });
+
+    // 撤销确认
+    document.getElementById('cancelConfirmBtn').addEventListener('click', function() {
+        var id = document.getElementById('cancelId').value;
+        var reason = document.getElementById('cancelReason').value.trim();
+        var visitorId = getVisitorId();
+        var btn = this;
+        btn.disabled = true;
+
+        var formData = new FormData();
+        formData.append('id', id);
+        formData.append('visitor_id', visitorId);
+        if (reason) formData.append('reason', reason);
+
+        fetch('/repair/cancelOrder', { method: 'POST', body: formData })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.disabled = false;
+            if (data.code === 0) {
+                alert('工单已撤销');
+                cancelModal.hide();
+                loadMyOrders();
+            } else {
+                alert(data.msg || '撤销失败');
+            }
+        })
+        .catch(function() { btn.disabled = false; alert('请求失败'); });
+    });
+
+    // 监听Tab切换，加载工单列表
+    document.getElementById('ordersTabLink').addEventListener('shown.bs.tab', function() {
+        loadMyOrders();
+    });
+
+    // 提交报修
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 提交中...';
+
+        var formData = new FormData(form);
+        var name = form.querySelector('[name="client_name"]').value.trim();
+        var phone = form.querySelector('[name="phone"]').value.trim();
+
+        if (window.lylmew && lylmew.appendVisitorId) {
+            lylmew.appendVisitorId(formData);
+        }
+
+        fetch('/repair/submit', { method: 'POST', body: formData })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa fa-paper-plane"></i> 提交报修';
+
+        document.querySelector('.captcha-img').src += '?t=' + Date.now();
+            if (data.code === 0) {
+                if (window.lylmew && lylmew.saveVisitorInfo) {
+                    lylmew.saveVisitorInfo({ name: name, phone: phone });
+                }
+                document.getElementById('orderNoDisplay').textContent = data.data.order_no;
+                var modal = new bootstrap.Modal(document.getElementById('successModal'));
+                modal.show();
+                form.reset();
+            } else {
+                alert(data.msg || '提交失败，请检查表单');
+            }
+        })
+        .catch(function() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa fa-paper-plane"></i> 提交报修';
+            
+            alert('提交失败，请稍后重试');
+        });
+    });
+})();
+</script>
+{/block}

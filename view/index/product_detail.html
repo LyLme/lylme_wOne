@@ -1,0 +1,779 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .breadcrumb-nav {
+        background: transparent;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    .breadcrumb-nav .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    .breadcrumb-nav .breadcrumb-item.active {
+        color: #fff;
+    }
+    .product-detail-section {
+        padding: 40px 0;
+    }
+    .product-gallery {
+        position: sticky;
+        top: 90px;
+    }
+    .main-image {
+        width: 100%;
+        height: 400px;
+        object-fit: contain;
+        background: #F8FAFC;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .main-image img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .thumbnails {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+    }
+    .thumbnails .thumb {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        background: #F8FAFC;
+        border: 2px solid transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        padding: 5px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .thumbnails .thumb.active,
+    .thumbnails .thumb:hover {
+        border-color: #1A5FDC;
+    }
+    .thumbnails .thumb img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .product-info-box {
+        padding: 0 0 0 30px;
+    }
+    .product-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1F2937;
+        margin-bottom: 15px;
+    }
+    .product-meta {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #6B7280;
+    }
+    .product-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .product-price-box {
+        background: #F8FAFC;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    .product-price-box .price {
+        font-size: 28px;
+        font-weight: 700;
+        color: #FF6B35;
+    }
+    .product-price-box .price-inquiry {
+        font-size: 20px;
+        color: #FF6B35;
+        font-weight: 600;
+    }
+    .product-desc {
+        color: #6B7280;
+        line-height: 1.8;
+        margin-bottom: 20px;
+    }
+    .product-cta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .product-cta .btn {
+        padding: 12px 30px;
+        font-size: 16px;
+        border-radius: 6px;
+    }
+    .product-cta .btn-inquiry {
+        background: #FF6B35;
+        border-color: #FF6B35;
+        color: #fff;
+    }
+    .product-cta .btn-consult {
+        background: #1A5FDC;
+        border-color: #1A5FDC;
+        color: #fff;
+    }
+    .product-tabs {
+        margin-top: 40px;
+    }
+    .nav-tabs-custom {
+        border-bottom: 2px solid #E5E7EB;
+    }
+    .nav-tabs-custom .nav-link {
+        border: none;
+        color: #6B7280;
+        font-weight: 500;
+        padding: 12px 20px;
+        position: relative;
+    }
+    .nav-tabs-custom .nav-link.active {
+        color: #1A5FDC;
+        background: transparent;
+    }
+    .nav-tabs-custom .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #1A5FDC;
+    }
+    .tab-content-custom {
+        padding: 30px 0;
+    }
+    .params-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .params-table tr {
+        border-bottom: 1px solid #E5E7EB;
+    }
+    .params-table td {
+        padding: 12px 15px;
+    }
+    .params-table td:first-child {
+        background: #F8FAFC;
+        font-weight: 500;
+        color: #1F2937;
+        width: 150px;
+    }
+    .related-products {
+        margin-top: 50px;
+        padding-top: 30px;
+        border-top: 1px solid #E5E7EB;
+    }
+    .related-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #1F2937;
+    }
+    .product-share { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+    .product-share .share-icon {
+        display:inline-flex; align-items:center; justify-content:center;
+        width:36px; height:36px; border-radius:50%; background:#f8f9fa;
+        text-decoration:none; transition:all .2s;
+    }
+    .product-share .share-icon:hover { background:#e9ecef; transform:translateY(-2px); }
+    .product-share .share-svg { width:20px; height:20px; }
+
+    /* 产品详情富文本排版 */
+    .product-detail-content {
+        line-height: 1.8;
+        color: #374151;
+        font-size: 16px;
+    }
+    .product-detail-content p { margin-bottom: 1em; }
+    .product-detail-content h2,
+    .product-detail-content h3,
+    .product-detail-content h4,
+    .product-detail-content h5,
+    .product-detail-content h6 {
+        margin-top: 1.5em;
+        margin-bottom: .75em;
+        font-weight: 600;
+        color: #1F2937;
+        line-height: 1.4;
+    }
+    .product-detail-content h2 { font-size: 24px; }
+    .product-detail-content h3 { font-size: 20px; }
+    .product-detail-content h4 { font-size: 18px; }
+    .product-detail-content ul,
+    .product-detail-content ol {
+        margin-bottom: 1em;
+        padding-left: 1.5em;
+    }
+    .product-detail-content li { margin-bottom: .5em; }
+    .product-detail-content strong,
+    .product-detail-content b { color: #1F2937; font-weight: 600; }
+    .product-detail-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2em 0;
+        border: 1px solid #E5E7EB;
+        font-size: 15px;
+    }
+    .product-detail-content th,
+    .product-detail-content td {
+        border: 1px solid #E5E7EB;
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+    }
+    .product-detail-content th { background: #F8FAFC; font-weight: 600; }
+    .product-detail-content tr:nth-child(even) td { background: #FAFBFC; }
+    .product-detail-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
+    .product-detail-content blockquote { border-left: 4px solid #1A5FDC; background: #F8FAFC; padding: 15px 20px; margin: 1em 0; color: #4B5563; }
+    .product-detail-content a { color: #1A5FDC; text-decoration: underline; }
+
+    /* 分享弹窗 */
+    .share-modal .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .share-modal .modal-header {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .share-modal .platforms {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+    .share-platform {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: #4B5563;
+        font-size: 12px;
+        transition: transform .2s, color .2s;
+    }
+    .share-platform:hover {
+        transform: translateY(-3px);
+        color: #1F2937;
+    }
+    .platform-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    }
+    .platform-icon svg {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+    }
+    .platform-icon.weixin { background: #07C160; }
+    .platform-icon.weibo { background: #E6162D; }
+    .platform-icon.qq { background: #12B7F5; }
+    .platform-icon.qzone { background: #FFC300; color: #333; }
+    #weixinQrBox { text-align: center; }
+    #weixinQr {
+        display: inline-block;
+        padding: 10px;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item"><a href="/products">产品中心</a></li>
+                {if $product.category}
+                <li class="breadcrumb-item"><a href="/products/{$product.category.slug ?: $product.category.id}">{$product.category.name}</a></li>
+                {/if}
+                <li class="breadcrumb-item active">{$product.name}</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">产品详情</h1>
+    </div>
+</section>
+
+<!-- 产品详情 -->
+<section class="product-detail-section">
+    <div class="container">
+        <div class="row">
+            <!-- 左侧：产品图片 -->
+            <div class="col-lg-5">
+                <div class="product-gallery">
+                    <div class="main-image" id="mainImage">
+                        {if $imgs}
+                        <img src="{$imgs.0}" alt="{$product.name}" id="mainImg">
+                        {else}
+                        <i class="fa fa-image fa-5x text-muted"></i>
+                        {/if}
+                    </div>
+                    {if count($imgs) > 1}
+                    <div class="thumbnails" id="thumbnails">
+                        {foreach $imgs as $key=>$img}
+                        <div class="thumb {if $key==0}active{/if}" onclick="changeImage('{$img}', this)">
+                            <img src="{$img}" alt="缩略图{$key+1}" loading="lazy">
+                        </div>
+                        {/foreach}
+                    </div>
+                    {/if}
+                </div>
+            </div>
+
+            <!-- 右侧：产品信息 -->
+            <div class="col-lg-7">
+                <div class="product-info-box">
+                    <h1 class="product-title">{$product.name}</h1>
+
+                    <div class="product-meta">
+                        {if $product.model}
+                        <span><i class="fa fa-tag"></i> 型号：{$product.model}</span>
+                        {/if}
+                        {if $product.brand}
+                        <span><i class="fa fa-industry"></i> 品牌：{$product.brand}</span>
+                        {/if}
+                        <span><i class="fa fa-eye"></i> 浏览：{$product.view_count|default=0}</span>
+                    </div>
+
+                    <!-- 价格 -->
+                    <div class="product-price-box">
+                        {if $product.price_type == 0}
+                        <span class="price-inquiry"><i class="fa fa-comment-dollar"></i> 价格面议</span>
+                        {elseif $product.price_min && $product.price_max}
+                        <span class="price">￥{$product.price_min|number_format=0} - ￥{$product.price_max|number_format=0}</span>
+                        {elseif $product.price_min}
+                        <span class="price">￥{$product.price_min|number_format=0}起</span>
+                        {else}
+                        <span class="price-inquiry">价格面议</span>
+                        {/if}
+                    </div>
+
+                    <!-- 产品描述 -->
+                    {if $product.summary}
+                    <div class="product-desc">
+                        {$product.summary}
+                    </div>
+                    {/if}
+
+                    <!-- CTA按钮 -->
+                    <div class="product-cta">
+                        <a href="javascript:void(0);" onclick="openInquiry()" class="btn btn-inquiry">
+                            <i class="fa fa-comment-dots"></i> 在线询价
+                        </a>
+                        <a href="tel:{$contact_phone}" class="btn btn-consult">
+                            <i class="fa fa-phone-alt"></i> 立即咨询
+                        </a>
+                    </div>
+
+                    <!-- 分享 -->
+                    <div class="product-share">
+                        <span class="me-2 text-muted">分享到：</span>
+                        <a href="javascript:openShareModal();" class="share-icon me-2 text-success" title="微信">
+                            <svg class="share-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor"><path d="M417.2 231.6C423.6 231.6 429.8 231.9 436 232.7C419.4 154.3 335.3 96 239.7 96C132.5 96 45 168.8 45 261.4C45 314.8 74.3 358.9 122.9 393L103.6 451.6L171.6 417.5C196 422.3 215.4 427.2 239.8 427.2C246 427.2 251.9 426.9 258.1 426.4C254.1 413.5 251.9 399.8 251.9 385.6C251.8 300.7 324.8 231.6 417.2 231.6zM312.7 178.7C327.2 178.7 336.9 188.4 336.9 203.1C336.9 217.6 327.2 227.3 312.7 227.3C297.9 227.3 283.4 217.6 283.4 203.1C283.5 188.4 298 178.7 312.7 178.7zM176.3 227.3C161.8 227.3 147 217.6 147 203.1C147 188.3 161.8 178.7 176.3 178.7C191.1 178.7 200.7 188.4 200.7 203.1C200.7 217.7 191.1 227.3 176.3 227.3zM595 383.4C595 305.5 517.1 242.1 429.6 242.1C336.9 242.1 264.2 305.5 264.2 383.4C264.2 461.3 337 524.7 429.6 524.7C448.9 524.7 468.5 519.6 488.2 514.8L541.6 544.1L526.8 495.5C566 466.1 595 427.2 595 383.4zM375.9 358.9C366.2 358.9 356.6 349.2 356.6 339.3C356.6 329.6 366.3 320 375.9 320C390.7 320 400.3 329.7 400.3 339.3C400.3 349.3 390.6 358.9 375.9 358.9zM483 358.9C473.3 358.9 463.7 349.2 463.7 339.3C463.7 329.6 473.4 320 483 320C497.5 320 507.4 329.7 507.4 339.3C507.5 349.3 497.5 358.9 483 358.9z"/></svg>
+                        </a>
+                        <a href="javascript:openShareModal();" class="share-icon me-2 text-danger" title="微博">
+                            <svg class="share-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M10.878 1.093a4.23 4.23 0 0 1 4.031 1.305 4.225 4.225 0 0 1 .886 4.14v.001a.612.612 0 0 1-1.166-.377 3.01 3.01 0 0 0-3.495-3.873.611.611 0 1 1-.256-1.196Z"/>
+                                <path fill-rule="evenodd" d="M3.753 9.465c.548-1.11 1.972-1.74 3.233-1.411 1.304.338 1.971 1.568 1.437 2.764-.541 1.221-2.095 1.875-3.416 1.449-1.271-.411-1.812-1.67-1.254-2.802Zm2.658.567c.16.066.365-.009.458-.168.088-.16.03-.34-.129-.397-.156-.062-.353.013-.446.168-.09.154-.041.333.117.397Zm-1.607 1.314c.413.188.963.009 1.219-.4.252-.413.12-.883-.296-1.062-.41-.172-.94.005-1.194.402-.256.4-.135.874.271 1.06Z"/>
+                                <path fill-rule="evenodd" d="m12.014 7.238.005.001c.919.285 1.941.974 1.939 2.188 0 2.007-2.895 4.535-7.246 4.535C3.393 13.962 0 12.352 0 9.708c0-1.385.876-2.985 2.384-4.493C4.4 3.199 6.751 2.28 7.634 3.165c.39.392.427 1.065.177 1.87-.132.405.38.182.38.182 1.63-.682 3.051-.722 3.57.02.278.397.252.951-.004 1.594-.116.293.035.34.257.407Zm-10.4 3.101c.172 1.738 2.46 2.936 5.109 2.674 2.647-.26 4.656-1.883 4.482-3.623-.17-1.738-2.458-2.937-5.107-2.674-2.647.263-4.656 1.883-4.484 3.623Z"/>
+                                <path d="M13.295 3.855a2.056 2.056 0 0 0-1.962-.634.526.526 0 1 0 .219 1.031 1.008 1.008 0 0 1 1.17 1.296.528.528 0 0 0 1.005.325 2.062 2.062 0 0 0-.432-2.018Z"/>
+                            </svg>
+                        </a>
+                        <a href="javascript:openShareModal();" class="share-icon me-2 text-info" title="QQ">
+                            <svg class="share-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor"><path d="M530.1 484.4C518.6 485.8 485.2 431.7 485.2 431.7C485.2 463 469.1 503.9 434.2 533.5C451 538.7 489 552.7 480 567.9C472.7 580.2 354.5 575.8 320.4 571.9C286.3 575.7 168.1 580.2 160.8 567.9C151.8 552.7 189.7 538.7 206.6 533.5C171.7 504 155.5 463.1 155.5 431.7C155.5 431.7 122.2 485.8 110.6 484.4C105.2 483.8 98.2 454.8 119.9 384.7C130.2 351.7 141.9 324.2 160 278.9C156.9 162 205.2 63.9 320.3 63.9C434 63.9 483.5 160 480.6 278.9C498.7 324.1 510.5 351.8 520.7 384.7C542.5 454.8 535.4 483.8 530 484.4z"/></svg>
+                        </a>
+                        <a href="javascript:openShareModal();" class="share-icon text-secondary" title="复制链接">
+                            <i class="fa fa-link fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab切换区域 -->
+        <div class="product-tabs">
+            <ul class="nav nav-tabs nav-tabs-custom" id="productTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="detail-tab" data-bs-toggle="tab" data-bs-target="#detail" type="button">产品详情</button>
+                </li>
+                {if $params}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="params-tab" data-bs-toggle="tab" data-bs-target="#params" type="button">技术参数</button>
+                </li>
+                {/if}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="scene-tab" data-bs-toggle="tab" data-bs-target="#scene" type="button">适用场景</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="advantage-tab" data-bs-toggle="tab" data-bs-target="#advantage" type="button">政企采购优势</button>
+                </li>
+            </ul>
+
+            <div class="tab-content tab-content-custom" id="productTabContent">
+                <!-- 产品详情 -->
+                <div class="tab-pane fade show active" id="detail">
+                    {if $product.description}
+                    <div class="product-detail-content">
+                        {$product.description|htmlspecialchars_decode|raw}
+                    </div>
+                    {else}
+                    <p class="text-muted">暂无详细描述</p>
+                    {/if}
+                </div>
+
+                <!-- 技术参数 -->
+                {if $params}
+                <div class="tab-pane fade" id="params">
+                    <table class="params-table">
+                        {foreach $params as $key=>$value}
+                        <tr>
+                            <td>{$key}</td>
+                            <td>{$value}</td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+                {/if}
+
+                <!-- 适用场景 -->
+                <div class="tab-pane fade" id="scene">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fa fa-check-circle text-success"></i> 适用场景</h5>
+                            <ul class="scene-list">
+                                <li>政府机关办公</li>
+                                <li>企业日常需求</li>
+                                <li>教育机构教学</li>
+                                <li>医疗机构报告</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fa fa-lightbulb text-warning"></i> 推荐理由</h5>
+                            <ul class="scene-list">
+                                <li>高效稳定</li>
+                                <li>质量保证</li>
+                                <li>操作简单</li>
+                                <li>服务支持</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 政企采购优势 -->
+                <div class="tab-pane fade" id="advantage">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="advantage-item">
+                                <i class="fa fa-certificate text-primary fa-2x mb-3"></i>
+                                <h5>正品保障</h5>
+                                <p class="text-muted">所有设备均为原装正品，提供完整质保服务，假一赔十。</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="advantage-item">
+                                <i class="fa fa-truck text-primary fa-2x mb-3"></i>
+                                <h5>快速配送</h5>
+                                <p class="text-muted">大理市全境免费配送，专业安装调试，确保设备正常使用。</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="advantage-item">
+                                <i class="fa fa-headset text-primary fa-2x mb-3"></i>
+                                <h5>专属服务</h5>
+                                <p class="text-muted">政企客户享受专属服务通道，优先响应，专人对接。</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="advantage-item">
+                                <i class="fa fa-file-invoice-dollar text-primary fa-2x mb-3"></i>
+                                <h5>灵活结算</h5>
+                                <p class="text-muted">支持对公转账、账期结算等多种结算方式，流程简便。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 相关推荐 -->
+        {if $related}
+        <div class="related-products">
+            <h3 class="related-title">相关推荐</h3>
+            <div class="row g-4">
+                {foreach $related as $item}
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="product-img" style="height: 180px; background: #F8FAFC; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 10px; overflow: hidden;">
+                            {if $item.image}
+                            <img src="{$item.image}" alt="{$item.name}" style="max-width: 100%; max-height: 100%;" loading="lazy">
+                            {else}
+                            <i class="fa fa-image fa-2x text-muted"></i>
+                            {/if}
+                        </div>
+                        <h5 class="product-name" style="font-size: 14px;">
+                            <a href="/product/{$item.id}" style="color: #1F2937; text-decoration: none;">{$item.name}</a>
+                        </h5>
+                        <div class="product-price" style="color: #FF6B35; font-weight: 600;">
+                            {if isset($item.price_type) && $item.price_type==0}
+                            <span>面议</span>
+                            {else}
+                            <span>￥{if isset($item.price_min)}{$item.price_min|number_format=0}{else}面议{/if}</span>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+        {/if}
+    </div>
+</section>
+
+<!-- 分享弹窗 -->
+<div class="modal fade share-modal" id="shareModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title fw-bold">分享产品</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small text-center mb-3">{$product.name}</p>
+
+                <div class="platforms">
+                    <a href="javascript:shareWeixin();" class="share-platform" title="微信">
+                        <span class="platform-icon weixin">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor"><path d="M417.2 231.6C423.6 231.6 429.8 231.9 436 232.7C419.4 154.3 335.3 96 239.7 96C132.5 96 45 168.8 45 261.4C45 314.8 74.3 358.9 122.9 393L103.6 451.6L171.6 417.5C196 422.3 215.4 427.2 239.8 427.2C246 427.2 251.9 426.9 258.1 426.4C254.1 413.5 251.9 399.8 251.9 385.6C251.8 300.7 324.8 231.6 417.2 231.6zM312.7 178.7C327.2 178.7 336.9 188.4 336.9 203.1C336.9 217.6 327.2 227.3 312.7 227.3C297.9 227.3 283.4 217.6 283.4 203.1C283.5 188.4 298 178.7 312.7 178.7zM176.3 227.3C161.8 227.3 147 217.6 147 203.1C147 188.3 161.8 178.7 176.3 178.7C191.1 178.7 200.7 188.4 200.7 203.1C200.7 217.7 191.1 227.3 176.3 227.3zM595 383.4C595 305.5 517.1 242.1 429.6 242.1C336.9 242.1 264.2 305.5 264.2 383.4C264.2 461.3 337 524.7 429.6 524.7C448.9 524.7 468.5 519.6 488.2 514.8L541.6 544.1L526.8 495.5C566 466.1 595 427.2 595 383.4zM375.9 358.9C366.2 358.9 356.6 349.2 356.6 339.3C356.6 329.6 366.3 320 375.9 320C390.7 320 400.3 329.7 400.3 339.3C400.3 349.3 390.6 358.9 375.9 358.9zM483 358.9C473.3 358.9 463.7 349.2 463.7 339.3C463.7 329.6 473.4 320 483 320C497.5 320 507.4 329.7 507.4 339.3C507.5 349.3 497.5 358.9 483 358.9z"/></svg>
+                        </span>
+                        <span>微信</span>
+                    </a>
+                    <a href="javascript:shareWeibo();" class="share-platform" title="微博">
+                        <span class="platform-icon weibo">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M10.878 1.093a4.23 4.23 0 0 1 4.031 1.305 4.225 4.225 0 0 1 .886 4.14v.001a.612.612 0 0 1-1.166-.377 3.01 3.01 0 0 0-3.495-3.873.611.611 0 1 1-.256-1.196Z"/>
+                                <path fill-rule="evenodd" d="M3.753 9.465c.548-1.11 1.972-1.74 3.233-1.411 1.304.338 1.971 1.568 1.437 2.764-.541 1.221-2.095 1.875-3.416 1.449-1.271-.411-1.812-1.67-1.254-2.802Zm2.658.567c.16.066.365-.009.458-.168.088-.16.03-.34-.129-.397-.156-.062-.353.013-.446.168-.09.154-.041.333.117.397Zm-1.607 1.314c.413.188.963.009 1.219-.4.252-.413.12-.883-.296-1.062-.41-.172-.94.005-1.194.402-.256.4-.135.874.271 1.06Z"/>
+                                <path fill-rule="evenodd" d="m12.014 7.238.005.001c.919.285 1.941.974 1.939 2.188 0 2.007-2.895 4.535-7.246 4.535C3.393 13.962 0 12.352 0 9.708c0-1.385.876-2.985 2.384-4.493C4.4 3.199 6.751 2.28 7.634 3.165c.39.392.427 1.065.177 1.87-.132.405.38.182.38.182 1.63-.682 3.051-.722 3.57.02.278.397.252.951-.004 1.594-.116.293.035.34.257.407Zm-10.4 3.101c.172 1.738 2.46 2.936 5.109 2.674 2.647-.26 4.656-1.883 4.482-3.623-.17-1.738-2.458-2.937-5.107-2.674-2.647.263-4.656 1.883-4.484 3.623Z"/>
+                                <path d="M13.295 3.855a2.056 2.056 0 0 0-1.962-.634.526.526 0 1 0 .219 1.031 1.008 1.008 0 0 1 1.17 1.296.528.528 0 0 0 1.005.325 2.062 2.062 0 0 0-.432-2.018Z"/>
+                            </svg>
+                        </span>
+                        <span>微博</span>
+                    </a>
+                    <a href="javascript:shareQQ();" class="share-platform" title="QQ">
+                        <span class="platform-icon qq">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor"><path d="M530.1 484.4C518.6 485.8 485.2 431.7 485.2 431.7C485.2 463 469.1 503.9 434.2 533.5C451 538.7 489 552.7 480 567.9C472.7 580.2 354.5 575.8 320.4 571.9C286.3 575.7 168.1 580.2 160.8 567.9C151.8 552.7 189.7 538.7 206.6 533.5C171.7 504 155.5 463.1 155.5 431.7C155.5 431.7 122.2 485.8 110.6 484.4C105.2 483.8 98.2 454.8 119.9 384.7C130.2 351.7 141.9 324.2 160 278.9C156.9 162 205.2 63.9 320.3 63.9C434 63.9 483.5 160 480.6 278.9C498.7 324.1 510.5 351.8 520.7 384.7C542.5 454.8 535.4 483.8 530 484.4z"/></svg>
+                        </span>
+                        <span>QQ</span>
+                    </a>
+                    <a href="javascript:shareQzone();" class="share-platform" title="QQ空间">
+                        <span class="platform-icon qzone">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        </span>
+                        <span>QQ空间</span>
+                    </a>
+                </div>
+
+                <div id="weixinQrBox" class="d-none mt-3">
+                    <p class="text-muted small mb-2">微信扫一扫，分享给好友</p>
+                    <div id="weixinQr"></div>
+                </div>
+
+                <button id="copyLinkBtn" type="button" class="btn btn-outline-primary btn-sm w-100 mt-3" onclick="copyProductLink()">
+                    <i class="fa fa-link"></i> 复制链接
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 询价弹窗 -->
+<div class="modal fade" id="inquiryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">在线询价 - {$product.name}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="inquiryForm">
+                    <div class="mb-3">
+                        <label class="form-label">称呼(单位) <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">联系电话 <span class="text-danger">*</span></label>
+                        <input type="tel" name="phone" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">数量</label>
+                        <input type="number" name="quantity" class="form-control" min="1" value="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">留言</label>
+                        <textarea name="message" class="form-control" rows="3" placeholder="请描述您的需求..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="submitInquiry()">提交询价</button>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script src="/static/lib/qrcode/qrcode.min.js"></script>
+<script>
+    // 切换主图
+    function changeImage(src, thumb) {
+        document.getElementById('mainImg').src = src;
+        document.querySelectorAll('#thumbnails .thumb').forEach(function(t) {
+            t.classList.remove('active');
+        });
+        thumb.classList.add('active');
+    }
+
+    // 打开询价弹窗
+    function openInquiry() {
+        var modal = new bootstrap.Modal(document.getElementById('inquiryModal'));
+        modal.show();
+    }
+
+    // 提交询价
+    function submitInquiry() {
+        var form = document.getElementById('inquiryForm');
+        var formData = new FormData(form);
+        formData.append('product_id', '{$product.id}');
+        formData.append('product_name', '{$product.name}');
+
+        fetch('/api/inquiry', {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.code === 0) {
+                alert('询价提交成功，我们将尽快与您联系！');
+                bootstrap.Modal.getInstance(document.getElementById('inquiryModal')).hide();
+            } else {
+                alert(data.msg || '提交失败');
+            }
+        })
+        .catch(function() {
+            alert('提交失败，请稍后重试');
+        });
+    }
+
+    // 分享相关
+    var shareUrl = encodeURIComponent(window.location.href);
+    var shareTitle = encodeURIComponent(document.title);
+    var sharePic = '{$product.image|urlencode|raw}';
+    var qrCodeObj = null;
+
+    function openShareModal() {
+        var modal = new bootstrap.Modal(document.getElementById('shareModal'));
+        document.getElementById('weixinQrBox').classList.add('d-none');
+        document.getElementById('weixinQr').innerHTML = '';
+        modal.show();
+    }
+    function shareWeixin() {
+        var box = document.getElementById('weixinQrBox');
+        var qr = document.getElementById('weixinQr');
+        qr.innerHTML = '';
+        if (qrCodeObj) { qrCodeObj.clear(); }
+        qrCodeObj = new QRCode(qr, {
+            text: window.location.href,
+            width: 200,
+            height: 200,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        box.classList.remove('d-none');
+    }
+    function shareWeibo() {
+        window.open('https://service.weibo.com/share/share.php?url=' + shareUrl + '&title=' + shareTitle + (sharePic ? '&pic=' + sharePic : ''), '_blank');
+    }
+    function shareQQ() {
+        window.open('https://connect.qq.com/widget/shareqq/index.html?url=' + shareUrl + '&title=' + shareTitle + '&desc=' + shareTitle + (sharePic ? '&pics=' + sharePic : ''), '_blank');
+    }
+    function shareQzone() {
+        window.open('https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + shareUrl + '&title=' + shareTitle + '&desc=' + shareTitle + (sharePic ? '&pics=' + sharePic : ''), '_blank');
+    }
+    function copyProductLink() {
+        var url = window.location.href;
+        var btn = document.getElementById('copyLinkBtn');
+        var originalHtml = '<i class="fa fa-link"></i> 复制链接';
+        var done = function(success) {
+            if (!btn) return;
+            btn.innerHTML = success ? '<i class="fa fa-check"></i> 已复制' : originalHtml;
+            btn.classList.toggle('btn-outline-primary', !success);
+            btn.classList.toggle('btn-success', success);
+            if (success) {
+                setTimeout(function() {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.add('btn-outline-primary');
+                    btn.classList.remove('btn-success');
+                }, 2000);
+            }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function() {
+                done(true);
+            }).catch(function(err) {
+                console.warn('clipboard.writeText failed', err);
+                done(fallbackCopy(url));
+            });
+        } else {
+            done(fallbackCopy(url));
+        }
+    }
+    function fallbackCopy(url) {
+        var ta = document.createElement('textarea');
+        ta.value = url;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        ta.style.top = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, url.length);
+        var ok = false;
+        try {
+            ok = document.execCommand('copy');
+        } catch (e) {}
+        document.body.removeChild(ta);
+        return ok;
+    }
+</script>
+{/block}

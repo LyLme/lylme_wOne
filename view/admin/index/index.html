@@ -1,0 +1,266 @@
+{extend name="admin/layout" /}
+
+{block name="content"}
+
+<!-- 统计卡片 -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(26,95,220,.1); color: #1A5FDC;">
+                <i class="fa fa-images"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{$stats.banner_count|default=0}</div>
+                <div class="stat-label">轮播图</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(0,180,216,.1); color: #00B4D8;">
+                <i class="fa fa-boxes"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{$stats.product_count|default=0}</div>
+                <div class="stat-label">产品</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16,185,129,.1); color: #10B981;">
+                <i class="fa fa-newspaper"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{$stats.article_count|default=0}</div>
+                <div class="stat-label">文章/新闻</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(108,99,255,.1); color: #6C63FF;">
+                <i class="fa fa-briefcase"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{$stats.case_count|default=0}</div>
+                <div class="stat-label">客户案例</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245,158,11,.1); color: #F59E0B;">
+                <i class="fa fa-comments"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{$stats.message_count|default=0}</div>
+                <div class="stat-label">未读留言</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239,68,68,.1); color: #EF4444;">
+                <i class="fa fa-wrench"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{$stats.repair_count|default=0}</div>
+                <div class="stat-label">报修单</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(139,92,246,.1); color: #8B5CF6;">
+                <i class="fa fa-handshake"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-number">{$stats.partner_count|default=0}</div>
+                <div class="stat-label">合作伙伴</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 数据趋势图 -->
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex align-items-center justify-content-between">
+                <h5 class="mb-0"><i class="fa fa-chart-line text-primary me-2"></i>近30天数据趋势</h5>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary active" data-chart="all">全部</button>
+                    <button type="button" class="btn btn-outline-primary" data-chart="repair">报修</button>
+                    <button type="button" class="btn btn-outline-primary" data-chart="message">留言</button>
+                    <button type="button" class="btn btn-outline-primary" data-chart="article">文章</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="trendChart" style="height:360px;width:100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 快捷操作 -->
+<div class="row g-3">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="fa fa-bolt text-warning me-2"></i>快捷操作</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="/admin/config" class="btn btn-primary">
+                        <i class="fa fa-cogs"></i> 站点配置
+                    </a>
+                    <a href="/admin/banner" class="btn btn-outline-primary">
+                        <i class="fa fa-images"></i> Banner管理
+                    </a>
+                    <a href="/admin/product" class="btn btn-outline-primary">
+                        <i class="fa fa-boxes"></i> 产品管理
+                    </a>
+                    <a href="/admin/article?type=news" class="btn btn-outline-primary">
+                        <i class="fa fa-newspaper"></i> 新闻管理
+                    </a>
+                    <a href="/admin/article?type=case" class="btn btn-outline-primary">
+                        <i class="fa fa-briefcase"></i> 案例管理
+                    </a>
+                    <a href="/admin/message" class="btn btn-outline-primary">
+                        <i class="fa fa-comments"></i> 留言管理
+                    </a>
+                    <a href="/admin/partner" class="btn btn-outline-primary">
+                        <i class="fa fa-handshake"></i> 合作伙伴
+                    </a>
+                    <button class="btn btn-outline-secondary" id="clearCacheBtn">
+                        <i class="fa fa-broom"></i> 清除缓存
+                    </button>
+                    <a href="/" target="_blank" class="btn btn-outline-success">
+                        <i class="fa fa-external-link-alt"></i> 预览网站
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+<script src="/static/lib/echarts/5.4.3/echarts.min.js"></script>
+<script>
+$(function () {
+    $('#clearCacheBtn').on('click', function () {
+        var $btn = $(this);
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 清除中...');
+
+        $.ajax({
+            url: '/admin/clear-cache',
+            type: 'POST',
+            dataType: 'json',
+            success: function (res) {
+                if (res.code === 0) {
+                    alert(res.msg);
+                } else {
+                    alert('操作失败：' + res.msg);
+                }
+            },
+            error: function () {
+                alert('网络错误');
+            },
+            complete: function () {
+                $btn.prop('disabled', false).html('<i class="fa fa-broom"></i> 清除缓存');
+            }
+        });
+    });
+
+    // 趋势图
+    var dateLabels = {:json_encode($dateLabels)};
+    var trend = {:json_encode($trend)};
+    var chartDom = document.getElementById('trendChart');
+    if (chartDom && typeof echarts !== 'undefined') {
+        var myChart = echarts.init(chartDom);
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                borderColor: '#e5e7eb',
+                textStyle: { color: '#374151' },
+                axisPointer: { type: 'line' }
+            },
+            legend: {
+                data: ['报修工单', '用户留言', '文章发布'],
+                bottom: 0
+            },
+            grid: {
+                left: '2%', right: '2%', bottom: '12%', top: '8%', containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: dateLabels,
+                axisLine: { lineStyle: { color: '#e5e7eb' } },
+                axisLabel: { color: '#6b7280' }
+            },
+            yAxis: {
+                type: 'value',
+                minInterval: 1,
+                splitLine: { lineStyle: { color: '#f3f4f6' } },
+                axisLabel: { color: '#6b7280' }
+            },
+            series: [
+                {
+                    name: '报修工单',
+                    type: 'line',
+                    smooth: true,
+                    data: trend.repair,
+                    itemStyle: { color: '#EF4444' },
+                    areaStyle: { color: 'rgba(239,68,68,0.08)' }
+                },
+                {
+                    name: '用户留言',
+                    type: 'line',
+                    smooth: true,
+                    data: trend.message,
+                    itemStyle: { color: '#F59E0B' },
+                    areaStyle: { color: 'rgba(245,158,11,0.08)' }
+                },
+                {
+                    name: '文章发布',
+                    type: 'line',
+                    smooth: true,
+                    data: trend.article,
+                    itemStyle: { color: '#10B981' },
+                    areaStyle: { color: 'rgba(16,185,129,0.08)' }
+                }
+            ]
+        };
+        myChart.setOption(option);
+        window.addEventListener('resize', function () { myChart.resize(); });
+
+        // 切换显示
+        var allSeries = option.series;
+        $('[data-chart]').on('click', function () {
+            $('[data-chart]').removeClass('active');
+            $(this).addClass('active');
+            var type = $(this).data('chart');
+            var selected = {};
+            allSeries.forEach(function (s) {
+                selected[s.name] = (type === 'all' ||
+                    (type === 'repair' && s.name === '报修工单') ||
+                    (type === 'message' && s.name === '用户留言') ||
+                    (type === 'article' && s.name === '文章发布'));
+            });
+            myChart.setOption({ legend: { selected: selected } });
+        });
+    }
+});
+</script>
+{/block}

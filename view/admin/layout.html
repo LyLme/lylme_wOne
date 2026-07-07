@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$page_title|default='后台管理系统'} - {$company_name_short}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="/static/lib/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="/static/lib/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Summernote 富文本编辑器 -->
+    <link href="/static/lib/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+    <!-- Toastr 通知 -->
+    <link href="/static/lib/toastr/2.1.4/toastr.min.css" rel="stylesheet">
+    <!-- 后台CSS -->
+    <link href="/static/admin/css/admin.css" rel="stylesheet">
+    {block name="css"}{/block}
+
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<div class="admin-wrapper">
+    <!-- 侧边栏 -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <a href="/" target="_blank" class="brand-link">
+                <i class="fa fa-print"></i>
+                <span>{$company_name_short}</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">管理导航</div>
+
+            <a href="/admin/index" class="nav-item {if $controller == 'index'}active{/if}">
+                <i class="fa fa-tachometer-alt"></i>
+                <span>仪表盘</span>
+            </a>
+
+            <a href="/admin/config" class="nav-item {if $controller == 'config'}active{/if}">
+                <i class="fa fa-cogs"></i>
+                <span>站点配置</span>
+            </a>
+
+            {if ($admin_info.role ?? 1) == 0}
+            <a href="/admin/admin-user" class="nav-item {if $controller == 'admin'}active{/if}">
+                <i class="fa fa-users-cog"></i>
+                <span>管理员管理</span>
+            </a>
+            {/if}
+
+            <a href="/admin/admin-user/logs" class="nav-item {if $controller == 'admin' && ($action ?? '') == 'logs'}active{/if}">
+                <i class="fa fa-history"></i>
+                <span>操作日志</span>
+            </a>
+
+            <div class="nav-section">内容管理</div>
+
+            <a href="/admin/banner" class="nav-item {if $controller == 'banner'}active{/if}">
+                <i class="fa fa-images"></i>
+                <span>Banner管理</span>
+            </a>
+            <a href="/admin/product-category" class="nav-item {if $controller == 'productcategory'}active{/if}">
+                <i class="fa fa-list"></i>
+                <span>产品分类</span>
+            </a>
+            <a href="/admin/product" class="nav-item {if $controller == 'product'}active{/if}">
+                <i class="fa fa-boxes"></i>
+                <span>产品管理</span>
+            </a>
+
+            <a href="/admin/article-category" class="nav-item {if $controller == 'articlecategory'}active{/if}">
+                <i class="fa fa-folder"></i>
+                <span>文章分类</span>
+            </a>
+            <a href="/admin/article?type=news" class="nav-item {if $controller == 'article' and ($type ?? 'news') == 'news'}active{/if}">
+                <i class="fa fa-newspaper"></i>
+                <span>新闻管理</span>
+            </a>
+            <a href="/admin/article?type=case" class="nav-item {if $controller == 'article' and ($type ?? 'news') == 'case'}active{/if}">
+                <i class="fa fa-briefcase"></i>
+                <span>案例管理</span>
+            </a>
+            <a href="/admin/message" class="nav-item {if $controller == 'message'}active{/if}">
+                <i class="fa fa-comments"></i>
+                <span>留言管理</span>
+            </a>
+            <a href="/admin/repair" class="nav-item {if $controller == 'repair'}active{/if}">
+                <i class="fa fa-wrench"></i>
+                <span>报修工单</span>
+            </a>
+            <a href="/admin/partner" class="nav-item {if $controller == 'partner'}active{/if}">
+                <i class="fa fa-handshake"></i>
+                <span>合作伙伴</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="admin-main">
+        <header class="admin-header">
+            <div class="d-flex align-items-center">
+                <button class="sidebar-toggle" id="sidebarToggle" title="收起/展开菜单">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <h1 class="page-title mb-0">{$page_title|default='控制台'}</h1>
+            </div>
+
+            <div class="header-actions">
+                <a href="/" target="_blank" class="btn btn-sm btn-outline-primary me-2" title="预览网站">
+                    <i class="fa fa-external-link-alt"></i> 预览网站
+                </a>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fa fa-user-circle"></i>
+                        {$admin_info.nickname|default='管理员'}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item-text text-muted small">
+                            <i class="fa fa-user"></i> {$admin_info.username|default=''}
+                            <span class="badge {:app\\model\\AdminUser::getRoleColor($admin_info.role ?? 1)} ms-1">{:app\\model\\AdminUser::getRoleText($admin_info.role ?? 1)}</span>
+                        </span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/admin/admin-user/password">
+                            <i class="fa fa-key"></i> 修改密码
+                        </a></li>
+                        <li><a class="dropdown-item" href="/admin/logout">
+                            <i class="fa fa-sign-out-alt"></i> 退出登录
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- 内容区 -->
+        <div class="admin-content">
+            {block name="content"}{/block}
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="admin-footer">
+            <span>&copy; {:date('Y')} {$company_name_short} 后台管理系统</span>
+        </footer>
+    </div>
+</div>
+
+<!-- jQuery 必须在所有依赖它的库之前加载 -->
+<script src="/static/lib/jquery/3.7.1/jquery.min.js"></script>
+<!-- Bootstrap 5 JS -->
+<script src="/static/lib/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!-- Summernote 富文本 -->
+<script src="/static/lib/summernote/0.8.20/summernote-lite.min.js"></script>
+<!-- Summernote 中文语言包 -->
+<script src="/static/lib/summernote/0.8.20/lang/summernote-zh-CN.min.js"></script>
+<!-- Toastr 通知 -->
+<script src="/static/lib/toastr/2.1.4/toastr.min.js"></script>
+<!-- 后台JS -->
+<script src="/static/admin/js/admin.js?v=20250706"></script>
+{block name="js"}{/block}
+
+</body>
+</html>

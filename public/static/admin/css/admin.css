@@ -1,0 +1,672 @@
+/* ====================================
+   后台管理系统样式
+   ==================================== */
+
+/* --- 全局布局 --- */
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fa;
+}
+
+/* --- 侧边栏 --- */
+.admin-sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #1a1f36 0%, #252b45 100%);
+    color: #c8ccd6;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.admin-sidebar.collapsed {
+    width: 64px;
+}
+
+.admin-sidebar.collapsed .nav-item span,
+.admin-sidebar.collapsed .nav-section,
+.admin-sidebar.collapsed .brand-link span,
+.admin-sidebar.collapsed .nav-item .badge {
+    display: none;
+}
+
+.admin-sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 12px;
+}
+
+.admin-sidebar.collapsed .nav-item i {
+    margin-right: 0 !important;
+    font-size: 18px;
+}
+
+.sidebar-brand {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-brand .brand-link {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    gap: 10px;
+}
+
+.sidebar-brand .brand-link i {
+    font-size: 24px;
+    color: #6c86f7;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 12px 0;
+}
+
+.nav-section {
+    padding: 16px 20px 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #5a6380;
+    font-weight: 600;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #a4abbe;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    font-size: 14px;
+    gap: 8px;
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-left-color: rgba(108, 134, 247, 0.5);
+}
+
+.nav-item.active {
+    background: rgba(108, 134, 247, 0.15);
+    color: #fff;
+    border-left-color: #6c86f7;
+    font-weight: 500;
+}
+
+.nav-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* --- 主内容区 --- */
+.admin-main {
+    flex: 1;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: margin-left 0.3s;
+}
+
+.admin-sidebar.collapsed ~ .admin-main {
+    margin-left: 64px;
+}
+
+/* --- 顶部导航 --- */
+.admin-header {
+    background: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #555;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-right: 12px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background: #f0f0f0;
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1f36;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* --- 内容区 --- */
+.admin-content {
+    flex: 1;
+    padding: 24px;
+}
+
+/* --- 页脚 --- */
+.admin-footer {
+    padding: 16px 24px;
+    text-align: center;
+    color: #888;
+    font-size: 13px;
+    border-top: 1px solid #eee;
+    background: #fff;
+}
+
+/* --- 统计卡片 --- */
+.stat-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.stat-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.stat-number {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1f36;
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* --- 配置Tab --- */
+.config-tabs {
+    border-bottom: 2px solid #e0e0e0;
+    flex-wrap: wrap;
+}
+
+.config-tabs .nav-link {
+    border: none;
+    color: #777;
+    padding: 10px 18px;
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: none;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.config-tabs .nav-link:hover {
+    color: #1A5FDC;
+}
+
+.config-tabs .nav-link.active {
+    color: #1A5FDC;
+    font-weight: 600;
+    border-bottom-color: #1A5FDC;
+}
+
+.config-pane {
+    display: none;
+}
+
+.config-pane.active {
+    display: block;
+}
+
+/* --- 图片上传组件 --- */
+.img-upload-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.img-upload-preview {
+    width: 80px;
+    height: 80px;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fafafa;
+    flex-shrink: 0;
+}
+
+.img-upload-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.img-upload-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.img-upload-actions .img-upload-clear {
+    display: none;
+}
+
+.img-upload-group.has-img .img-upload-clear {
+    display: inline-block;
+}
+
+/* --- Summernote 编辑器适配 --- */
+.note-editor.note-frame {
+    border-radius: 6px;
+}
+
+.rich-editor {
+    min-height: 300px;
+}
+
+.rich-editor-sm {
+    min-height: 180px;
+}
+
+/* --- 表单优化 --- */
+.card {
+    border-radius: 10px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #444;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #6c86f7;
+    box-shadow: 0 0 0 3px rgba(108, 134, 247, 0.12);
+}
+
+.table td .form-control-sm {
+    min-width: 100px;
+}
+
+.table td .form-control-sm.w-sm {
+    min-width: 80px;
+    width: 80px;
+}
+
+.table td .form-control-sm.w-md {
+    min-width: 120px;
+}
+
+.table > :not(caption) > * > * {
+    vertical-align: middle;
+}
+
+/* --- Toastr 优化 --- */
+#toast-container > .toast-success {
+    background-color: #10B981;
+}
+
+#toast-container > .toast-error {
+    background-color: #EF4444;
+}
+
+#toast-container > .toast-warning {
+    background-color: #F59E0B;
+}
+
+/* --- 响应式 --- */
+@media (max-width: 992px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        width: 250px !important;
+    }
+
+    .admin-sidebar.mobile-show {
+        transform: translateX(0);
+        box-shadow: 2px 0 20px rgba(0,0,0,0.3);
+    }
+
+    /* 侧边栏遮罩 */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+    }
+    .sidebar-overlay.show {
+        display: block;
+    }
+
+    .admin-main {
+        margin-left: 0 !important;
+    }
+
+    .admin-sidebar.collapsed ~ .admin-main {
+        margin-left: 0 !important;
+    }
+
+    .admin-header {
+        padding: 10px 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .page-title {
+        font-size: 15px;
+    }
+
+    .admin-content {
+        padding: 12px;
+    }
+
+    .admin-footer {
+        padding: 12px;
+        font-size: 12px;
+    }
+
+    .header-actions {
+        gap: 4px;
+    }
+
+    .header-actions .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .sidebar-toggle {
+        margin-right: 6px;
+        padding: 4px 6px;
+        font-size: 18px;
+    }
+
+    /* 表格横向滚动提示 */
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        border-radius: 8px;
+    }
+
+    .stat-number {
+        font-size: 16px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+    }
+
+    /* 配置Tab横向滚动 */
+    .config-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        white-space: nowrap;
+    }
+    .config-tabs::-webkit-scrollbar { display: none; }
+    .config-tabs .nav-link {
+        padding: 8px 14px;
+        font-size: 13px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* 表单适应 */
+    .modal-dialog {
+        margin: 8px;
+        max-width: 100%;
+    }
+    .modal-body {
+        max-height: 60vh !important;
+        overflow-y: auto;
+    }
+
+    .img-upload-group {
+        flex-wrap: wrap;
+    }
+
+    /* 按钮大小调整 */
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+
+    /* d-flex gap 在小屏 */
+    .d-flex.gap-2 {
+        gap: 6px !important;
+    }
+
+    /* 隐藏非必要元素 */
+    .header-actions .btn-outline-primary {
+        display: none;
+    }
+
+    /* 表单网格 */
+    .row.g-3 > [class*="col-"] {
+        margin-bottom: 8px;
+    }
+
+    /* 移动端表格优化 */
+    .table td, .table th {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+    .table .btn-sm {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+}
+
+/* 小屏手机 (<=576px) */
+@media (max-width: 576px) {
+    .admin-header {
+        padding: 8px 10px;
+    }
+
+    .page-title {
+        font-size: 14px;
+    }
+
+    .admin-content {
+        padding: 8px;
+    }
+
+    /* 卡片 */
+    .card-body {
+        padding: 10px;
+    }
+
+    /* 筛选栏 */
+    .row.g-2 > [class*="col-"] {
+        margin-bottom: 4px;
+    }
+
+    .form-control-sm, .form-select-sm {
+        font-size: 12px;
+    }
+
+    /* 模态窗全屏 */
+    .modal-dialog.modal-lg {
+        margin: 0;
+        max-width: 100%;
+        height: 100%;
+    }
+    .modal-content {
+        border-radius: 0;
+        min-height: 100vh;
+    }
+    .modal-body {
+        max-height: calc(100vh - 120px) !important;
+    }
+
+    /* 表格按钮组 */
+    .btn-group .btn-sm {
+        padding: 2px 5px;
+        font-size: 10px;
+    }
+
+    /* 状态开关 */
+    .form-switch {
+        padding-left: 2.2em;
+    }
+    .form-switch .form-check-input {
+        width: 2em;
+        height: 1.1em;
+    }
+
+    /* 侧边栏品牌 */
+    .sidebar-brand {
+        padding: 14px;
+    }
+    .sidebar-brand .brand-link {
+        font-size: 14px;
+    }
+
+    .nav-item {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+}
+
+/* ==================== 分页美化 ==================== */
+.pagination {
+    gap: 6px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination .page-item .page-link,
+.pagination .page-item span.page-link {
+    min-width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 500;
+    background: #fff;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.pagination .page-item .page-link:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #1f2937;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+    border-color: #1A5FDC;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(26, 95, 220, 0.25);
+}
+
+.pagination .page-item.disabled .page-link {
+    background: #f9fafb;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+}
+
+.card-footer .pagination {
+    justify-content: flex-end;
+}
+
+@media (max-width: 576px) {
+    .pagination .page-item .page-link,
+    .pagination .page-item span.page-link {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 10px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+
+    .card-footer .pagination {
+        justify-content: center;
+    }
+}

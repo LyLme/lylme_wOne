@@ -1,0 +1,52 @@
+{extend name="admin/layout" /}
+
+{block name="content"}
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h5 class="mb-0"><i class="fa fa-history text-primary me-2"></i>操作日志</h5>
+        <form action="/admin/admin-user/logs" method="get" class="d-flex gap-2 flex-wrap">
+            <select name="action" class="form-select form-select-sm" style="width:140px;">
+                <option value="">全部操作</option>
+                {foreach $actions as $a}
+                <option value="{$a}" {if $action == $a}selected{/if}>{:app\\model\\AdminLog::getActionText($a)}</option>
+                {/foreach}
+            </select>
+            <input type="text" name="keyword" class="form-control form-control-sm" placeholder="管理员/内容" value="{$keyword|default=''}" style="width:180px;">
+            <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;">ID</th>
+                        <th style="width:100px;">操作</th>
+                        <th>内容</th>
+                        <th>管理员</th>
+                        <th>IP</th>
+                        <th>时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="list" id="item"}
+                    <tr>
+                        <td>{$item.id}</td>
+                        <td><span class="badge bg-light text-dark border"><i class="fa {:app\\model\\AdminLog::getActionIcon($item.action)} me-1"></i>{:app\\model\\AdminLog::getActionText($item.action)}</span></td>
+                        <td>{$item.content}</td>
+                        <td>{$item.admin_name|default='-'}</td>
+                        <td><small class="text-muted">{$item.ip}</small></td>
+                        <td><small>{$item.create_time}</small></td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {if $list->lastPage() > 1}
+    <div class="card-footer bg-white">
+        {$list|raw}
+    </div>
+    {/if}
+</div>
+{/block}

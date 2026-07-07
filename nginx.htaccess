@@ -1,0 +1,11 @@
+ location / {
+   # 对于 /admin/ 及其子路径，强制走 index.php 路由（避免 public/admin/ 目录冲突）
+  if ($uri ~ ^/admin(/.*)?$) {
+      rewrite ^(.*)$ /index.php?s=$1 last;
+      break;
+  }
+  if (!-e $request_filename) {
+      rewrite ^(.*)$ /index.php?s=$1 last;
+      break;
+  }
+}

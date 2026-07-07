@@ -1,0 +1,363 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .about-intro-section {
+        padding: 60px 0;
+    }
+    .about-text {
+        font-size: 16px;
+        line-height: 2;
+        color: #374151;
+    }
+    .about-text p {
+        margin-bottom: 15px;
+    }
+    /* 时间轴 */
+    .timeline-section {
+        padding: 60px 0;
+        background: #F8FAFC;
+    }
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 3px;
+        height: 100%;
+        background: #E5E7EB;
+        top: 0;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 50px;
+        display: flex;
+        align-items: flex-start;
+    }
+    .timeline-item:nth-child(odd) {
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #1A5FDC;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 3px #1A5FDC;
+        z-index: 1;
+        top: 5px;
+    }
+    .timeline-content {
+        width: 45%;
+        padding: 20px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .timeline-year {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1A5FDC;
+        margin-bottom: 5px;
+    }
+    .timeline-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+    }
+    .timeline-desc {
+        font-size: 14px;
+        color: #6B7280;
+        line-height: 1.6;
+    }
+    /* 资质展示 */
+    .qualification-section {
+        padding: 60px 0;
+    }
+    .qual-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    .qual-card .qual-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #E8F0FE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: #1A5FDC;
+        margin: 0 auto 15px;
+    }
+    /* 团队介绍 */
+    .team-section {
+        padding: 60px 0;
+        background: #F8FAFC;
+    }
+    .team-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+        height: 100%;
+    }
+    .team-card .team-avatar {
+        height: 200px;
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 64px;
+        color: rgba(255,255,255,0.5);
+    }
+    .team-card .team-info {
+        padding: 20px;
+    }
+    .team-card .team-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 5px;
+    }
+    .team-card .team-title {
+        font-size: 14px;
+        color: #1A5FDC;
+        margin-bottom: 10px;
+    }
+    .team-card .team-desc {
+        font-size: 13px;
+        color: #6B7280;
+        line-height: 1.6;
+    }
+    /* 合作伙伴品牌墙（卡片样式见 common.css） */
+    .partners-section {
+        padding: 60px 0;
+    }
+    @media (max-width: 768px) {
+        .timeline::before {
+            left: 20px;
+        }
+        .timeline-item,
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+            text-align: left;
+            padding-left: 50px;
+        }
+        .timeline-item::before {
+            left: 20px;
+        }
+        .timeline-content {
+            width: 100%;
+        }
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item active">关于我们</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">关于我们</h1>
+        <p class="page-desc">了解{$company_name_short}，选择专业服务</p>
+    </div>
+</section>
+
+<!-- 公司简介 -->
+<section class="about-intro-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="section-header text-start">
+                    <span class="section-subtitle">关于我们</span>
+                    <h2 class="section-title">专注办公设备服务 <span class="text-primary">{$founded_since|default='10年'}</span></h2>
+                </div>
+                <div class="about-text">
+                    {$company_intro|raw}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%); border-radius: 12px; height: 350px; display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; color: #fff;">
+                        {if $is_company_icon_image}
+                        <img src="{$company_icon}" alt="{$company_name_short}" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 15px;">
+                        {else}
+                        <i class="fa {$company_icon|default='fa-building'} fa-5x mb-3" style="opacity: 0.5;"></i>
+                        {/if}
+                        <h3>{$site_name}</h3>
+                        <p style="opacity: 0.8;">{$site_slogan}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 发展历程 -->
+<section class="timeline-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-subtitle">发展历程</span>
+            <h2 class="section-title">一路走来，感谢有您</h2>
+        </div>
+
+        <div class="timeline">
+            {foreach $timeline as $item}
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-year">{$item.year}</div>
+                    <div class="timeline-title">{$item.title}</div>
+                    <div class="timeline-desc">{$item.desc}</div>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</section>
+
+<!-- 资质展示 -->
+<section class="qualification-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-subtitle">资质荣誉</span>
+            <h2 class="section-title">权威认证，品质保障</h2>
+        </div>
+
+        <div class="row g-4">
+            {foreach $qualifications as $qual}
+            <div class="col-lg-3 col-md-6">
+                <div class="qual-card">
+                    <div class="qual-icon">
+                        <i class="fa fa-award"></i>
+                    </div>
+                    <h5>{$qual.name}</h5>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</section>
+
+<!-- 团队介绍 -->
+<section class="team-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-subtitle">专业团队</span>
+            <h2 class="section-title">核心团队成员</h2>
+            <p class="section-desc">经验丰富，技术精湛，用心服务每一位客户</p>
+        </div>
+
+        <div class="row g-4">
+            {foreach $team_members as $member}
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <div class="team-avatar">
+                        {if $member.avatar}
+                        <img src="{$member.avatar}" alt="{$member.name}">
+                        {else}
+                        <i class="fa fa-user"></i>
+                        {/if}
+                    </div>
+                    <div class="team-info">
+                        <h5 class="team-name">{$member.name}</h5>
+                        <p class="team-title">{$member.title}</p>
+                        <p class="team-desc">{$member.desc}</p>
+                    </div>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</section>
+
+<!-- 招投标信息（新增） -->
+{if !empty($bidding_info)}
+<section class="qualification-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-subtitle">招投标资质</span>
+            <h2 class="section-title">政府采购与企业合作</h2>
+            <p class="section-desc">具备完善的招投标服务资质与丰富项目经验</p>
+        </div>
+
+        <div class="row g-4">
+            {foreach $bidding_info as $item}
+            <div class="col-lg-3 col-md-6">
+                <div class="qual-card">
+                    <div class="qual-icon">
+                        <i class="fa {$item.icon|default='fa-file-contract'}"></i>
+                    </div>
+                    <h5>{$item.title}</h5>
+                    <p class="text-muted" style="font-size: 13px; line-height: 1.6;">{$item.desc}</p>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+</section>
+{/if}
+
+<!-- 合作伙伴 -->
+<section class="partners-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <span class="section-subtitle">合作伙伴</span>
+            <h2 class="section-title">品牌合作伙伴</h2>
+            <p class="section-desc">与众多知名品牌建立长期合作关系</p>
+        </div>
+
+        <div class="row g-4">
+            {if $partners}
+            {foreach $partners as $partner}
+            <div class="col-lg-2 col-md-3 col-4">
+                <div class="partner-card">
+                    {if $partner.logo}
+                    <img src="{$partner.logo}" alt="{$partner.name}" class="partner-logo">
+                    {else}
+                    <span class="partner-name">{$partner.name}</span>
+                    {/if}
+                </div>
+            </div>
+            {/foreach}
+            {else}
+            <div class="col-12 text-center text-muted">暂无合作伙伴信息</div>
+            {/if}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+    <div class="container text-center text-white">
+        <h2 class="mb-3">期待与您合作</h2>
+        <p class="mb-4">专业团队为您提供一站式办公设备解决方案</p>
+        <a href="/contact" class="btn btn-warning btn-lg" style="background: #fff; border-color: #fff; color: #1A5FDC; font-weight: 600;">联系我们</a>
+    </div>
+</section>
+{/block}

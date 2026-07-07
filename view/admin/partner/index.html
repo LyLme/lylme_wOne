@@ -1,0 +1,209 @@
+{extend name="admin/layout" /}
+
+{block name="content"}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-0"><i class="fa fa-handshake text-primary me-2"></i>合作伙伴管理</h5>
+        <small class="text-muted">管理合作伙伴品牌展示</small>
+    </div>
+    <button class="btn btn-primary" id="addBtn">
+        <i class="fa fa-plus"></i> 新增伙伴
+    </button>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;">#</th>
+                        <th style="width:100px;">Logo</th>
+                        <th>名称</th>
+                        <th>链接</th>
+                        <th style="width:80px;">排序</th>
+                        <th style="width:100px;">状态</th>
+                        <th style="width:140px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if !empty($partners)}
+                    {foreach $partners as $k=>$p}
+                    <tr data-id="{$p.id}" data-name="{$p.name}" data-logo="{$p.logo}" data-url="{$p.url}" data-sort="{$p.sort}" data-status="{$p.status}">
+                        <td>{$k+1}</td>
+                        <td>
+                            {if $p.logo}
+                            <img src="{$p.logo}" alt="{$p.name}" class="rounded" style="width:80px;height:50px;object-fit:contain;background:#f5f5f5;">
+                            {else}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:80px;height:50px;"><i class="fa fa-image text-muted"></i></div>
+                            {/if}
+                        </td>
+                        <td><span class="fw-bold">{$p.name}</span></td>
+                        <td>
+                            {if $p.url}
+                            <a href="{$p.url}" target="_blank" class="text-truncate d-inline-block" style="max-width:200px;">{$p.url}</a>
+                            {else}
+                            <span class="text-muted">-</span>
+                            {/if}
+                        </td>
+                        <td><span class="badge bg-light text-dark">{$p.sort}</span></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input status-toggle" type="checkbox" data-id="{$p.id}" {if $p.status}checked{/if}>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary edit-btn" data-id="{$p.id}"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{$p.id}"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    {else}
+                    <tr><td colspan="7" class="text-center py-5 text-muted"><i class="fa fa-inbox fa-3x d-block mb-2"></i>暂无合作伙伴</td></tr>
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 弹窗 -->
+<div class="modal fade" id="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><span id="modalTitle">新增伙伴</span></h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId" value="">
+                <div class="mb-3">
+                    <label class="form-label">名称 <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="ptName" placeholder="合作伙伴名称">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Logo图片</label>
+                    <div class="img-upload-group" id="ptLogoGroup">
+                        <div class="img-upload-preview" style="width:120px;height:80px;background:#f5f5f5;">
+                            <img id="ptLogoPreview" src="" style="display:none;object-fit:contain;">
+                        </div>
+                        <div class="img-upload-actions">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="ptLogoBtn"><i class="fa fa-upload"></i> 选择图片</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="ptLogoClear" style="display:none;"><i class="fa fa-trash"></i> 清除</button>
+                            <input type="hidden" id="ptLogo" value="">
+                            <small class="text-muted d-block">建议 Logo 尺寸：200×80px，PNG透明底</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">链接地址</label>
+                    <input type="text" class="form-control" id="ptUrl" placeholder="https://...（可选）">
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">排序</label>
+                        <input type="number" class="form-control" id="ptSort" value="0" min="0">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" id="ptStatus">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveBtn"><i class="fa fa-save"></i> 保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+<script>
+{literal}
+$(function(){
+    if (typeof bootstrap === 'undefined') { console.error('Bootstrap JS 未加载，页面功能不可用'); return; }
+    var modal = new bootstrap.Modal('#modal'), isEdit = false, editId = null;
+
+    $('#ptLogoBtn').click(function(e){
+        e.preventDefault();
+        var fi = $('<input type="file" accept="image/*" style="display:none;">').appendTo('body');
+        fi.on('change', function(){
+            var file = this.files[0]; if(!file){fi.remove();return;}
+            var fd = new FormData(); fd.append('file', file);
+            $.ajax({url:'/admin/partner/upload',type:'POST',data:fd,processData:false,contentType:false,dataType:'json',
+                success:function(res){
+                    if (res.code===0&&res.data.url) {
+                        $('#ptLogo').val(res.data.url); $('#ptLogoPreview').attr('src',res.data.url).show(); $('#ptLogoClear').show();
+                    } else toastr.error(res.msg);
+                },
+                error:function(){ toastr.error('上传失败'); }
+            });
+            fi.remove();
+        }).trigger('click');
+    });
+    $('#ptLogoClear').click(function(){ $('#ptLogo').val(''); $('#ptLogoPreview').hide(); $(this).hide(); });
+
+    $('#addBtn').click(function(){
+        isEdit = false; editId = null;
+        $('#modalTitle').text('新增伙伴'); $('#editId').val('');
+        $('#ptName').val(''); $('#ptLogo').val(''); $('#ptLogoPreview').hide(); $('#ptLogoClear').hide();
+        $('#ptUrl').val(''); $('#ptSort').val('0'); $('#ptStatus').val('1');
+        modal.show();
+    });
+
+    $(document).on('click', '.edit-btn', function(){
+        var $row = $(this).closest('tr');
+        isEdit = true; editId = $(this).data('id');
+        $('#modalTitle').text('编辑伙伴'); $('#editId').val(editId);
+        $('#ptName').val($row.data('name'));
+        var logo = $row.data('logo');
+        if (logo) { $('#ptLogo').val(logo); $('#ptLogoPreview').attr('src',logo).show(); $('#ptLogoClear').show(); }
+        else { $('#ptLogo').val(''); $('#ptLogoPreview').hide(); $('#ptLogoClear').hide(); }
+        $('#ptUrl').val($row.data('url')); $('#ptSort').val($row.data('sort')); $('#ptStatus').val($row.data('status'));
+        modal.show();
+    });
+
+    $('#saveBtn').click(function(){
+        var name = $('#ptName').val().trim();
+        if (!name) { toastr.warning('请输入名称'); return; }
+        var data = {
+            name: name, logo: $('#ptLogo').val(), url: $('#ptUrl').val().trim(),
+            sort: $('#ptSort').val(), status: $('#ptStatus').val()
+        };
+        var url = isEdit ? '/admin/partner/update' : '/admin/partner/add';
+        if (isEdit) data.id = editId;
+        var $btn = $(this).prop('disabled', true);
+        $.post(url, data, function(res){
+            if (res.code===0) { toastr.success(res.msg); modal.hide(); setTimeout(function(){ location.reload(); }, 500); }
+            else toastr.error(res.msg);
+        }, 'json').always(function(){ $btn.prop('disabled', false); });
+    });
+
+    $(document).on('click', '.delete-btn', function(){
+        var id = $(this).data('id');
+        if (!confirm('确定删除吗？')) return;
+        $.post('/admin/partner/delete', {id:id}, function(res){
+            if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
+            else toastr.error(res.msg);
+        }, 'json');
+    });
+
+    $(document).on('change', '.status-toggle', function(){
+        var $t = $(this), id = $t.data('id'), status = $t.is(':checked') ? 1 : 0;
+        $.post('/admin/partner/toggle-status', {id:id, status:status}, function(res){
+            if (res.code!==0) { $t.prop('checked', !status); toastr.error(res.msg); }
+        }, 'json');
+    });
+});
+{/literal}
+</script>
+{/block}

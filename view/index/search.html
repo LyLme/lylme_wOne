@@ -1,0 +1,170 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .search-section {
+        padding: 60px 0;
+        background: #F8FAFC;
+        min-height: 60vh;
+    }
+    .search-box {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+    .search-box .input-group {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .search-box .form-control {
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    .search-box .btn {
+        padding: 12px 30px;
+        border: none;
+    }
+    .search-result-info {
+        margin-bottom: 30px;
+        color: #6B7280;
+    }
+    .search-result-info strong {
+        color: #1A5FDC;
+    }
+    .result-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .result-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .result-card .result-type {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+    .result-type.product {
+        background: #E8F0FE;
+        color: #1A5FDC;
+    }
+    .result-type.article {
+        background: #ECFDF5;
+        color: #10B981;
+    }
+    .result-card .result-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .result-card .result-title a {
+        color: #1F2937;
+        text-decoration: none;
+    }
+    .result-card .result-title a:hover {
+        color: #1A5FDC;
+    }
+    .result-card .result-desc {
+        color: #6B7280;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    .no-results {
+        text-align: center;
+        padding: 80px 20px;
+    }
+    .no-results i {
+        font-size: 64px;
+        color: #D1D5DB;
+        margin-bottom: 20px;
+    }
+    .no-results p {
+        font-size: 18px;
+        color: #9CA3AF;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item active">搜索结果</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">搜索结果</h1>
+    </div>
+</section>
+
+<!-- 搜索结果 -->
+<section class="search-section">
+    <div class="container">
+        <!-- 搜索框 -->
+        <div class="search-box">
+            <form action="/search" method="get">
+                <div class="input-group input-group-lg">
+                    <input type="text" name="keyword" value="{$keyword}" class="form-control" placeholder="输入关键词搜索产品、新闻..." required>
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜索</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 结果统计 -->
+        {if $keyword}
+        <div class="search-result-info">
+            搜索 "<strong>{$keyword}</strong>" 共找到 <strong>{$total}</strong> 条结果
+        </div>
+        {/if}
+
+        <!-- 结果列表 -->
+        {if $results}
+        <div class="results-list">
+            {foreach $results as $item}
+            <div class="result-card">
+                <span class="result-type {$item.type}">
+                    {if $item.type=='product'}产品{else}新闻{/if}
+                </span>
+                <h4 class="result-title">
+                    <a href="{$item.url}">{$item.title}</a>
+                </h4>
+                {if $item.desc}
+                <p class="result-desc">{$item.desc|strip_tags|mb_substr=0,100}...</p>
+                {/if}
+            </div>
+            {/foreach}
+        </div>
+        {elseif $keyword}
+        <!-- 无结果 -->
+        <div class="no-results">
+            <i class="fa fa-search"></i>
+            <p>未找到与 "<strong>{$keyword}</strong>" 相关的结果</p>
+            <p style="font-size: 14px; margin-top: 10px;">请尝试其他关键词</p>
+        </div>
+        {else}
+        <!-- 未搜索 -->
+        <div class="no-results">
+            <i class="fa fa-search"></i>
+            <p>请输入关键词进行搜索</p>
+        </div>
+        {/if}
+    </div>
+</section>
+{/block}

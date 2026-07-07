@@ -1,0 +1,303 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .breadcrumb-nav .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    .service-detail-section {
+        padding: 60px 0;
+        background: #F8FAFC;
+    }
+    .service-intro-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 40px;
+    }
+    .service-detail-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: #fff;
+        margin: 0 auto 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .service-intro-text {
+        font-size: 16px;
+        line-height: 2;
+        color: #4B5563;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .service-section {
+        margin-bottom: 50px;
+    }
+    .service-section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1F2937;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #1A5FDC;
+        display: inline-block;
+    }
+    .service-item-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    .service-item-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: all 0.3s;
+        border-top: 3px solid transparent;
+        cursor: default;
+    }
+    .service-item-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        border-top-color: #1A5FDC;
+    }
+    .service-item-card .item-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: #E8F0FE;
+        color: #1A5FDC;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    .service-item-card .item-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+    }
+    .service-item-card .item-desc {
+        font-size: 14px;
+        color: #6B7280;
+        line-height: 1.7;
+    }
+    .service-cta {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        border-radius: 16px;
+        padding: 50px;
+        text-align: center;
+        color: #fff;
+        margin-top: 20px;
+    }
+    .service-cta h3 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    .service-cta p {
+        font-size: 16px;
+        opacity: 0.9;
+        margin-bottom: 25px;
+    }
+    .service-cta .cta-btns {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .service-cta .btn {
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    .related-products {
+        margin-top: 60px;
+    }
+    .related-products .section-title {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .product-mini-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+        transition: all 0.3s;
+        height: 100%;
+    }
+    .product-mini-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .product-mini-card .prod-img {
+        height: 180px;
+        background: #F8FAFC;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .product-mini-card .prod-img img {
+        max-width: 80%;
+        max-height: 80%;
+        transition: transform 0.3s;
+    }
+    .product-mini-card:hover .prod-img img {
+        transform: scale(1.05);
+    }
+    .product-mini-card .prod-info {
+        padding: 15px;
+    }
+    .product-mini-card .prod-info h5 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .product-mini-card .prod-info h5 a {
+        color: #1F2937;
+        text-decoration: none;
+    }
+    .product-mini-card .prod-info h5 a:hover {
+        color: #1A5FDC;
+    }
+    @media (max-width: 992px) {
+        .service-item-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 576px) {
+        .service-item-grid {
+            grid-template-columns: 1fr;
+        }
+        .service-intro-card {
+            padding: 25px;
+        }
+        .service-cta {
+            padding: 30px 20px;
+        }
+        .service-cta h3 {
+            font-size: 22px;
+        }
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item"><a href="/services">服务支持</a></li>
+                <li class="breadcrumb-item active">{$service.name}</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">{$service.name}</h1>
+    </div>
+</section>
+
+<!-- 服务详情 -->
+<section class="service-detail-section">
+    <div class="container">
+        <!-- 服务介绍 -->
+        <div class="service-intro-card">
+            <div class="service-detail-icon" style="background: {if $slug=='device-sales'}#1A5FDC{elseif $slug=='after-sales'}#00B4D8{elseif $slug=='maintenance'}#10B981{elseif $slug=='supplies'}#F59E0B{else}#1A5FDC{/if};">
+                <i class="fa {$service.icon}"></i>
+            </div>
+            <h2 class="text-center mb-4">{$service.name}</h2>
+            {if $content}
+            <p class="service-intro-text">{$content.intro}</p>
+            {else}
+            <p class="service-intro-text">{$service.desc}</p>
+            <p class="service-intro-text">我们拥有一支经验丰富、技术精湛的服务团队，以"专业、高效、诚信"为服务宗旨，赢得了广大客户的信赖与支持。</p>
+            {/if}
+
+            <!-- 服务特色标签 -->
+            <div class="text-center mt-4">
+                {foreach $service.features as $feature}
+                <span class="badge bg-light text-primary me-2 mb-2" style="font-size: 14px; padding: 8px 16px; border-radius: 20px;">
+                    <i class="fa fa-check-circle me-1"></i> {$feature}
+                </span>
+                {/foreach}
+            </div>
+        </div>
+
+        <!-- 详细内容区块 -->
+        {if $content && $content.sections}
+        {foreach $content.sections as $section}
+        <div class="service-section">
+            <h3 class="service-section-title">{$section.title}</h3>
+            <div class="service-item-grid">
+                {foreach $section.items as $item}
+                <div class="service-item-card">
+                    <div class="item-icon">
+                        <i class="fa {$item.icon}"></i>
+                    </div>
+                    <h4 class="item-title">{$item.title}</h4>
+                    <p class="item-desc">{$item.desc}</p>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+        {/foreach}
+        {/if}
+
+        <!-- CTA -->
+        <div class="service-cta">
+            <h3>需要{$service.name}服务？</h3>
+            <p>专业团队为您提供一站式解决方案，立即联系我们获取服务</p>
+            <div class="cta-btns">
+                <a href="/repair" class="btn" style="background: #fff; border-color: #fff; color: #1A5FDC; font-weight: 600;">在线报修</a>
+                <a href="/contact" class="btn btn-outline-light">在线留言</a>
+                <a href="tel:{$contact_phone}" class="btn btn-outline-light"><i class="fa fa-phone-alt"></i> {$contact_phone}</a>
+            </div>
+        </div>
+
+        <!-- 推荐产品 -->
+        {if $related_products}
+        <div class="related-products">
+            <h3 class="section-title">推荐产品</h3>
+            <div class="row g-4">
+                {foreach $related_products as $product}
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-mini-card">
+                        <div class="prod-img">
+                            {if $product.image}
+                            <img src="{$product.image}" alt="{$product.name}">
+                            {else}
+                            <i class="fa fa-box fa-3x text-muted"></i>
+                            {/if}
+                        </div>
+                        <div class="prod-info">
+                            <h5><a href="/product/{$product.id}">{$product.name}</a></h5>
+                            {if $product.model}
+                            <p style="font-size: 13px; color: #6B7280; margin: 0;">型号：{$product.model}</p>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+        {/if}
+    </div>
+</section>
+{/block}

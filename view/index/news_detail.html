@@ -1,0 +1,296 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .breadcrumb-nav .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    .news-detail-section {
+        padding: 60px 0;
+    }
+    .news-detail-box {
+        background: #fff;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .news-detail-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1F2937;
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+    .news-detail-meta {
+        display: flex;
+        gap: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #E5E7EB;
+        margin-bottom: 30px;
+        font-size: 14px;
+        color: #9CA3AF;
+    }
+    .news-detail-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .news-detail-meta .category-tag {
+        padding: 3px 12px;
+        border-radius: 4px;
+        background: #E8F0FE;
+        color: #1A5FDC;
+    }
+    .news-detail-content {
+        line-height: 2;
+        color: #374151;
+        font-size: 16px;
+    }
+    .news-detail-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    .news-tags {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #E5E7EB;
+    }
+    .news-tags .tag {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        background: #F3F4F6;
+        color: #6B7280;
+        font-size: 13px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        text-decoration: none;
+    }
+    .news-tags .tag:hover {
+        background: #E8F0FE;
+        color: #1A5FDC;
+    }
+    .news-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid #E5E7EB;
+    }
+    .news-nav a {
+        color: #1A5FDC;
+        text-decoration: none;
+        font-weight: 500;
+        max-width: 45%;
+    }
+    .news-nav a:hover {
+        text-decoration: underline;
+    }
+    .news-nav .nav-prev::before {
+        content: '← ';
+    }
+    .news-nav .nav-next::after {
+        content: ' →';
+    }
+    .related-news {
+        margin-top: 50px;
+    }
+    .related-news-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #1F2937;
+    }
+
+    /* 富文本内容排版：与后台编辑器展示保持一致 */
+    .news-detail-content {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #374151;
+    }
+    .news-detail-content p {
+        margin-bottom: 1em;
+    }
+    .news-detail-content h2,
+    .news-detail-content h3,
+    .news-detail-content h4,
+    .news-detail-content h5,
+    .news-detail-content h6 {
+        margin-top: 1.5em;
+        margin-bottom: .75em;
+        font-weight: 600;
+        color: #1F2937;
+        line-height: 1.4;
+    }
+    .news-detail-content h2 { font-size: 24px; }
+    .news-detail-content h3 { font-size: 20px; }
+    .news-detail-content h4 { font-size: 18px; }
+    .news-detail-content ul,
+    .news-detail-content ol {
+        margin-bottom: 1em;
+        padding-left: 1.5em;
+    }
+    .news-detail-content li {
+        margin-bottom: .5em;
+    }
+    .news-detail-content strong,
+    .news-detail-content b {
+        color: #1F2937;
+        font-weight: 600;
+    }
+    .news-detail-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2em 0;
+        border: 1px solid #E5E7EB;
+        font-size: 15px;
+    }
+    .news-detail-content th,
+    .news-detail-content td {
+        border: 1px solid #E5E7EB;
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+    }
+    .news-detail-content th {
+        background: #F8FAFC;
+        font-weight: 600;
+        color: #1F2937;
+    }
+    .news-detail-content tr:nth-child(even) td {
+        background: #FAFBFC;
+    }
+    .news-detail-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    .news-detail-content blockquote {
+        border-left: 4px solid #1A5FDC;
+        background: #F8FAFC;
+        padding: 15px 20px;
+        margin: 1em 0;
+        color: #4B5563;
+    }
+    .news-detail-content a {
+        color: #1A5FDC;
+        text-decoration: underline;
+    }
+    .news-detail-content a:hover {
+        color: #0D47A1;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item"><a href="/news">新闻资讯</a></li>
+                {if $article.category}
+                <li class="breadcrumb-item"><a href="/news/{$article.category.slug ?: $article.category.id}">{$article.category.name}</a></li>
+                {/if}
+                <li class="breadcrumb-item active">详情</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">新闻详情</h1>
+    </div>
+</section>
+
+<!-- 新闻详情 -->
+<section class="news-detail-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="news-detail-box">
+                    <h1 class="news-detail-title">{$article.title}</h1>
+
+                    <div class="news-detail-meta">
+                        <span><i class="fa fa-calendar-alt"></i> {if isset($article.create_time)}{$article.create_time|date='Y年m月d日'}{/if}</span>
+                        <span><i class="fa fa-eye"></i> {$article.view_count|default=0} 次浏览</span>
+                        {if isset($article.category) && $article.category}
+                        <span class="category-tag"><i class="fa fa-folder"></i> {$article.category.name}</span>
+                        {/if}
+                    </div>
+
+                    <!-- 新闻封面图 -->
+                    {if $article.image}
+                    <div class="news-cover mb-4">
+                        <img src="{$article.image}" alt="{$article.title}" class="img-fluid rounded" loading="lazy">
+                    </div>
+                    {/if}
+
+                    <!-- 新闻内容 -->
+                    <div class="news-detail-content">
+                        {if isset($article.content)}{$article.content|raw}{/if}
+                    </div>
+
+                    <!-- 标签 -->
+                    {if isset($article.tags) && $article.tags}
+                    <div class="news-tags">
+                        {php}$tagArr = explode(',', $article['tags']);{/php}
+                        {foreach $tagArr as $tag}
+                        <a href="/news?keyword={$tag}" class="tag">{$tag}</a>
+                        {/foreach}
+                    </div>
+                    {/if}
+
+                    <!-- 上一篇/下一篇 -->
+                    <div class="news-nav">
+                        <div>
+                            {if $prev_article}
+                            <a href="/news/detail/{$prev_article.id}" class="nav-prev">{$prev_article.title|mb_substr=0,20}</a>
+                            {/if}
+                        </div>
+                        <div>
+                            {if $next_article}
+                            <a href="/news/detail/{$next_article.id}" class="nav-next">{$next_article.title|mb_substr=0,20}</a>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 相关新闻 -->
+                {if $related_news}
+                <div class="related-news">
+                    <h3 class="related-news-title">相关新闻</h3>
+                    <div class="row g-4">
+                        {foreach $related_news as $rn}
+                        <div class="col-md-3 col-6">
+                            <div class="news-card" style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <div style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #F8FAFC;">
+                                    {if $rn.image}
+                                    <img src="{$rn.image}" alt="{$rn.title}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                                    {else}
+                                    <i class="fa fa-newspaper fa-2x text-muted"></i>
+                                    {/if}
+                                </div>
+                                <div style="padding: 10px;">
+                                    <h6 style="font-size: 13px; margin-bottom: 5px; line-height: 1.4;">
+                                        <a href="/news/detail/{$rn.id}" style="color: #1F2937; text-decoration: none;">{$rn.title|mb_substr=0,20}</a>
+                                    </h6>
+                                    <p style="font-size: 11px; color: #9CA3AF; margin: 0;">{$rn.create_time|date='Y-m-d'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</section>
+{/block}

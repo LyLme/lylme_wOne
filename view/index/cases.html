@@ -1,0 +1,201 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .breadcrumb-nav .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    .cases-section {
+        padding: 60px 0;
+        background: #F8FAFC;
+    }
+    .industry-filter {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 40px;
+    }
+    .industry-filter .filter-btn {
+        padding: 8px 24px;
+        border-radius: 25px;
+        border: 2px solid #E5E7EB;
+        background: #fff;
+        color: #6B7280;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    .industry-filter .filter-btn:hover,
+    .industry-filter .filter-btn.active {
+        border-color: #1A5FDC;
+        background: #1A5FDC;
+        color: #fff;
+    }
+    .case-card {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .case-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .case-card .case-img {
+        height: 220px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F8FAFC;
+    }
+    .case-card .case-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    .case-card:hover .case-img img {
+        transform: scale(1.05);
+    }
+    .case-card .case-img-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #E8F0FE 0%, #F8FAFC 100%);
+    }
+    .case-card .case-info {
+        padding: 20px;
+    }
+    .case-card .case-industry {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 4px;
+        background: #E8F0FE;
+        color: #1A5FDC;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+    .case-card .case-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .case-card .case-title a {
+        color: #1F2937;
+        text-decoration: none;
+    }
+    .case-card .case-title a:hover {
+        color: #1A5FDC;
+    }
+    .case-card .case-summary {
+        color: #6B7280;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+    .case-card .case-link {
+        color: #1A5FDC;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .case-card .case-link:hover {
+        text-decoration: underline;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item active">客户案例</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">客户案例</h1>
+        <p class="page-desc">涵盖政府、教育、企业等多个领域</p>
+    </div>
+</section>
+
+<!-- 案例列表 -->
+<section class="cases-section">
+    <div class="container">
+        <!-- 行业筛选 -->
+        <div class="industry-filter">
+            {foreach $industries as $key=>$name}
+            <a href="/cases?industry={$key}" class="filter-btn {if $current_industry==$key}active{/if}">{$name}</a>
+            {/foreach}
+        </div>
+
+        <!-- 案例网格 -->
+        {if $case_data}
+        <div class="row">
+            {foreach $case_data as $item}
+            <div class="col-lg-4 col-md-6">
+                <div class="case-card">
+                    <div class="case-img">
+                        {if $item.article.image}
+                        <img src="{$item.article.image}" alt="{$item.article.title}" loading="lazy">
+                        {else}
+                        <div class="case-img-placeholder">
+                            <i class="fa fa-building fa-3x text-primary"></i>
+                        </div>
+                        {/if}
+                    </div>
+                    <div class="case-info">
+                        {if $item.info.industry}
+                        <span class="case-industry">
+                            {if $item.info.industry=='government'}政府机关
+                            {elseif $item.info.industry=='education'}教育机构
+                            {elseif $item.info.industry=='enterprise'}企业单位
+                            {elseif $item.info.industry=='medical'}医疗机构
+                            {elseif $item.info.industry=='finance'}金融机构
+                            {else}其他行业{/if}
+                        </span>
+                        {/if}
+                        <h4 class="case-title">
+                            <a href="/case/{$item.article.id}">{$item.article.title}</a>
+                        </h4>
+                        <p class="case-summary">
+                            {if $item.article.summary}
+                            {$item.article.summary|mb_substr=0,60}
+                            {else}
+                            {$item.article.content|strip_tags|mb_substr=0,60}
+                            {/if}...
+                        </p>
+                        <a href="/case/{$item.article.id}" class="case-link">查看详情 <i class="fa fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination-wrap d-flex justify-content-center mt-5">
+            {$list->render()|raw}
+        </div>
+        {else}
+        <div class="text-center py-5">
+            <i class="fa fa-folder-open fa-3x text-muted mb-3"></i>
+            <p class="text-muted">暂无案例</p>
+        </div>
+        {/if}
+    </div>
+</section>
+{/block}

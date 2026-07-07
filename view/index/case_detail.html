@@ -1,0 +1,226 @@
+{extend name="layout" /}
+
+{block name="css"}
+<style>
+    .page-banner {
+        background: linear-gradient(135deg, rgba(26,95,220,0.85) 0%, rgba(0,180,216,0.85) 100%), url('{$case_info.cover|default=$article.image}') center/cover no-repeat;
+        padding: 60px 0 40px;
+        color: #fff;
+    }
+    .breadcrumb-nav .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+    .case-detail-section {
+        padding: 60px 0;
+    }
+    .case-meta {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        color: #6B7280;
+        font-size: 14px;
+    }
+    .case-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .case-info-box {
+        background: #F8FAFC;
+        border-radius: 12px;
+        padding: 30px;
+        margin: 30px 0;
+    }
+    .case-info-box h4 {
+        color: #1F2937;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #1A5FDC;
+    }
+    .case-info-item {
+        display: flex;
+        margin-bottom: 15px;
+    }
+    .case-info-item .label {
+        width: 120px;
+        font-weight: 500;
+        color: #1F2937;
+        flex-shrink: 0;
+    }
+    .case-info-item .value {
+        color: #6B7280;
+    }
+    .case-content {
+        line-height: 2;
+        color: #374151;
+    }
+    .case-gallery {
+        margin: 30px 0;
+    }
+    .case-gallery .gallery-img {
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+    .case-gallery .gallery-img img {
+        width: 100%;
+        border-radius: 8px;
+    }
+    .related-cases {
+        margin-top: 50px;
+        padding-top: 30px;
+        border-top: 1px solid #E5E7EB;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面Banner -->
+<section class="page-banner">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item"><a href="/cases">客户案例</a></li>
+                <li class="breadcrumb-item active">{$article.title}</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">案例详情</h1>
+    </div>
+</section>
+
+<!-- 案例详情 -->
+<section class="case-detail-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h2 class="mb-3">{$article.title}</h2>
+                <div class="case-meta">
+                    <span><i class="fa fa-calendar-alt"></i> {$article.create_time|date='Y-m-d'}</span>
+                    <span><i class="fa fa-eye"></i> {$article.view_count|default=0} 次浏览</span>
+                    {if $case_info.industry}
+                    <span><i class="fa fa-industry"></i>
+                        {if $case_info.industry=='government'}政府机关
+                        {elseif $case_info.industry=='education'}教育机构
+                        {elseif $case_info.industry=='enterprise'}企业单位
+                        {elseif $case_info.industry=='medical'}医疗机构
+                        {elseif $case_info.industry=='finance'}金融机构
+                        {else}其他{/if}
+                    </span>
+                    {/if}
+                </div>
+
+                <!-- 案例信息 -->
+                <div class="case-info-box">
+                    <h4><i class="fa fa-info-circle text-primary"></i> 案例信息</h4>
+                    <div class="case-info-item">
+                        <div class="label">客户名称：</div>
+                        <div class="value">{$case_info.client_name|default=$article.title}</div>
+                    </div>
+                    {if $case_info.industry}
+                    <div class="case-info-item">
+                        <div class="label">所属行业：</div>
+                        <div class="value">
+                            {if $case_info.industry=='government'}政府机关
+                            {elseif $case_info.industry=='education'}教育机构
+                            {elseif $case_info.industry=='enterprise'}企业单位
+                            {elseif $case_info.industry=='medical'}医疗机构
+                            {elseif $case_info.industry=='finance'}金融机构
+                            {else}其他{/if}
+                        </div>
+                    </div>
+                    {/if}
+                    {if $case_info.devices}
+                    <div class="case-info-item">
+                        <div class="label">使用设备：</div>
+                        <div class="value">{$case_info.devices}</div>
+                    </div>
+                    {/if}
+                    {if $case_info.service_date}
+                    <div class="case-info-item">
+                        <div class="label">服务时间：</div>
+                        <div class="value">{$case_info.service_date}</div>
+                    </div>
+                    {/if}
+                </div>
+
+                <!-- 客户需求背景 -->
+                {if $case_info.requirement}
+                <div class="mb-4">
+                    <h4 class="mb-3"><i class="fa fa-clipboard-list text-primary"></i> 客户需求背景</h4>
+                    <div class="case-content" style="white-space: pre-wrap; word-break: break-all;">{$case_info.requirement|trim|default='无'}</div>
+                </div>
+                {/if}
+
+                <!-- 解决方案 -->
+                {if $case_info.solution}
+                <div class="mb-4">
+                    <h4 class="mb-3"><i class="fa fa-lightbulb text-warning"></i> 解决方案</h4>
+                    <div class="case-content" style="white-space: pre-wrap; word-break: break-all;">{$case_info.solution|trim|default='无'}</div>
+                </div>
+                {/if}
+
+                <!-- 服务成果 -->
+                {if $case_info.result}
+                <div class="mb-4">
+                    <h4 class="mb-3"><i class="fa fa-trophy text-success"></i> 服务成果</h4>
+                    <div class="case-content" style="white-space: pre-wrap; word-break: break-all;">{$case_info.result|trim|default='无'}</div>
+                </div>
+                {/if}
+
+                <!-- 案例图片 -->
+                {if $case_info.images}
+                <div class="case-gallery">
+                    <h4 class="mb-3"><i class="fa fa-images text-primary"></i> 案例图片</h4>
+                    <div class="row g-3">
+                        {foreach $case_info.images as $img}
+                        <div class="col-md-6">
+                            <div class="gallery-img">
+                                <img src="{$img}" alt="案例图片" class="img-fluid" loading="lazy">
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                {/if}
+
+                <!-- 案例内容 -->
+                {if $article.content}
+                <div class="case-content mt-4">
+                    {$article.content|raw}
+                </div>
+                {/if}
+
+                <!-- 相关案例 -->
+                {if $related_cases}
+                <div class="related-cases">
+                    <h4 class="mb-4">相关案例</h4>
+                    <div class="row g-4">
+                        {foreach $related_cases as $rc}
+                        <div class="col-md-4">
+                            <div class="case-card" style="background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <div style="height: 150px; background: #F8FAFC; display: flex; align-items: center; justify-content: center;">
+                                    {if $rc.image}
+                                    <img src="{$rc.image}" alt="{$rc.title}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+                                    {else}
+                                    <i class="fa fa-building fa-2x text-muted"></i>
+                                    {/if}
+                                </div>
+                                <div style="padding: 15px;">
+                                    <h6 style="font-size: 14px; margin-bottom: 5px;">
+                                        <a href="/case/{$rc.id}" style="color: #1F2937; text-decoration: none;">{$rc.title}</a>
+                                    </h6>
+                                    <p style="font-size: 12px; color: #6B7280;">{$rc.create_time|date='Y-m-d'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</section>
+{/block}

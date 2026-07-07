@@ -1,0 +1,24 @@
+{extend name="layout" /}
+
+{block name="content"}
+<section class="page-banner" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%); padding: 60px 0 40px; color: #fff;">
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item active">页面不存在</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">404 - 页面不存在</h1>
+    </div>
+</section>
+
+<section style="padding: 100px 0; text-align: center;">
+    <div class="container">
+        <div style="font-size: 120px; font-weight: 700; color: #1A5FDC; opacity: 0.2;">404</div>
+        <h2 style="margin: 20px 0; color: #333;">{$message|default='您访问的页面不存在'}</h2>
+        <p style="color: #666; margin-bottom: 30px;">请检查网址是否正确，或返回首页浏览其他内容。</p>
+        <a href="/" class="btn btn-primary btn-lg">返回首页</a>
+    </div>
+</section>
+{/block}

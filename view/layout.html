@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="{$meta_description|default='专业办公设备服务提供商'}">
+    <meta name="keywords" content="{$meta_keywords|default='办公设备,打印机维修,大理打印机,耗材供应'}">
+    <title>{$page_title|default='XX科技有限公司'}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="/static/lib/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="/static/lib/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- 自定义CSS -->
+    <link href="__CSS__/common.css" rel="stylesheet">
+    {block name="css"}{/block}
+
+    <!-- Favicon -->
+    <link rel="icon" href="__IMG__/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<!-- 顶部通知栏 -->
+<div class="top-bar">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <small><i class="fa fa-phone-alt"></i> 服务热线：{$service_phone|default=$contact_phone} &nbsp;&nbsp; <i class="fa fa-clock"></i> {$contact_hours}</small>
+            </div>
+            <div class="col-md-6 text-end">
+                <small>
+                    <a href="/contact" class="text-white-50 me-3">联系我们</a>
+                    <a href="/repair" class="btn-repair-top"><i class="fa fa-wrench"></i> 在线报修</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg main-navbar" id="mainNavbar">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="/">
+            <div class="logo-wrap">
+                <div class="logo-icon">
+                    {if $is_company_icon_image}
+                    <img src="{$company_icon}" alt="{$company_name_short}" class="logo-img">
+                    {else}
+                    <i class="fa {$company_icon|default='fa-print'}"></i>
+                    {/if}
+                </div>
+                <div class="logo-text">
+                    <span class="logo-title">{$company_name_short|default='XX科技'}</span>
+                    <span class="logo-subtitle">{$company_name_en|default='XX Technology'}</span>
+                </div>
+            </div>
+        </a>
+
+        <!-- 移动端按钮 -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- 导航菜单 -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                {foreach $nav_menus as $menu}
+                <li class="nav-item {if $current_nav==$menu.active || (isset($current_nav) && $current_nav==$menu.active)}active{/if}">
+                    <a class="nav-link" href="{$menu.url}">{$menu.name}</a>
+                </li>
+                {/foreach}
+            </ul>
+
+            <!-- 搜索框 -->
+            <div class="nav-search d-none d-lg-block">
+                <form action="/search" method="get" class="search-form">
+                    <div class="input-group input-group-sm">
+                        <input type="text" name="keyword" class="form-control" placeholder="搜索产品...">
+                        <button class="btn btn-search" type="submit"><i class="fa fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 联系电话 -->
+            <div class="nav-phone d-none d-lg-block">
+                <i class="fa fa-phone-alt"></i>
+                <span>{$service_phone|default=$contact_phone}</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 移动端搜索 -->
+<div class="mobile-search d-lg-none">
+    <div class="container">
+        <form action="/search" method="get">
+            <div class="input-group input-group-sm">
+                <input type="text" name="keyword" class="form-control" placeholder="搜索产品、新闻...">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 主要内容区 -->
+<main class="{block name='main_class'}page-main{/block}">
+    {block name="content"}{/block}
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="row">
+            <!-- 公司信息 -->
+            <div class="col-lg-4 col-md-6 footer-col">
+                <div class="footer-logo">
+                    <div class="logo-wrap">
+                        <div class="logo-icon logo-icon-white">
+                            {if $is_company_icon_image}
+                            <img src="{$company_icon}" alt="{$company_name_short}" class="logo-img">
+                            {else}
+                            <i class="fa {$company_icon|default='fa-print'}"></i>
+                            {/if}
+                        </div>
+                        <div class="logo-text">
+                            <span class="logo-title">{$company_name_short|default='XX科技'}</span>
+                            <span class="logo-subtitle">{$company_name_en|default='XX Technology'}</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="footer-desc">{$site_name}，{$site_slogan}。提供设备销售、售后维修、维保签约、耗材供应等一站式服务。</p>
+                <div class="footer-contact">
+                    <p><i class="fa fa-map-marker-alt"></i>{$contact_address}</p>
+                    <p><i class="fa fa-phone-alt"></i>{$contact_phone|default=''}</p>
+                    <p><i class="fa fa-envelope"></i>{$contact_email}</p>
+
+
+<hr>
+                    {foreach $contact_info_list as $ci}
+                        <p>{switch $ci.type}
+                                {case 手机号}<i class="fa fa-mobile-alt"></i>{/case}
+                                {case 座机}<i class="fa fa-phone-alt"></i>{/case}
+                                {case 微信}<svg style="color: var(--primary);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="1.2em" height="1.2em" fill="currentColor" style="vertical-align:-.125em"><path d="M417.2 231.6C423.6 231.6 429.8 231.9 436 232.7C419.4 154.3 335.3 96 239.7 96C132.5 96 45 168.8 45 261.4C45 314.8 74.3 358.9 122.9 393L103.6 451.6L171.6 417.5C196 422.3 215.4 427.2 239.8 427.2C246 427.2 251.9 426.9 258.1 426.4C254.1 413.5 251.9 399.8 251.9 385.6C251.8 300.7 324.8 231.6 417.2 231.6zM312.7 178.7C327.2 178.7 336.9 188.4 336.9 203.1C336.9 217.6 327.2 227.3 312.7 227.3C297.9 227.3 283.4 217.6 283.4 203.1C283.5 188.4 298 178.7 312.7 178.7zM176.3 227.3C161.8 227.3 147 217.6 147 203.1C147 188.3 161.8 178.7 176.3 178.7C191.1 178.7 200.7 188.4 200.7 203.1C200.7 217.7 191.1 227.3 176.3 227.3zM595 383.4C595 305.5 517.1 242.1 429.6 242.1C336.9 242.1 264.2 305.5 264.2 383.4C264.2 461.3 337 524.7 429.6 524.7C448.9 524.7 468.5 519.6 488.2 514.8L541.6 544.1L526.8 495.5C566 466.1 595 427.2 595 383.4zM375.9 358.9C366.2 358.9 356.6 349.2 356.6 339.3C356.6 329.6 366.3 320 375.9 320C390.7 320 400.3 329.7 400.3 339.3C400.3 349.3 390.6 358.9 375.9 358.9zM483 358.9C473.3 358.9 463.7 349.2 463.7 339.3C463.7 329.6 473.4 320 483 320C497.5 320 507.4 329.7 507.4 339.3C507.5 349.3 497.5 358.9 483 358.9z"/></svg>{/case}
+                                {case QQ}<svg style="color: var(--primary);" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="1.2em" height="1.2em" fill="currentColor" style="vertical-align:-.125em"><path d="M530.1 484.4C518.6 485.8 485.2 431.7 485.2 431.7C485.2 463 469.1 503.9 434.2 533.5C451 538.7 489 552.7 480 567.9C472.7 580.2 354.5 575.8 320.4 571.9C286.3 575.7 168.1 580.2 160.8 567.9C151.8 552.7 189.7 538.7 206.6 533.5C171.7 504 155.5 463.1 155.5 431.7C155.5 431.7 122.2 485.8 110.6 484.4C105.2 483.8 98.2 454.8 119.9 384.7C130.2 351.7 141.9 324.2 160 278.9C156.9 162 205.2 63.9 320.3 63.9C434 63.9 483.5 160 480.6 278.9C498.7 324.1 510.5 351.8 520.7 384.7C542.5 454.8 535.4 483.8 530 484.4z"/></svg>{/case}
+                                {case 邮件}<i class="fa fa-envelope"></i>{/case}
+                                {default}<i class="fa fa-address-book"></i>
+ {/switch}
+                                <small>{$ci.type}：</small>
+                                {$ci.value}</strong>
+                                {if $ci.contact_person}
+                                <small>({$ci.contact_person})</small>
+                                {/if}
+                       </p>
+                        {/foreach}
+
+                </div>
+            </div>
+
+            <!-- 快速导航 -->
+            <div class="col-lg-2 col-md-6 footer-col">
+                <h5 class="footer-title">快速导航</h5>
+                <ul class="footer-links">
+                    {if !empty($footer_quick_links)}
+                    {foreach $footer_quick_links as $link}
+                    <li><a href="{$link.url}">{$link.name}</a></li>
+                    {/foreach}
+                    {else}
+                    {foreach $nav_menus as $menu}
+                    <li><a href="{$menu.url}">{$menu.name}</a></li>
+                    {/foreach}
+                    {/if}
+                </ul>
+            </div>
+
+            <!-- 服务支持 -->
+            <div class="col-lg-2 col-md-6 footer-col">
+                <h5 class="footer-title">服务支持</h5>
+                <ul class="footer-links">
+                    {if !empty($footer_service_links)}
+                    {foreach $footer_service_links as $link}
+                    <li><a href="{$link.url}">{$link.name}</a></li>
+                    {/foreach}
+                    {/if}
+                </ul>
+            </div>
+
+            <!-- 微信公众号 -->
+            <div class="col-lg-4 col-md-6 footer-col">
+                <h5 class="footer-title">关注我们</h5>
+                <div class="footer-qrcode">
+                    {if $wechat_qrcode}
+                    <img src="{$wechat_qrcode}" alt="微信公众号" class="img-fluid rounded" loading="lazy">
+                    <p class="mt-2">扫描关注微信公众号</p>
+                    {else}
+                    <div class="qrcode-placeholder">
+                        <i class="fa fa-qrcode"></i>
+                        <p>微信公众号二维码</p>
+                    </div>
+                    {/if}
+                </div>
+                <div class="footer-subscribe mt-3">
+                    <p>服务热线：<strong class="text-warning">{$service_phone|default=$contact_phone}</strong></p>
+                    <p>服务时间：{$contact_hours}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 版权信息 -->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p>&copy; {:date('Y')} {$site_name} 版权所有</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    {if $icp_number}
+                    <p><a href="https://beian.miit.gov.cn" target="_blank">{$icp_number}</a></p>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- 回到顶部 -->
+<button class="back-to-top" id="backToTop" title="回到顶部">
+    <i class="fa fa-chevron-up"></i>
+</button>
+
+<!-- 侧边栏悬浮按钮 -->
+<div class="side-buttons">
+    <a href="/repair" class="side-btn side-btn-repair" title="在线报修">
+        <i class="fa fa-wrench"></i>
+        <span>报修</span>
+    </a>
+    <a href="tel:{$service_phone|default=$contact_phone}" class="side-btn side-btn-phone" title="拨打电话">
+        <i class="fa fa-phone-alt"></i>
+        <span>电话</span>
+    </a>
+    <a href="/contact" class="side-btn side-btn-message" title="在线留言">
+        <i class="fa fa-comment-dots"></i>
+        <span>留言</span>
+    </a>
+</div>
+
+<!-- Bootstrap 5 JS -->
+<script src="/static/lib/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="/static/lib/jquery/3.7.1/jquery.min.js"></script>
+<!-- 自定义JS -->
+<script src="__JS__/common.js"></script>
+{block name="js"}{/block}
+
+</body>
+</html>

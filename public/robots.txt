@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /runtime/
+Disallow: /app/
+Disallow: /config/
+Disallow: /vendor/
+
+Sitemap: https://www.lylmew.com/sitemap.xml

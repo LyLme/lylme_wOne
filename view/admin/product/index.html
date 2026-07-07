@@ -1,0 +1,419 @@
+{extend name="admin/layout" /}
+
+{block name="content"}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-0"><i class="fa fa-boxes text-primary me-2"></i>产品管理</h5>
+        <small class="text-muted">管理所有产品信息</small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/admin/product-category" class="btn btn-outline-secondary btn-sm">
+            <i class="fa fa-list"></i> 分类管理
+        </a>
+        <button class="btn btn-primary" id="addBtn">
+            <i class="fa fa-plus"></i> 新增产品
+        </button>
+    </div>
+</div>
+
+<!-- 筛选栏 -->
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body py-2">
+        <form class="row g-2 align-items-center" method="get">
+            <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm" name="keyword" value="{$keyword}" placeholder="搜索产品名称...">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select form-select-sm" name="category_id">
+                    <option value="0">全部分类</option>
+                    {foreach $categories as $c}
+                    {if $c.parent_id == 0}
+                    <option value="{$c.id}" {if $category_id==$c.id}selected{/if}>{$c.name}</option>
+                    {/if}
+                    {/foreach}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-sm btn-outline-primary w-100"><i class="fa fa-search"></i> 筛选</button>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="?" class="btn btn-sm btn-link text-muted">重置</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 产品列表 -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px;">#</th>
+                        <th style="width:80px;">图片</th>
+                        <th>产品名称</th>
+                        <th>型号</th>
+                        <th>价格</th>
+                        <th>热门</th>
+                        <th style="width:80px;">排序</th>
+                        <th style="width:100px;">状态</th>
+                        <th style="width:140px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if $list->count()}
+                    {php}$k = ($list->currentPage()-1) * $list->listRows();{/php}
+                    {foreach $list as $p}
+                    {php}$k++;{/php}
+                    <tr data-id="{$p.id}" data-name="{$p.name|htmlentities}" data-model="{$p.model|htmlentities}" data-category="{$p.category_id}" data-price_type="{$p.price_type}" data-price_min="{$p.price_min}" data-price_max="{$p.price_max}" data-image="{$p.image}" data-imgs="{$p.imgs|json_encode|htmlentities}" data-params="{$p.params|json_encode|htmlentities}" data-summary="{$p.summary|htmlentities}" data-description="{$p.description|htmlentities}" data-is_hot="{$p.is_hot}" data-is_recommend="{$p.is_recommend}" data-sort="{$p.sort}" data-status="{$p.status}">
+                        <td>{$k}</td>
+                        <td>
+                            {if $p.image}
+                            <img src="{$p.image}" alt="{$p.name}" class="rounded" style="width:60px;height:40px;object-fit:cover;">
+                            {else}
+                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:60px;height:40px;"><i class="fa fa-image text-muted"></i></div>
+                            {/if}
+                        </td>
+                        <td><span class="fw-bold">{$p.name}</span></td>
+                        <td><span class="text-muted">{$p.model|default='-'}</span></td>
+                        <td>
+                            {if $p.price_type==0}
+                            <span class="badge bg-info">面议</span>
+                            {else}
+                            <span class="text-danger fw-bold">￥{$p.price_min|default=0} - ￥{$p.price_max|default=0}</span>
+                            {/if}
+                        </td>
+                        <td>
+                            {if $p.is_hot}<span class="badge bg-warning text-dark">热门</span>{else}<span class="text-muted">-</span>{/if}
+                        </td>
+                        <td><span class="badge bg-light text-dark">{$p.sort}</span></td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input status-toggle" type="checkbox" data-id="{$p.id}" {if $p.status}checked{/if}>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary edit-btn" data-id="{$p.id}"><i class="fa fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{$p.id}"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    {else}
+                    <tr><td colspan="9" class="text-center py-5 text-muted"><i class="fa fa-inbox fa-3x d-block mb-2"></i>暂无产品</td></tr>
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {if $list->count()}
+    <div class="card-footer bg-light">{$list|raw}</div>
+    {/if}
+</div>
+
+<!-- 新增/编辑弹窗 -->
+<div class="modal fade" id="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"><span id="modalTitle">新增产品</span></h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="max-height:70vh;overflow-y:auto;">
+                <input type="hidden" id="editId" value="">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">产品名称 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="prodName" placeholder="产品名称">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">型号</label>
+                        <input type="text" class="form-control" id="prodModel" placeholder="产品型号">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">分类 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="prodCategory">
+                            <option value="0">请选择分类</option>
+                            {foreach $categories as $c}
+                            <option value="{$c.id}">{if $c.parent_id>0}&nbsp;&nbsp;└&nbsp;{/if}{$c.name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">排序</label>
+                        <input type="number" class="form-control" id="prodSort" value="0" min="0">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">价格</label>
+                        <div class="row g-2">
+                            <div class="col-md-3">
+                                <select class="form-select form-select-sm" id="prodPriceType">
+                                    <option value="0">面议</option>
+                                    <option value="1">区间价</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 price-range">
+                                <input type="number" class="form-control form-control-sm" id="prodPriceMin" placeholder="最低价" step="0.01">
+                            </div>
+                            <div class="col-md-4 price-range">
+                                <input type="number" class="form-control form-control-sm" id="prodPriceMax" placeholder="最高价" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">是否热门</label>
+                        <select class="form-select" id="prodIsHot">
+                            <option value="0">否</option>
+                            <option value="1">是</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">是否推荐</label>
+                        <select class="form-select" id="prodIsRecommend">
+                            <option value="0">否</option>
+                            <option value="1">是</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" id="prodStatus">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">主图</label>
+                        <div class="img-upload-group" id="prodImgGroup">
+                            <div class="img-upload-preview" style="width:120px;height:90px;">
+                                <img id="prodImgPreview" src="" style="display:none;">
+                            </div>
+                            <div class="img-upload-actions">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="prodImgBtn"><i class="fa fa-upload"></i> 选择图片</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger" id="prodImgClear" style="display:none;"><i class="fa fa-trash"></i> 清除</button>
+                                <input type="hidden" id="prodImage" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">产品多图</label>
+                        <div id="multiImgs" class="d-flex flex-wrap gap-2 mb-2"></div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="multiImgBtn"><i class="fa fa-upload"></i> 添加图片</button>
+                        <input type="hidden" id="prodImgs" value="">
+                        <small class="text-muted d-block">可选择多张图片展示</small>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">技术参数</label>
+                        <div id="paramsContainer">
+                            <div class="param-row d-flex gap-2 mb-2">
+                                <input type="text" class="form-control form-control-sm param-key" placeholder="参数名">
+                                <input type="text" class="form-control form-control-sm param-val" placeholder="参数值">
+                                <button type="button" class="btn btn-sm btn-outline-danger param-remove"><i class="fa fa-times"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="paramAdd"><i class="fa fa-plus"></i> 添加参数</button>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">产品描述（简短纯文本）</label>
+                        <input type="text" class="form-control" id="prodSummary" placeholder="一句话概括产品，显示在产品详情页顶部" maxlength="255">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">产品详情</label>
+                        <textarea class="form-control rich-editor" id="prodDesc" rows="4">{$product.description|default=''}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveBtn"><i class="fa fa-save"></i> 保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+<script>
+{literal}
+$(function(){
+    if (typeof bootstrap === 'undefined') { console.error('Bootstrap JS 未加载，页面功能不可用'); return; }
+    var modal = new bootstrap.Modal('#modal'), isEdit = false, editId = null;
+    // Summernote（存在性检查）
+    if ($.fn.summernote) { $('#prodDesc').summernote({lang:'zh-CN',height:200,toolbar:[['style',['bold','italic','underline','clear']],['fontsize',['fontsize']],['color',['color']],['para',['ul','ol','paragraph']],['insert',['link','picture']],['view',['codeview']]]}); }
+    else { $.fn.summernote = function(op, val) { if (op === 'code') return val === undefined ? '' : this; return this; }; console.warn('Summernote 未加载，富文本编辑不可用'); }
+
+    function resetForm(){
+        isEdit = false; editId = null;
+        $('#modalTitle').text('新增产品'); $('#editId').val('');
+        $('#prodName').val(''); $('#prodModel').val(''); $('#prodCategory').val('0');
+        $('#prodPriceType').val('0'); $('#prodPriceMin').val(''); $('#prodPriceMax').val('');
+        $('#prodIsHot').val('0'); $('#prodIsRecommend').val('0'); $('#prodSort').val('0'); $('#prodStatus').val('1');
+        $('#prodImage').val(''); $('#prodImgPreview').hide(); $('#prodImgClear').hide();
+        $('#prodImgs').val(''); $('#multiImgs').empty();
+        $('#paramsContainer .param-row:not(:first)').remove();
+        $('#paramsContainer .param-row:first').find('.param-key,.param-val').val('');
+        $('#prodSummary').val('');
+        $('#prodDesc').summernote('reset');
+    }
+
+    // 价格类型切换
+    $('#prodPriceType').change(function(){
+        $('.price-range').toggle($(this).val() === '1');
+    }).trigger('change');
+
+    // 主图上传
+    $('#prodImgBtn').click(function(e){
+        e.preventDefault();
+        var fi = $('<input type="file" accept="image/*" style="display:none;">').appendTo('body');
+        fi.on('change', function(){
+            var file = this.files[0]; if(!file){fi.remove();return;}
+            uploadFile(file, function(url){
+                $('#prodImage').val(url); $('#prodImgPreview').attr('src',url).show(); $('#prodImgClear').show();
+            });
+            fi.remove();
+        }).trigger('click');
+    });
+    $('#prodImgClear').click(function(){
+        $('#prodImage').val(''); $('#prodImgPreview').hide(); $(this).hide();
+    });
+
+    // 多图上传
+    $('#multiImgBtn').click(function(e){
+        e.preventDefault();
+        var fi = $('<input type="file" accept="image/*" style="display:none;">').appendTo('body');
+        fi.on('change', function(){
+            var file = this.files[0]; if(!file){fi.remove();return;}
+            uploadFile(file, function(url){
+                addMultiImg(url);
+            });
+            fi.remove();
+        }).trigger('click');
+    });
+
+    function addMultiImg(url){
+        var urls = getMultiImgs(); urls.push(url);
+        $('#prodImgs').val(JSON.stringify(urls));
+        $('#multiImgs').append('<div class="position-relative d-inline-block"><img src="'+url+'" class="rounded" style="width:60px;height:45px;object-fit:cover;"><button class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle p-0 multi-img-remove" style="width:18px;height:18px;font-size:10px;line-height:18px;" data-url="'+url+'">×</button></div>');
+    }
+    function getMultiImgs(){
+        try { return JSON.parse($('#prodImgs').val() || '[]'); } catch(e) { return []; }
+    }
+    $(document).on('click', '.multi-img-remove', function(e){
+        e.preventDefault();
+        var url = $(this).data('url');
+        var urls = getMultiImgs().filter(function(u){ return u !== url; });
+        $('#prodImgs').val(JSON.stringify(urls));
+        $(this).parent().remove();
+    });
+
+    // 参数行
+    function addParamRow(key, val){
+        var row = $('<div class="param-row d-flex gap-2 mb-2">'+
+            '<input type="text" class="form-control form-control-sm param-key" placeholder="参数名" value="'+(key||'')+'">'+
+            '<input type="text" class="form-control form-control-sm param-val" placeholder="参数值" value="'+(val||'')+'">'+
+            '<button type="button" class="btn btn-sm btn-outline-danger param-remove"><i class="fa fa-times"></i></button></div>');
+        $('#paramsContainer').append(row);
+    }
+    $('#paramAdd').click(function(e){ e.preventDefault(); addParamRow('',''); });
+    $(document).on('click', '.param-remove', function(){
+        if ($('#paramsContainer .param-row').length > 1) $(this).closest('.param-row').remove();
+    });
+
+    function uploadFile(file, cb){
+        var fd = new FormData(); fd.append('file', file);
+        $.ajax({url:'/admin/product/upload',type:'POST',data:fd,processData:false,contentType:false,dataType:'json',
+            success:function(res){ if(res.code===0&&res.data.url) cb(res.data.url); else toastr.error(res.msg); },
+            error:function(){ toastr.error('上传失败'); }
+        });
+    }
+
+    $('#addBtn').click(function(){ resetForm(); modal.show(); });
+
+    $(document).on('click', '.edit-btn', function(){
+        var $row = $(this).closest('tr');
+        isEdit = true; editId = $(this).data('id');
+        $('#modalTitle').text('编辑产品'); $('#editId').val(editId);
+        $('#prodName').val($row.data('name')); $('#prodModel').val($row.data('model'));
+        $('#prodCategory').val($row.data('category'));
+        $('#prodPriceType').val($row.data('price_type')); $('#prodPriceMin').val($row.data('price_min')); $('#prodPriceMax').val($row.data('price_max'));
+        $('#prodIsHot').val($row.data('is_hot')); $('#prodIsRecommend').val($row.data('is_recommend'));
+        $('#prodSort').val($row.data('sort')); $('#prodStatus').val($row.data('status'));
+        var img = $row.data('image');
+        if (img) { $('#prodImage').val(img); $('#prodImgPreview').attr('src',img).show(); $('#prodImgClear').show(); }
+        else { $('#prodImage').val(''); $('#prodImgPreview').hide(); $('#prodImgClear').hide(); }
+        $('#prodPriceType').trigger('change');
+
+        // 多图
+        $('#prodImgs').val(''); $('#multiImgs').empty();
+        try { var imgs = $row.data('imgs'); if (Array.isArray(imgs)) { imgs.forEach(function(u){ addMultiImg(u); }); } }
+        catch(e) {}
+
+        // 参数
+        $('#paramsContainer .param-row').remove();
+        try {
+            var params = $row.data('params');
+            if (params && typeof params === 'object') {
+                Object.keys(params).forEach(function(k){ addParamRow(k, params[k]); });
+            } else { addParamRow('',''); }
+        } catch(e) { addParamRow('',''); }
+
+        // 描述/详情
+        $('#prodSummary').val($row.data('summary') || '');
+        $('#prodDesc').summernote('code', $row.data('description') || '');
+        modal.show();
+    });
+
+    $('#saveBtn').click(function(){
+        var name = $('#prodName').val().trim(), cat = $('#prodCategory').val();
+        if (!name) { toastr.warning('请输入产品名称'); return; }
+        if (!cat || cat === '0') { toastr.warning('请选择产品分类'); return; }
+
+        var params = [];
+        $('#paramsContainer .param-row').each(function(){
+            var k = $(this).find('.param-key').val().trim(), v = $(this).find('.param-val').val().trim();
+            if (k) params.push({key:k, val:v});
+        });
+
+        var data = {
+            name: name, model: $('#prodModel').val().trim(), category_id: cat,
+            price_type: $('#prodPriceType').val(), price_min: $('#prodPriceMin').val(), price_max: $('#prodPriceMax').val(),
+            image: $('#prodImage').val(), imgs: $('#prodImgs').val(),
+            param_key: params.map(function(p){return p.key;}), param_val: params.map(function(p){return p.val;}),
+            summary: $('#prodSummary').val().trim(),
+            description: $('#prodDesc').summernote('code'),
+            is_hot: $('#prodIsHot').val(), is_recommend: $('#prodIsRecommend').val(),
+            sort: $('#prodSort').val(), status: $('#prodStatus').val()
+        };
+
+        var url = isEdit ? '/admin/product/update' : '/admin/product/add';
+        if (isEdit) data.id = editId;
+
+        var $btn = $(this).prop('disabled', true);
+        $.post(url, data, function(res){
+            if (res.code === 0) { toastr.success(res.msg); modal.hide(); setTimeout(function(){ location.reload(); }, 500); }
+            else toastr.error(res.msg);
+        }, 'json').always(function(){ $btn.prop('disabled', false); });
+    });
+
+    $(document).on('click', '.delete-btn', function(){
+        var id = $(this).data('id');
+        if (!confirm('确定删除该产品吗？')) return;
+        $.post('/admin/product/delete', {id:id}, function(res){
+            if (res.code===0) { toastr.success(res.msg); setTimeout(function(){ location.reload(); }, 500); }
+            else toastr.error(res.msg);
+        }, 'json');
+    });
+
+    $(document).on('change', '.status-toggle', function(){
+        var $t = $(this), id = $t.data('id'), status = $t.is(':checked') ? 1 : 0;
+        $.post('/admin/product/toggle-status', {id:id, status:status}, function(res){
+            if (res.code !== 0) { $t.prop('checked', !status); toastr.error(res.msg); }
+        }, 'json');
+    });
+});
+{/literal}
+</script>
+{/block}

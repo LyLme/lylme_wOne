@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台登录 - {$company_name_short}</title>
+    <link href="/static/lib/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/lib/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a5fdc 0%, #6c63ff 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .login-box {
+            width: 420px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.15);
+            overflow: hidden;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #1a5fdc 0%, #6c63ff 100%);
+            padding: 30px;
+            text-align: center;
+            color: #fff;
+        }
+        .login-header .logo-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .login-header h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .login-body {
+            padding: 35px 40px 30px;
+        }
+        .login-body .form-control {
+            height: 46px;
+            border-radius: 8px;
+            padding-left: 42px;
+        }
+        .login-body .input-icon {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .login-body .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            color: #999;
+            font-size: 16px;
+            z-index: 10;
+        }
+        .login-body .btn-login {
+            width: 100%;
+            height: 46px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            background: linear-gradient(135deg, #1a5fdc 0%, #6c63ff 100%);
+            color: #fff;
+            letter-spacing: 2px;
+            transition: opacity .2s;
+        }
+        .login-body .btn-login:hover {
+            opacity: .9;
+        }
+        .alert-msg {
+            display: none;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-box">
+    <div class="login-header">
+        <div class="logo-icon">
+            <i class="fa fa-cog"></i>
+        </div>
+        <h4>后台管理系统</h4>
+        <small>{$company_name_short}</small>
+    </div>
+
+    <div class="login-body">
+        <div class="alert alert-danger alert-msg" id="errorMsg"></div>
+
+        <form id="loginForm" autocomplete="off">
+            <div class="input-icon">
+                <i class="fa fa-user"></i>
+                <input type="text" class="form-control" name="username" placeholder="请输入用户名" required autofocus>
+            </div>
+
+            <div class="input-icon">
+                <i class="fa fa-lock"></i>
+                <input type="password" class="form-control" name="password" placeholder="请输入密码" required>
+            </div>
+
+            <button type="submit" class="btn btn-login mt-3" id="loginBtn">
+                <i class="fa fa-sign-in-alt"></i> 登 录
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="/static/lib/jquery/3.7.1/jquery.min.js"></script>
+<script>
+$(function () {
+    $('#loginForm').on('submit', function (e) {
+        e.preventDefault();
+        var $btn = $('#loginBtn');
+        var $err = $('#errorMsg');
+
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 登录中...');
+
+        $.ajax({
+            url: '/admin/login',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (res) {
+                if (res.code === 0) {
+                    window.location.href = '/admin/index';
+                } else {
+                    $err.text(res.msg).slideDown();
+                    $btn.prop('disabled', false).html('<i class="fa fa-sign-in-alt"></i> 登 录');
+                }
+            },
+            error: function () {
+                $err.text('网络错误，请重试').slideDown();
+                $btn.prop('disabled', false).html('<i class="fa fa-sign-in-alt"></i> 登 录');
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
