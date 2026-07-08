@@ -172,8 +172,8 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 banner-content">
-                        <h1 class="banner-title">专业办公设备服务提供商</h1>
-                        <p class="banner-desc">设备销售 · 售后维修 · 维保签约 · 耗材供应</p>
+                        <h1 class="banner-title">{$company_slogan|default=''}</h1>
+                        <p class="banner-desc">{$company_keywords|default=''}</p>
                         <div class="banner-btns">
                             <a href="/products" class="btn btn-primary btn-lg me-3">了解产品 <i class="fa fa-arrow-right ms-1"></i></a>
                             <a href="/repair" class="btn btn-outline-light btn-lg">在线报修 <i class="fa fa-wrench ms-1"></i></a>
@@ -278,9 +278,9 @@
             <div class="col-lg-6">
                 <div class="section-header text-start">
                     <span class="section-subtitle">关于我们</span>
-                    <h2 class="section-title">专注办公设备服务 <span class="text-primary">多年</span></h2>
+                    <h2 class="section-title">专注服务 <span class="text-primary">多年</span></h2>
                 </div>
-                <p class="about-text">{$home_about_text|default=$site_name . '是一家专业的办公设备服务企业。'}</p>
+                <p class="about-text">{$company_desc|default=''}</p>
                 <p class="about-text">我们拥有一支经验丰富、技术精湛的服务团队，以"专业、高效、诚信"为服务宗旨，赢得了广大客户的信赖与支持。</p>
                 <div class="d-flex gap-3 mt-4">
                     <a href="/about" class="btn btn-primary">了解更多 <i class="fa fa-arrow-right"></i></a>
@@ -297,7 +297,7 @@
         <div class="section-header text-center">
             <span class="section-subtitle">产品中心</span>
             <h2 class="section-title">热门产品推荐</h2>
-            <p class="section-desc">精选优质办公设备，满足您的多样化需求</p>
+            <p class="section-desc">精选优质产品，满足您的多样化需求</p>
         </div>
 
         <div class="row g-4">
@@ -376,7 +376,6 @@
         <div class="section-header text-center">
             <span class="section-subtitle">客户案例</span>
             <h2 class="section-title">成功案例展示</h2>
-            <p class="section-desc">涵盖政府、教育、企业等多个领域</p>
         </div>
 
         <div class="row g-4">
@@ -485,8 +484,8 @@
 <!-- ==================== CTA区域 ==================== -->
 <section class="cta-section" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
     <div class="container text-center text-white">
-        <h2 class="cta-title">需要办公设备服务？联系我们！</h2>
-        <p class="cta-desc">专业团队为您提供一站式办公设备解决方案</p>
+        <h2 class="cta-title">{$company_keywords|default=''}</h2>
+        <p class="cta-desc">{$company_desc|default=''}</p>
         <div class="cta-btns">
             <a href="/contact" class="btn btn-light btn-lg me-3" style="background: #fff; border-color: #fff; color: #1A5FDC; font-weight: 600;">立即咨询</a>
             <a href="tel:{$contact_phone}" class="btn btn-outline-light btn-lg"><i class="fa fa-phone-alt"></i> {$contact_phone}</a>

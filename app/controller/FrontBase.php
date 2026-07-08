@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace app\controller;
@@ -20,6 +21,8 @@ class FrontBase extends BaseController
     protected string $site_slogan = '';
     protected string $contact_phone = '';
     protected string $contact_address = '';
+    protected string $company_desc = '';
+    protected string $company_keywords = '';
     protected string $contact_email = '';
     protected string $contact_hours = '';
     protected string $icp_number = '';
@@ -88,6 +91,8 @@ class FrontBase extends BaseController
         $this->company_name_short = $this->siteConfig['company_name_short'] ?? $this->site_name;
         $this->company_name_en  = $this->siteConfig['company_name_en'] ?? '';
         $this->company_icon     = $this->siteConfig['company_icon'] ?? 'fa-print';
+        $this->company_keywords = $this->siteConfig['company_keywords'] ?? '';
+        $this->company_desc = $this->siteConfig['company_desc'] ?? '';
         $this->is_company_icon_image = (bool)preg_match('/\.(png|jpe?g|svg|webp|gif|ico)/i', $this->company_icon);
 
         // 3. 导航菜单
@@ -144,6 +149,13 @@ class FrontBase extends BaseController
             'site_config'        => $this->siteConfig,
             'contact_info_list'  => $this->contactInfoList,
             'service_phone'      => $servicePhone,
+            // Meta SEO
+            'meta_description'   => $this->siteConfig['meta_description'] ?? $this->company_desc,
+            'meta_keywords'      => $this->siteConfig['meta_keywords'] ?? $this->company_keywords,
+            // 首页Banner区域
+            'company_slogan'     => $this->siteConfig['company_slogan'] ?? '',
+            'company_keywords'   => $this->company_keywords,
+            'company_desc'       => $this->company_desc,
         ]);
     }
 
