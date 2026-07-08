@@ -152,10 +152,14 @@ class FrontBase extends BaseController
             // Meta SEO
             'meta_description'   => $this->siteConfig['meta_description'] ?? $this->company_desc,
             'meta_keywords'      => $this->siteConfig['meta_keywords'] ?? $this->company_keywords,
-            // 首页Banner区域
+            // 公司基本信息
+            'company_name'       => $this->site_name,
             'company_slogan'     => $this->siteConfig['company_slogan'] ?? '',
             'company_keywords'   => $this->company_keywords,
             'company_desc'       => $this->company_desc,
+            'company_founded'    => $this->siteConfig['company_founded'] ?? '',
+            'company_city'       => $this->siteConfig['company_city'] ?? '',
+            'map_src'            => $this->siteConfig['map_src'] ?? '',
         ]);
     }
 
