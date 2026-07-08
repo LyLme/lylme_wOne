@@ -1,20 +1,69 @@
 ﻿{extend name="admin/layout" /}
 
+{block name="css"}
+<style>
+    :root {
+        --primary: #4f46e5; --primary-light: #818cf8; --primary-soft: rgba(79,70,229,0.08);
+        --success: #10b981; --success-soft: rgba(16,185,129,0.08);
+        --warning: #f59e0b; --warning-soft: rgba(245,158,11,0.08);
+        --danger: #ef4444; --danger-soft: rgba(239,68,68,0.08);
+        --info: #06b6d4; --info-soft: rgba(6,182,212,0.08);
+        --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1; --gray-400: #94a3b8; --gray-500: #64748b;
+        --gray-600: #475569; --gray-700: #334155;
+    }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+    .page-header h5 { font-weight:700; color:#1e293b; font-size:18px; }
+    .page-header h5 i { color:#4f46e5; font-size:20px; }
+    .page-header small { color:#64748b; font-size:13px; display:block; margin-top:2px; }
+    .filter-bar { background:#fff; border-radius:14px; box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04); border:1px solid #f1f5f9; padding:12px 16px; margin-bottom:16px; }
+    .filter-bar .form-control, .filter-bar .form-select { border-radius:10px; border-color:#e2e8f0; font-size:13px; padding:8px 14px; }
+    .filter-bar .form-control:focus, .filter-bar .form-select:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,0.15); }
+    .filter-bar .btn-outline-primary { border-radius:10px; font-size:13px; font-weight:500; padding:8px 16px; border-color:#c7d2fe; color:#4f46e5; }
+    .filter-bar .btn-outline-primary:hover { background:#4f46e5; border-color:#4f46e5; color:#fff; }
+    .data-card { background:#fff; border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04); border:1px solid #f1f5f9; overflow:hidden; }
+    .data-card .table { margin-bottom:0; }
+    .data-card .table thead th { background:#f8fafc; color:#475569; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; padding:14px 16px; border-bottom:1px solid #e2e8f0; border-top:none; }
+    .data-card .table tbody td { padding:16px; vertical-align:middle; border-bottom:1px solid #f1f5f9; color:#334155; font-size:13px; }
+    .data-card .table tbody tr:last-child td { border-bottom:none; }
+    .data-card .table tbody tr { transition:all 0.2s ease; }
+    .data-card .table tbody tr:hover { background:#f8fafc; }
+    .data-card .card-footer { background:#f8fafc; border-top:1px solid #f1f5f9; padding:14px 20px; border-radius:0 0 16px 16px; }
+    .action-btns .btn { padding:7px 11px; font-size:12px; border-radius:8px; font-weight:500; transition:all 0.2s ease; }
+    .action-btns .btn:hover { transform:translateY(-1px); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+    .btn-primary { background:linear-gradient(135deg,#4f46e5,#6366f1); border:none; border-radius:10px; padding:8px 18px; font-weight:500; font-size:13px; }
+    .btn-primary:hover { background:linear-gradient(135deg,#4338ca,#4f46e5); transform:translateY(-1px); box-shadow:0 4px 12px rgba(79,70,229,0.3); }
+    .btn-outline-primary { border-radius:10px; padding:8px 16px; font-weight:500; font-size:13px; border-color:#c7d2fe; color:#4f46e5; }
+    .btn-outline-primary:hover { background:#4f46e5; border-color:#4f46e5; color:#fff; }
+    .btn-outline-secondary { border-radius:10px; padding:8px 16px; font-weight:500; font-size:13px; }
+    .btn-outline-info { border-radius:10px; padding:8px 16px; font-weight:500; font-size:13px; }
+    .form-control, .form-select { border-radius:10px; border-color:#e2e8f0; font-size:13px; padding:8px 14px; }
+    .form-control:focus, .form-select:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,0.15); }
+    .modal-modern .modal-content { border:none; border-radius:20px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.2); overflow:hidden; }
+    .modal-modern .modal-header { background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%); border-bottom:1px solid #e2e8f0; padding:18px 24px; }
+    .modal-modern .modal-title { font-weight:700; color:#1e293b; font-size:15px; }
+    .modal-modern .modal-body { padding:24px; }
+    .modal-modern .modal-footer { border-top:1px solid #f1f5f9; padding:16px 24px; background:#fafafa; }
+    .modal-modern .btn-close { width:32px; height:32px; border-radius:50%; background-color:#e2e8f0; background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e"); opacity:1; padding:0; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; }
+    .modal-modern .btn-close:hover { background-color:#cbd5e1; }
+</style>
+{/block}
+
 {block name="content"}
 
 {php}$isCase = $type === 'case';{/php}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="page-header">
     <div>
-        <h5 class="mb-0">
-            <i class="fa {if $isCase}fa-briefcase{else}fa-newspaper{/if} text-primary me-2"></i>
+        <h5>
+            <i class="fa {if $isCase}fa-briefcase{else}fa-newspaper{/if}"></i>
             {if $isCase}案例管理{else}新闻管理{/if}
         </h5>
-        <small class="text-muted">管理{if $isCase}客户案例{else}新闻资讯{/if}内容</small>
+        <small>管理{if $isCase}客户案例{else}新闻资讯{/if}内容</small>
     </div>
     <div class="d-flex gap-2">
-        <a href="/{$admin_path}/article-category" class="btn btn-outline-secondary btn-sm"><i class="fa fa-folder"></i> 分类管理</a>
-        <a href="/{$admin_path}/article?type={if $isCase}news{else}case{/if}" class="btn btn-outline-info btn-sm">
+        <a href="/{$admin_path}/article-category" class="btn btn-outline-secondary"><i class="fa fa-folder"></i> 分类管理</a>
+        <a href="/{$admin_path}/article?type={if $isCase}news{else}case{/if}" class="btn btn-outline-info">
             <i class="fa fa-exchange-alt"></i> 切换到{if $isCase}新闻{else}案例{/if}
         </a>
         <button class="btn btn-primary" id="addBtn"><i class="fa fa-plus"></i> 新增{if $isCase}案例{else}新闻{/if}</button>
@@ -22,98 +71,94 @@
 </div>
 
 <!-- 筛选栏 -->
-<div class="card border-0 shadow-sm mb-3">
-    <div class="card-body py-2">
-        <form class="row g-2 align-items-center" method="get">
-            <input type="hidden" name="type" value="{$type}">
-            <div class="col-md-3">
-                <input type="text" class="form-control form-control-sm" name="keyword" value="{$keyword}" placeholder="搜索标题...">
-            </div>
-            <div class="col-md-3">
-                <select class="form-select form-select-sm" name="category_id">
-                    <option value="0">全部分类</option>
-                    {foreach $categories as $c}
-                    <option value="{$c.id}" {if $category_id==$c.id}selected{/if}>{$c.name}</option>
-                    {/foreach}
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-sm btn-outline-primary w-100"><i class="fa fa-search"></i> 筛选</button>
-            </div>
-            <div class="col-md-4 text-end">
-                <a href="?type={$type}" class="btn btn-sm btn-link text-muted">重置</a>
-            </div>
-        </form>
-    </div>
+<div class="filter-bar">
+    <form class="row g-2 align-items-center" method="get">
+        <input type="hidden" name="type" value="{$type}">
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="keyword" value="{$keyword}" placeholder="搜索标题...">
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="category_id">
+                <option value="0">全部分类</option>
+                {foreach $categories as $c}
+                <option value="{$c.id}" {if $category_id==$c.id}selected{/if}>{$c.name}</option>
+                {/foreach}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary w-100"><i class="fa fa-search"></i> 筛选</button>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="?type={$type}" class="btn btn-sm btn-link text-muted">重置</a>
+        </div>
+    </form>
 </div>
 
 <!-- 列表 -->
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width:60px;">#</th>
-                        <th style="width:100px;">封面图</th>
-                        <th>标题</th>
-                        {if $isCase}<th>行业</th>{/if}
-                        <th style="width:80px;">排序</th>
-                        <th style="width:100px;">状态</th>
-                        <th style="width:140px;">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {if $list->count()}
-                    {php}$k = ($list->currentPage()-1) * $list->listRows();{/php}
-                    {foreach $list as $a}
-                    {php}$k++;{/php}
-                    {php}$ci = $isCase && isset($case_infos[$a['id']]) ? $case_infos[$a['id']] : null; $ciIndustry = $ci['industry'] ?? 'other'; $ciImgs = !empty($ci['images']) ? htmlentities(is_array($ci['images']) ? json_encode($ci['images']) : $ci['images']) : '[]'; $ciClient = htmlentities($ci['client_name'] ?? ''); $ciDevices = htmlentities($ci['devices'] ?? ''); $ciServiceDate = htmlentities($ci['service_date'] ?? ''); $ciRequirement = htmlentities($ci['requirement'] ?? ''); $ciSolution = htmlentities($ci['solution'] ?? ''); $ciResult = htmlentities($ci['result'] ?? ''); $ciCover = htmlentities($ci['cover'] ?? '');{/php}
-                    <tr data-id="{$a.id}" data-title="{$a.title|htmlentities}" data-category="{$a.category_id}" data-type="{$a.type}" data-summary="{$a.summary|htmlentities}" data-image="{$a.image}" data-sort="{$a.sort}" data-status="{$a.status}"
-                        {if $isCase}data-industry="{$ciIndustry}" data-case_imgs="{$ciImgs}" data-client_name="{$ciClient}" data-devices="{$ciDevices}" data-service_date="{$ciServiceDate}" data-requirement="{$ciRequirement}" data-solution="{$ciSolution}" data-result="{$ciResult}" data-cover="{$ciCover}"{/if}>
-                        <td>{$k}</td>
-                        <td>
-                            {if $a.image}
-                            <img src="{$a.image}" alt="{$a.title}" class="rounded" style="width:80px;height:50px;object-fit:cover;">
-                            {else}
-                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:80px;height:50px;"><i class="fa fa-image text-muted"></i></div>
-                            {/if}
-                        </td>
-                        <td><span class="fw-bold">{$a.title}</span></td>
-                        {if $isCase}
-                        <td>
-                            {php}$industries = ['government'=>'政府机关','education'=>'教育机构','enterprise'=>'企业单位','medical'=>'医疗机构','finance'=>'金融机构','other'=>'其他行业'];{/php}
-                            <span class="badge bg-info">{if $ci}{$industries[$ciIndustry] ?? $ciIndustry}{else}其他行业{/if}</span>
-                        </td>
+<div class="data-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width:60px;">#</th>
+                    <th style="width:100px;">封面图</th>
+                    <th>标题</th>
+                    {if $isCase}<th>行业</th>{/if}
+                    <th style="width:80px;">排序</th>
+                    <th style="width:100px;">状态</th>
+                    <th style="width:140px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {if $list->count()}
+                {php}$k = ($list->currentPage()-1) * $list->listRows();{/php}
+                {foreach $list as $a}
+                {php}$k++;{/php}
+                {php}$ci = $isCase && isset($case_infos[$a['id']]) ? $case_infos[$a['id']] : null; $ciIndustry = $ci['industry'] ?? 'other'; $ciImgs = !empty($ci['images']) ? htmlentities(is_array($ci['images']) ? json_encode($ci['images']) : $ci['images']) : '[]'; $ciClient = htmlentities($ci['client_name'] ?? ''); $ciDevices = htmlentities($ci['devices'] ?? ''); $ciServiceDate = htmlentities($ci['service_date'] ?? ''); $ciRequirement = htmlentities($ci['requirement'] ?? ''); $ciSolution = htmlentities($ci['solution'] ?? ''); $ciResult = htmlentities($ci['result'] ?? ''); $ciCover = htmlentities($ci['cover'] ?? '');{/php}
+                <tr data-id="{$a.id}" data-title="{$a.title|htmlentities}" data-category="{$a.category_id}" data-type="{$a.type}" data-summary="{$a.summary|htmlentities}" data-image="{$a.image}" data-sort="{$a.sort}" data-status="{$a.status}"
+                    {if $isCase}data-industry="{$ciIndustry}" data-case_imgs="{$ciImgs}" data-client_name="{$ciClient}" data-devices="{$ciDevices}" data-service_date="{$ciServiceDate}" data-requirement="{$ciRequirement}" data-solution="{$ciSolution}" data-result="{$ciResult}" data-cover="{$ciCover}"{/if}>
+                    <td>{$k}</td>
+                    <td>
+                        {if $a.image}
+                        <img src="{$a.image}" alt="{$a.title}" class="rounded" style="width:80px;height:50px;object-fit:cover;">
+                        {else}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width:80px;height:50px;"><i class="fa fa-image text-muted"></i></div>
                         {/if}
-                        <td><span class="badge bg-light text-dark">{$a.sort}</span></td>
-                        <td>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input status-toggle" type="checkbox" data-id="{$a.id}" {if $a.status}checked{/if}>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn btn-sm btn-outline-primary edit-btn" data-id="{$a.id}"><i class="fa fa-edit"></i></button>
-                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{$a.id}"><i class="fa fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    {/foreach}
-                    {else}
-                    <tr><td colspan="{if $isCase}8{else}7{/if}" class="text-center py-5 text-muted"><i class="fa fa-inbox fa-3x d-block mb-2"></i>暂无数据</td></tr>
+                    </td>
+                    <td><span class="fw-bold">{$a.title}</span></td>
+                    {if $isCase}
+                    <td>
+                        {php}$industries = ['government'=>'政府机关','education'=>'教育机构','enterprise'=>'企业单位','medical'=>'医疗机构','finance'=>'金融机构','other'=>'其他行业'];{/php}
+                        <span class="badge bg-info">{if $ci}{$industries[$ciIndustry] ?? $ciIndustry}{else}其他行业{/if}</span>
+                    </td>
                     {/if}
-                </tbody>
-            </table>
-        </div>
+                    <td><span class="badge bg-light text-dark">{$a.sort}</span></td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input status-toggle" type="checkbox" data-id="{$a.id}" {if $a.status}checked{/if}>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-btns btn-group">
+                            <button class="btn btn-outline-primary edit-btn" data-id="{$a.id}"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-outline-danger delete-btn" data-id="{$a.id}"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                {/foreach}
+                {else}
+                <tr><td colspan="{if $isCase}8{else}7{/if}" class="text-center py-5 text-muted"><i class="fa fa-inbox fa-3x d-block mb-2"></i>暂无数据</td></tr>
+                {/if}
+            </tbody>
+        </table>
     </div>
     {if $list->count()}
-    <div class="card-footer bg-light">{$list|raw}</div>
+    <div class="card-footer">{$list|raw}</div>
     {/if}
 </div>
 
 <!-- 新增/编辑弹窗 -->
-<div class="modal fade" id="modal" tabindex="-1">
+<div class="modal fade modal-modern" id="modal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">

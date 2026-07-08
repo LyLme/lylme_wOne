@@ -445,17 +445,17 @@ $(function () {
     function collectServiceTypes() {
         var obj = {};
         $('#serviceTypesTable tbody tr').each(function () {
-            var key = $(this).find('.st-key').val().trim();
+            var key = ($(this).find('.st-key').val() || '').trim();
             if (!key) return;
             var features = [];
             $(this).find('.st-feature-tag input').each(function () {
                 features.push($(this).val());
             });
             obj[key] = {
-                name: $(this).find('.st-name').val().trim(),
-                icon: $(this).find('.st-icon').val().trim(),
-                desc: $(this).find('.st-desc').val().trim(),
-                color: $(this).find('.st-color').val().trim(),
+                name: ($(this).find('.st-name').val() || '').trim(),
+                icon: ($(this).find('.st-icon').val() || '').trim(),
+                desc: ($(this).find('.st-desc').val() || '').trim(),
+                color: ($(this).find('.st-color').val() || '').trim(),
                 features: features
             };
         });
@@ -469,22 +469,22 @@ $(function () {
             var key = $(this).data('key');
             var sections = [];
             $(this).find('.sd-section').each(function () {
-                var title = $(this).find('.sd-section-title').val().trim();
+                var title = ($(this).find('.sd-section-title').val() || '').trim();
                 if (!title) return;
                 var items = [];
                 $(this).find('.sd-item-table tbody tr').each(function () {
-                    var itemTitle = $(this).find('.sdi-title').val().trim();
+                    var itemTitle = ($(this).find('.sdi-title').val() || '').trim();
                     if (!itemTitle) return;
                     items.push({
-                        icon: $(this).find('.sdi-icon').val().trim(),
+                        icon: ($(this).find('.sdi-icon').val() || '').trim(),
                         title: itemTitle,
-                        desc: $(this).find('.sdi-desc').val().trim()
+                        desc: ($(this).find('.sdi-desc').val() || '').trim()
                     });
                 });
                 sections.push({ title: title, items: items });
             });
             obj[key] = {
-                intro: $(this).find('.sd-intro').val().trim(),
+                intro: ($(this).find('.sd-intro').val() || '').trim(),
                 sections: sections
             };
         });

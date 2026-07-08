@@ -464,10 +464,16 @@
             {foreach $partners as $partner}
             <div class="col-lg-2 col-md-3 col-4">
                 <div class="partner-card">
+                    {if $partner.url }
+                       <a href="{$partner.url}" target="_blank">
+                    {/if}
                     {if $partner.logo}
                     <img src="{$partner.logo}" alt="{$partner.name}" title="{$partner.name}" class="partner-logo" loading="lazy">
                     {else}
                     <span class="partner-name">{$partner.name}</span>
+                    {/if}
+                     {if $partner.url }
+                       </a>
                     {/if}
                 </div>
             </div>

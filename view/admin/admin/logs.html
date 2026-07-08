@@ -1,50 +1,81 @@
 ﻿{extend name="admin/layout" /}
 
+{block name="css"}
+<style>
+    :root {
+        --primary: #4f46e5; --primary-light: #818cf8; --primary-soft: rgba(79,70,229,0.08);
+        --success: #10b981; --success-soft: rgba(16,185,129,0.08);
+        --warning: #f59e0b; --warning-soft: rgba(245,158,11,0.08);
+        --danger: #ef4444; --danger-soft: rgba(239,68,68,0.08);
+        --info: #06b6d4; --info-soft: rgba(6,182,212,0.08);
+        --gray-50: #f8fafc; --gray-100: #f1f5f9; --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1; --gray-400: #94a3b8; --gray-500: #64748b;
+        --gray-600: #475569; --gray-700: #334155;
+    }
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+    .page-header h5 { font-weight:700; color:#1e293b; font-size:18px; }
+    .page-header h5 i { color:#4f46e5; font-size:20px; }
+    .data-card { background:#fff; border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04); border:1px solid #f1f5f9; overflow:hidden; }
+    .data-card .table { margin-bottom:0; }
+    .data-card .table thead th { background:#f8fafc; color:#475569; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; padding:14px 16px; border-bottom:1px solid #e2e8f0; border-top:none; }
+    .data-card .table tbody td { padding:16px; vertical-align:middle; border-bottom:1px solid #f1f5f9; color:#334155; font-size:13px; }
+    .data-card .table tbody tr:last-child td { border-bottom:none; }
+    .data-card .table tbody tr { transition:all 0.2s ease; }
+    .data-card .table tbody tr:hover { background:#f8fafc; }
+    .data-card .card-footer { background:#f8fafc; border-top:1px solid #f1f5f9; padding:14px 20px; border-radius:0 0 16px 16px; }
+    .form-control, .form-select { border-radius:10px; border-color:#e2e8f0; font-size:13px; padding:8px 14px; }
+    .form-control:focus, .form-select:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,0.15); }
+    .btn-primary { background:linear-gradient(135deg,#4f46e5,#6366f1); border:none; border-radius:10px; padding:8px 18px; font-weight:500; font-size:13px; }
+    .btn-primary:hover { background:linear-gradient(135deg,#4338ca,#4f46e5); transform:translateY(-1px); box-shadow:0 4px 12px rgba(79,70,229,0.3); }
+    .btn-outline-primary { border-radius:10px; padding:8px 16px; font-weight:500; font-size:13px; border-color:#c7d2fe; color:#4f46e5; }
+    .btn-outline-primary:hover { background:#4f46e5; border-color:#4f46e5; color:#fff; }
+</style>
+{/block}
+
 {block name="content"}
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h5 class="mb-0"><i class="fa fa-history text-primary me-2"></i>操作日志</h5>
-        <form action="/{$admin_path}/admin-user/logs" method="get" class="d-flex gap-2 flex-wrap">
-            <select name="action" class="form-select form-select-sm" style="width:140px;">
-                <option value="">全部操作</option>
-                {foreach $actions as $a}
-                <option value="{$a}" {if $action == $a}selected{/if}>{:app\\model\\AdminLog::getActionText($a)}</option>
-                {/foreach}
-            </select>
-            <input type="text" name="keyword" class="form-control form-control-sm" placeholder="管理员/内容" value="{$keyword|default=''}" style="width:180px;">
-            <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa fa-search"></i></button>
-        </form>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width:60px;">ID</th>
-                        <th style="width:100px;">操作</th>
-                        <th>内容</th>
-                        <th>管理员</th>
-                        <th>IP</th>
-                        <th>时间</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {volist name="list" id="item"}
-                    <tr>
-                        <td>{$item.id}</td>
-                        <td><span class="badge bg-light text-dark border"><i class="fa {:app\\model\\AdminLog::getActionIcon($item.action)} me-1"></i>{:app\\model\\AdminLog::getActionText($item.action)}</span></td>
-                        <td>{$item.content}</td>
-                        <td>{$item.admin_name|default='-'}</td>
-                        <td><small class="text-muted">{$item.ip}</small></td>
-                        <td><small>{$item.create_time}</small></td>
-                    </tr>
-                    {/volist}
-                </tbody>
-            </table>
-        </div>
+<div class="page-header">
+    <h5><i class="fa fa-history"></i> 操作日志</h5>
+    <form action="/{$admin_path}/admin-user/logs" method="get" class="d-flex gap-2 flex-wrap">
+        <select name="action" class="form-select" style="width:140px;">
+            <option value="">全部操作</option>
+            {foreach $actions as $a}
+            <option value="{$a}" {if $action == $a}selected{/if}>{:app\\model\\AdminLog::getActionText($a)}</option>
+            {/foreach}
+        </select>
+        <input type="text" name="keyword" class="form-control" placeholder="管理员/内容" value="{$keyword|default=''}" style="width:180px;">
+        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+    </form>
+</div>
+
+<div class="data-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width:60px;">ID</th>
+                    <th style="width:110px;">操作</th>
+                    <th>内容</th>
+                    <th>管理员</th>
+                    <th>IP</th>
+                    <th>时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="list" id="item"}
+                <tr>
+                    <td>{$item.id}</td>
+                    <td><span class="badge bg-light text-dark border"><i class="fa {:app\\model\\AdminLog::getActionIcon($item.action)} me-1"></i>{:app\\model\\AdminLog::getActionText($item.action)}</span></td>
+                    <td>{$item.content}</td>
+                    <td>{$item.admin_name|default='-'}</td>
+                    <td><small class="text-muted">{$item.ip}</small></td>
+                    <td><small>{$item.create_time}</small></td>
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
     </div>
     {if $list->lastPage() > 1}
-    <div class="card-footer bg-white">
+    <div class="card-footer">
         {$list|raw}
     </div>
     {/if}

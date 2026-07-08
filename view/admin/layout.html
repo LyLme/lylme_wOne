@@ -26,7 +26,8 @@
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-brand">
             <a href="/" target="_blank" class="brand-link">
-                <i class="fa fa-print"></i>
+                <!-- <i class="fa fa-print"></i> -->
+                <img src="{$company_icon}" height="36" alt="{$company_name_short}" srcset="">
                 <span>{$company_name_short}</span>
             </a>
         </div>
@@ -159,7 +160,7 @@
 <!-- Toastr 通知 -->
 <script src="/static/lib/toastr/2.1.4/toastr.min.js"></script>
 <!-- 后台JS -->
-<script src="/static/admin/js/admin.js?v=20250706"></script>
+<script src="/static/admin/js/admin.js?v=20250708"></script>
 <script>var ADMIN_PATH = '/{$admin_path}';</script>
 {block name="js"}{/block}
 

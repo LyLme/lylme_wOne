@@ -2,127 +2,243 @@
 
 {block name="css"}
 <style>
+    /* ===== 现代配色体系 ===== */
+    :root {
+        --primary: #4f46e5;
+        --primary-light: #818cf8;
+        --primary-soft: rgba(79, 70, 229, 0.08);
+        --success: #10b981;
+        --success-soft: rgba(16, 185, 129, 0.08);
+        --warning: #f59e0b;
+        --warning-soft: rgba(245, 158, 11, 0.08);
+        --danger: #ef4444;
+        --danger-soft: rgba(239, 68, 68, 0.08);
+        --info: #06b6d4;
+        --info-soft: rgba(6, 182, 212, 0.08);
+        --dark: #1e293b;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
+    }
+
+    /* ===== 统计卡片 ===== */
     .stat-card {
-        border-radius: 10px;
-        padding: 18px 20px;
+        border-radius: 16px;
+        padding: 22px 20px;
         color: #fff;
         position: relative;
         overflow: hidden;
         cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -20%;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+        transition: all 0.4s ease;
     }
     .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    }
+    .stat-card:hover::before {
+        transform: scale(1.3);
     }
     .stat-card .stat-label {
         font-size: 13px;
-        color: #fff;
-        opacity: 0.95;
-        margin-top: 2px;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        color: rgba(255,255,255,0.85);
+        margin-top: 6px;
+        font-weight: 500;
+        letter-spacing: 0.3px;
     }
     .stat-card .stat-num {
-        font-size: 30px;
-        font-weight: 700;
+        font-size: 32px;
+        font-weight: 800;
         color: #fff;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.2);
         line-height: 1.1;
+        letter-spacing: -0.5px;
     }
     .stat-card .stat-icon {
         position: absolute;
-        right: 16px;
+        right: 18px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 40px;
+        font-size: 44px;
         color: #fff;
-        opacity: 0.35;
+        opacity: 0.2;
+        transition: all 0.3s ease;
     }
-    .stat-card .stat-change {
-        font-size: 11px;
-        opacity: 0.75;
+    .stat-card:hover .stat-icon {
+        opacity: 0.35;
+        transform: translateY(-50%) scale(1.1);
+    }
+    .stat-pending { background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); }
+    .stat-processing { background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); }
+    .stat-paused { background: linear-gradient(135deg, #ef4444 0%, #e11d48 100%); }
+    .stat-completed { background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); }
+    .stat-cancelled { background: linear-gradient(135deg, #64748b 0%, #475569 100%); }
+    .stat-total { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+
+    /* ===== 筛选栏 ===== */
+    .filter-bar {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+        border: 1px solid #f1f5f9;
+    }
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        border-radius: 10px;
+        border-color: #e2e8f0;
+        font-size: 13px;
+        padding: 8px 14px;
+        transition: all 0.2s ease;
+    }
+    .filter-bar .form-control:focus,
+    .filter-bar .form-select:focus {
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+    }
+    .filter-bar .btn-outline-primary {
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-color: #c7d2fe;
+        color: #4f46e5;
+    }
+    .filter-bar .btn-outline-primary:hover {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        color: #fff;
+    }
+
+    /* ===== 表格卡片 ===== */
+    .data-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+        border: 1px solid #f1f5f9;
+        overflow: hidden;
+    }
+    .data-card .table {
+        margin-bottom: 0;
+    }
+    .data-card .table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        border-top: none;
+    }
+    .data-card .table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 13px;
+    }
+    .data-card .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .data-card .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    .data-card .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    /* ===== 客户信息 ===== */
+    .customer-name {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 14px;
+    }
+    .customer-meta {
+        color: #64748b;
+        font-size: 12px;
         margin-top: 2px;
     }
-    .stat-pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
-    .stat-processing { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-    .stat-paused { background: linear-gradient(135deg, #ef4444, #dc2626); }
-    .stat-completed { background: linear-gradient(135deg, #10b981, #059669); }
-    .stat-cancelled { background: linear-gradient(135deg, #6b7280, #4b5563); }
-    .stat-total { background: linear-gradient(135deg, #6366f1, #4f46e5); }
-
-    .order-row {
-        transition: background 0.2s;
-    }
-    .order-row:hover {
-        background: #f8fafc !important;
+    .customer-meta i {
+        color: #94a3b8;
+        width: 14px;
+        text-align: center;
+        margin-right: 2px;
     }
 
-    .customer-cell { min-width: 140px; }
-    .desc-cell { min-width: 240px; max-width: 320px; }
+    /* ===== 描述文字 ===== */
     .desc-text {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         line-height: 1.5;
-        color: #374151;
+        color: #475569;
+        max-width: 280px;
     }
 
-    .thumb-gallery {
+    /* ===== 缩略图 ===== */
+    .thumb-gallery-inline {
         display: flex;
-        flex-wrap: wrap;
         gap: 6px;
         margin-top: 8px;
     }
-    .thumb-gallery a {
+    .thumb-gallery-inline a {
         display: block;
-        width: 44px;
-        height: 44px;
-        border-radius: 6px;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
         overflow: hidden;
-        border: 1px solid #e5e7eb;
-        background: #f9fafb;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        transition: all 0.2s ease;
     }
-    .thumb-gallery img {
+    .thumb-gallery-inline a:hover {
+        transform: scale(1.08);
+        border-color: #c7d2fe;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12);
+    }
+    .thumb-gallery-inline img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-    .thumb-gallery .img-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #9ca3af;
-        font-size: 16px;
-    }
 
+    /* ===== 状态标签 ===== */
     .status-badge {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        padding: 5px 10px;
+        gap: 6px;
+        padding: 5px 12px;
         border-radius: 20px;
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    .status-badge .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
     }
 
-    .action-btns {
-        display: flex;
-        gap: 4px;
-        flex-wrap: wrap;
-    }
-    .action-btns .btn {
-        padding: 4px 8px;
-        font-size: 12px;
-    }
-    .action-btns .btn i {
-        font-size: 12px;
-    }
-
-
-    /* 流程指示器 */
+    /* ===== 流程指示器 ===== */
     .flow-steps-mini {
         display: flex;
         align-items: center;
@@ -132,99 +248,427 @@
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: #d1d5db;
+        background: #e2e8f0;
         margin-right: 4px;
+        transition: all 0.3s ease;
     }
-    .flow-steps-mini .fs-dot.active { background: #3b82f6; }
+    .flow-steps-mini .fs-dot.active { background: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     .flow-steps-mini .fs-dot.done { background: #10b981; }
     .flow-steps-mini .fs-line {
         width: 16px;
-        height: 1px;
-        background: #d1d5db;
+        height: 2px;
+        background: #e2e8f0;
         margin: 0 2px;
+        border-radius: 1px;
     }
     .flow-steps-mini .fs-line.done { background: #10b981; }
 
-    /* 时间轴 */
+    /* ===== 操作按钮 ===== */
+    .action-btns .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .action-btns .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .action-btns .btn i {
+        font-size: 11px;
+    }
+
+    /* ===== 价格标签 ===== */
+    .price-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #b45309;
+        border-radius: 20px;
+        padding: 3px 14px;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    /* ===== 分页 ===== */
+    .card-footer-custom {
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+        padding: 14px 20px;
+        border-radius: 0 0 16px 16px;
+    }
+
+    /* ===== 详情弹窗 ===== */
+    .modal-modern .modal-content {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2);
+        overflow: hidden;
+    }
+    .modal-modern .modal-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid #e2e8f0;
+        padding: 18px 24px;
+    }
+    .modal-modern .modal-title {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 15px;
+    }
+    .modal-modern .modal-body {
+        padding: 24px;
+    }
+    .modal-modern .modal-footer {
+        border-top: 1px solid #f1f5f9;
+        padding: 16px 24px;
+        background: #fafafa;
+    }
+    .modal-modern .btn-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #e2e8f0;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e");
+        opacity: 1;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: all 0.2s ease;
+    }
+    .modal-modern .btn-close:hover {
+        background-color: #cbd5e1;
+    }
+
+    /* 弹窗特殊头部 - 标题和关闭按钮 */
+    .modal-header-success .modal-title,
+    .modal-header-warning .modal-title,
+    .modal-header-primary .modal-title { color: #fff !important; }
+    .modal-header-success .btn-close,
+    .modal-header-warning .btn-close,
+    .modal-header-primary .btn-close {
+        background-color: rgba(255,255,255,0.2);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e");
+    }
+    .modal-header-success .btn-close:hover,
+    .modal-header-warning .btn-close:hover,
+    .modal-header-primary .btn-close:hover {
+        background-color: rgba(255,255,255,0.35);
+    }
+
+    .modal-header-success { background: linear-gradient(135deg, #10b981, #06b6d4) !important; color: #fff !important; }
+    .modal-header-warning { background: linear-gradient(135deg, #f59e0b, #f97316) !important; color: #fff !important; }
+    .modal-header-primary { background: linear-gradient(135deg, #4f46e5, #6366f1) !important; color: #fff !important; }
+    .detail-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .detail-header .status-pill {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    .detail-header .order-no {
+        font-size: 20px;
+        font-weight: 800;
+        color: #1e293b;
+        letter-spacing: -0.5px;
+    }
+
+    /* 信息网格 */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    .info-grid .info-item {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 14px 16px;
+        border: 1px solid #f1f5f9;
+    }
+    .info-grid .info-item.full {
+        grid-column: 1 / -1;
+    }
+    .info-grid .info-label {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+    .info-grid .info-value {
+        font-size: 14px;
+        color: #1e293b;
+        font-weight: 600;
+    }
+    .info-grid .info-value.text-muted {
+        color: #64748b;
+        font-weight: 400;
+    }
+
+    /* 描述卡片 */
+    .desc-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 16px 18px;
+        border: 1px solid #f1f5f9;
+        margin-bottom: 20px;
+    }
+    .desc-card .desc-label {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+    .desc-card .desc-body {
+        font-size: 14px;
+        color: #334155;
+        line-height: 1.7;
+    }
+
+    /* 图片画廊 */
+    .detail-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .detail-gallery a {
+        display: block;
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+    }
+    .detail-gallery a:hover {
+        transform: scale(1.05);
+        border-color: #c7d2fe;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+    }
+    .detail-gallery img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .detail-gallery .img-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-size: 24px;
+    }
+
+    /* 回执卡片 */
+    .receipt-card {
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+        border: 1px solid #bbf7d0;
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 20px;
+    }
+    .receipt-card .receipt-title {
+        font-weight: 700;
+        color: #047857;
+        font-size: 14px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .receipt-card .receipt-price {
+        font-size: 20px;
+        font-weight: 800;
+        color: #b45309;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        padding: 4px 16px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-bottom: 8px;
+    }
+    .receipt-card .receipt-body {
+        color: #334155;
+        line-height: 1.7;
+        font-size: 14px;
+    }
+
+    /* 警告/提示卡片 */
+    .alert-card {
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .alert-card.alert-warning {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        color: #92400e;
+    }
+    .alert-card.alert-danger {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+    }
+    .alert-card.alert-info {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        color: #075985;
+    }
+
+    /* ===== 时间轴 ===== */
+    .timeline-section {
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #f1f5f9;
+    }
+    .timeline-section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .timeline-section-title i {
+        color: #4f46e5;
+    }
     .timeline {
         position: relative;
-        padding-left: 28px;
+        padding-left: 32px;
     }
     .timeline::before {
         content: '';
         position: absolute;
-        left: 10px;
+        left: 12px;
         top: 6px;
         bottom: 6px;
         width: 2px;
-        background: #e5e7eb;
+        background: linear-gradient(to bottom, #e2e8f0, #cbd5e1);
         border-radius: 1px;
     }
     .timeline-item {
         position: relative;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
     }
     .timeline-item:last-child { margin-bottom: 0; }
     .tl-dot {
         position: absolute;
-        left: -21px;
+        left: -26px;
         top: 2px;
-        width: 18px;
-        height: 18px;
+        width: 22px;
+        height: 22px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 9px;
+        font-size: 10px;
         color: #fff;
         z-index: 1;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        border: 2px solid #fff;
     }
-    .tl-created { background: #6366f1; }
-    .tl-accepted { background: #3b82f6; }
-    .tl-paused { background: #f59e0b; }
-    .tl-resumed { background: #06b6d4; }
-    .tl-completed { background: #10b981; }
-    .tl-cancelled { background: #9ca3af; }
-    .tl-edited { background: #8b5cf6; }
-    .tl-remark { background: #6b7280; }
-    .tl-title { font-weight: 600; font-size: 13px; color: #1F2937; }
-    .tl-time { font-size: 11px; color: #9ca3af; }
-    .tl-content { font-size: 12px; color: #6B7280; margin-top: 3px; white-space: pre-wrap; }
-
-    .receipt-box {
-        background: #f0fdf4;
-        border: 1px solid #bbf7d0;
-        border-radius: 8px;
-        padding: 14px;
-    }
-    .price-tag {
-        display: inline-block;
-        background: #fef3c7;
-        color: #d97706;
-        border: 1px solid #fde68a;
-        border-radius: 20px;
-        padding: 3px 14px;
+    .tl-created { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .tl-accepted { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+    .tl-paused { background: linear-gradient(135deg, #f59e0b, #f97316); }
+    .tl-resumed { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+    .tl-completed { background: linear-gradient(135deg, #10b981, #34d399); }
+    .tl-cancelled { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+    .tl-edited { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+    .tl-remark { background: linear-gradient(135deg, #64748b, #94a3b8); }
+    .tl-title { font-weight: 700; font-size: 13px; color: #1e293b; }
+    .tl-title .badge {
+        font-size: 10px;
         font-weight: 600;
-        font-size: 16px;
+        padding: 3px 8px;
+        border-radius: 6px;
     }
-    .status-badge-lg {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 5px 14px;
-        border-radius: 20px;
-        font-size: 13px;
+    .tl-time { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .tl-content { font-size: 13px; color: #475569; margin-top: 4px; white-space: pre-wrap; line-height: 1.6; }
+
+
+
+    .modal-modern .btn {
+        border-radius: 10px;
         font-weight: 500;
+        font-size: 13px;
+        padding: 8px 20px;
+        transition: all 0.2s ease;
+    }
+    .modal-modern .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .modal-modern .form-control {
+        border-radius: 10px;
+        border-color: #e2e8f0;
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+    .modal-modern .form-control:focus {
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+    }
+    .modal-modern .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .bg-warning-soft { background: rgba(245, 158, 11, 0.08) !important; }
+    .text-warning { color: #d97706 !important; }
+    .bg-info-soft { background: rgba(6, 182, 212, 0.08) !important; }
+    .text-info { color: #0891b2 !important; }
+    .bg-success-soft { background: rgba(16, 185, 129, 0.08) !important; }
+    .text-success { color: #059669 !important; }
+    .bg-secondary-soft { background: rgba(100, 116, 139, 0.08) !important; }
+    .text-secondary { color: #475569 !important; }
+    .bg-danger-soft { background: rgba(239, 68, 68, 0.08) !important; }
+    .text-danger { color: #dc2626 !important; }
+
+    /* ===== 空状态 ===== */
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+    }
+    .empty-state i {
+        color: #cbd5e1;
+        margin-bottom: 16px;
+    }
+    .empty-state .empty-text {
+        color: #94a3b8;
+        font-size: 14px;
     }
 </style>
 {/block}
 
 {block name="content"}
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h5 class="mb-0"><i class="fa fa-wrench text-primary me-2"></i>报修工单管理</h5>
-        <small class="text-muted">管理用户提交的在线报修，按流程处理工单</small>
+        <h5 class="mb-1" style="font-weight:800; color:#1e293b; font-size:18px;">
+            <i class="fa fa-wrench text-primary me-2" style="color:#4f46e5 !important;"></i>报修工单管理
+        </h5>
+        <small style="color:#64748b;">管理用户提交的在线报修，按流程处理工单</small>
     </div>
 </div>
 
@@ -287,14 +731,14 @@
 </div>
 
 <!-- 筛选 -->
-<div class="card border-0 shadow-sm mb-3">
-    <div class="card-body py-2">
+<div class="filter-bar mb-4">
+    <div class="card-body py-3 px-3">
         <form class="row g-2 align-items-center" method="get">
             <div class="col-md-3">
-                <input type="text" class="form-control form-control-sm" name="keyword" value="{$keyword}" placeholder="搜索工单号/姓名/电话...">
+                <input type="text" class="form-control" name="keyword" value="{$keyword}" placeholder="搜索工单号/姓名/电话...">
             </div>
             <div class="col-md-3">
-                <select class="form-select form-select-sm" name="status">
+                <select class="form-select" name="status">
                     <option value="">全部状态</option>
                     <option value="0" {if (string)$status==='0'}selected{/if}>待接单</option>
                     <option value="1" {if (string)$status==='1'}selected{/if}>处理中</option>
@@ -304,29 +748,33 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-sm btn-outline-primary w-100"><i class="fa fa-search"></i> 筛选</button>
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="fa fa-search me-1"></i> 筛选
+                </button>
             </div>
             <div class="col-md-4 text-end">
-                <a href="?" class="btn btn-sm btn-link text-muted">重置</a>
+                <a href="?" class="btn btn-sm btn-link" style="color:#64748b; text-decoration:none; font-weight:500;">
+                    <i class="fa fa-rotate-left me-1"></i>重置筛选
+                </a>
             </div>
         </form>
     </div>
 </div>
 
 <!-- 列表 -->
-<div class="card border-0 shadow-sm">
+<div class="data-card">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <table class="table align-middle">
+                <thead>
                     <tr>
                         <th style="width:50px;">#</th>
-                        <th style="width:140px;">工单号</th>
-                        <th>客户信息</th>
-                        <th>故障描述</th>
-                        <th style="width:90px;">流程</th>
-                        <th style="width:160px;">提交时间</th>
-                        <th style="width:220px;">操作</th>
+                        <th style="width:150px;">工单号</th>
+                        <th style="width:160px;">客户信息</th>
+                        <th style="min-width:240px;">故障描述</th>
+                        <th style="width:100px;">流程</th>
+                        <th style="width:150px;">提交时间</th>
+                        <th style="width:200px;">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -337,25 +785,33 @@
                     {php}$statusText = \app\model\RepairOrder::getStatusText($r['status']);{/php}
                     {php}$st = (int)$r['status'];{/php}
                     {php}$imgs = !empty($r['images']) ? json_decode($r['images'], true) : [];{/php}
-                    <tr class="order-row" data-id="{$r.id}" data-status="{$r.status}" data-order-no="{$r.order_no}">
-                        <td class="text-center">{$k}</td>
-                        <td><span class="fw-bold text-primary">{$r.order_no}</span></td>
+                    <tr data-id="{$r.id}" data-status="{$r.status}" data-order-no="{$r.order_no}">
+                        <td class="text-center" style="color:#94a3b8; font-weight:600;">{$k}</td>
                         <td>
-                            <span class="fw-bold">{$r.client_name}</span>
-                            <br><small class="text-muted"><i class="fa fa-phone"></i> {$r.phone}</small>
-                            {if $r.company}<br><small class="text-muted">{$r.company}</small>{/if}
+                            <span style="font-weight:700; color:#4f46e5; font-size:13px;">{$r.order_no}</span>
                         </td>
                         <td>
-                            <div class="text-truncate" style="max-width:240px;" title="{$r.description}">{$r.description}</div>
+                            <div class="customer-name">{$r.client_name}</div>
+                            <div class="customer-meta">
+                                <i class="fa fa-phone"></i> {$r.phone}
+                            </div>
+                            {if $r.company}
+                            <div class="customer-meta">
+                                <i class="fa fa-building"></i> {$r.company}
+                            </div>
+                            {/if}
+                        </td>
+                        <td>
+                            <div class="desc-text" title="{$r.description}">{$r.description}</div>
                             {if $imgs}
-                            <div class="mt-1 d-flex gap-1">
+                            <div class="thumb-gallery-inline mt-2">
                                 {foreach $imgs as $img}
-                                <a href="{$img}" target="_blank"><img src="{$img}" style="width:36px;height:28px;object-fit:cover;border-radius:3px;"></a>
+                                <a href="{$img}" target="_blank"><img src="{$img}"></a>
                                 {/foreach}
                             </div>
                             {/if}
                             {if $r.service_price > 0}
-                            <span class="badge bg-warning text-dark mt-1">¥{:number_format($r.service_price, 2)}</span>
+                            <span class="price-tag mt-2">¥{:number_format($r.service_price, 2)}</span>
                             {/if}
                         </td>
                         <td>
@@ -366,39 +822,18 @@
                                 <span class="fs-line {if $st==2}done{/if}"></span>
                                 <span class="fs-dot {if $st==2}done{/if}"></span>
                             </div>
-                            <span class="badge {if $st==0}bg-warning text-dark{elseif $st==1}bg-info{elseif $st==2}bg-success{elseif $st==3}bg-secondary{elseif $st==4}bg-danger{/if} mt-1">{$statusText}</span>
+                            <span class="status-badge mt-2
+                                {if $st==0}bg-warning-soft text-warning{elseif $st==1}bg-info-soft text-info{elseif $st==2}bg-success-soft text-success{elseif $st==3}bg-secondary-soft text-secondary{elseif $st==4}bg-danger-soft text-danger{/if}">
+                                <span class="dot" style="background:currentColor;"></span>{$statusText}
+                            </span>
                         </td>
-                        <td><small class="text-muted">{$r.create_time|substr=0,16}</small></td>
+                        <td><small style="color:#94a3b8; font-size:12px;">{$r.create_time|substr=0,16}</small></td>
                         <td>
-                            <div class="btn-group">
-                                <button class="btn btn-sm btn-outline-info view-btn" data-id="{$r.id}" title="查看详情">
+                            <div class="action-btns">
+                                <button class="btn btn-outline-info view-btn" data-id="{$r.id}" data-order-no="{$r.order_no}" data-status="{$r.status}" title="查看详情">
                                     <i class="fa fa-eye"></i>
                                 </button>
-                                {if $st == 0}
-                                <button class="btn btn-sm btn-success accept-btn" data-id="{$r.id}" title="接单">
-                                    <i class="fa fa-user-plus"></i> 接单
-                                </button>
-                                {/if}
-                                {if $st == 1}
-                                <button class="btn btn-sm btn-warning pause-btn" data-id="{$r.id}" title="暂停">
-                                    <i class="fa fa-pause"></i>
-                                </button>
-                                <button class="btn btn-sm btn-success complete-btn" data-id="{$r.id}" title="完成">
-                                    <i class="fa fa-check"></i> 完成
-                                </button>
-                                {/if}
-                                {if $st == 4}
-                                <button class="btn btn-sm btn-info resume-btn" data-id="{$r.id}" title="恢复">
-                                    <i class="fa fa-play"></i>
-                                </button>
-                                <button class="btn btn-sm btn-success complete-btn" data-id="{$r.id}" title="完成">
-                                    <i class="fa fa-check"></i>
-                                </button>
-                                {/if}
-                                <button class="btn btn-sm btn-outline-secondary remark-btn" data-id="{$r.id}" title="备注">
-                                    <i class="fa fa-comment"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{$r.id}" title="删除">
+                                <button class="btn btn-outline-danger delete-btn" data-id="{$r.id}" title="删除">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -406,21 +841,26 @@
                     </tr>
                     {/foreach}
                     {else}
-                    <tr><td colspan="7" class="text-center py-5 text-muted"><i class="fa fa-inbox fa-3x d-block mb-2"></i>暂无工单</td></tr>
+                    <tr><td colspan="7">
+                        <div class="empty-state">
+                            <i class="fa fa-inbox fa-3x d-block"></i>
+                            <div class="empty-text">暂无工单</div>
+                        </div>
+                    </td></tr>
                     {/if}
                 </tbody>
             </table>
         </div>
     </div>
     {if $list->count()}
-    <div class="card-footer bg-light">{$list|raw}</div>
+    <div class="card-footer-custom">{$list|raw}</div>
     {/if}
 </div>
 
 <!-- ============ 弹窗 ============ -->
 
 <!-- 查看详情弹窗 -->
-<div class="modal fade" id="viewModal" tabindex="-1">
+<div class="modal fade modal-modern" id="viewModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -433,12 +873,12 @@
 </div>
 
 <!-- 暂停弹窗 -->
-<div class="modal fade" id="pauseModal" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade modal-modern" id="pauseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
+            <div class="modal-header modal-header-warning">
                 <h6 class="modal-title"><i class="fa fa-pause me-2"></i>暂停工单</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="pauseId">
@@ -448,25 +888,27 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-warning" id="pauseSaveBtn"><i class="fa fa-pause"></i> 确认暂停</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-warning" id="pauseSaveBtn" style="background: linear-gradient(135deg, #f59e0b, #f97316); border: none; color: #fff;">
+                    <i class="fa fa-pause"></i> 确认暂停
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- 完成弹窗（含回执+价格） -->
-<div class="modal fade" id="completeModal" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade modal-modern" id="completeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-success text-white">
+            <div class="modal-header modal-header-success">
                 <h6 class="modal-title"><i class="fa fa-check-circle me-2"></i>完成工单</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="completeId">
                 <div class="mb-3">
-                    <label class="form-label">工单号：<strong id="completeOrderNo"></strong></label>
+                    <label class="form-label">工单号：<strong id="completeOrderNo" style="color:#4f46e5;"></strong></label>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">完成回执 <span class="text-danger">*</span></label>
@@ -478,20 +920,22 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-success" id="completeSaveBtn"><i class="fa fa-check"></i> 确认完成</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-success" id="completeSaveBtn" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none; color: #fff;">
+                    <i class="fa fa-check"></i> 确认完成
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- 备注弹窗 -->
-<div class="modal fade" id="remarkModal" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade modal-modern" id="remarkModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header modal-header-primary">
                 <h6 class="modal-title"><i class="fa fa-comment me-2"></i>添加工单备注</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="remarkId">
@@ -501,8 +945,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="remarkSaveBtn"><i class="fa fa-save"></i> 保存</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="remarkSaveBtn" style="background: linear-gradient(135deg, #4f46e5, #6366f1); border: none;">
+                    <i class="fa fa-save"></i> 保存
+                </button>
             </div>
         </div>
     </div>
@@ -530,69 +976,92 @@ $(function(){
     });
 
     function renderDetail(d) {
-        var statusClass = getBadgeClass(d.status);
+        var statusMap = {
+            '0': {class:'bg-warning-soft', textClass:'text-warning', label:'待接单'},
+            '1': {class:'bg-info-soft', textClass:'text-info', label:'处理中'},
+            '2': {class:'bg-success-soft', textClass:'text-success', label:'已完成'},
+            '3': {class:'bg-secondary-soft', textClass:'text-secondary', label:'已撤销'},
+            '4': {class:'bg-danger-soft', textClass:'text-danger', label:'已暂停'}
+        };
+        var s = statusMap[d.status] || statusMap['0'];
         var html = '';
 
-        html += '<div class="mb-3">';
-        html += '<span class="status-badge-lg badge ' + statusClass + '">' + d.status_text + '</span>';
-        html += '<span class="ms-2 fw-bold text-primary h5">' + d.order_no + '</span>';
+        // 头部：状态 + 工单号
+        html += '<div class="detail-header">';
+        html += '<span class="status-pill ' + s.class + ' ' + s.textClass + '">' + d.status_text + '</span>';
+        html += '<span class="order-no">' + d.order_no + '</span>';
         html += '</div>';
 
-        html += '<div class="row g-3 mb-3">';
-        html += '<div class="col-md-4"><strong>联系人：</strong>' + d.client_name + '</div>';
-        html += '<div class="col-md-4"><strong>电话：</strong>' + d.phone + '</div>';
-        html += '<div class="col-md-4"><strong>单位：</strong>' + (d.company || '-') + '</div>';
-        if (d.address) html += '<div class="col-12"><strong>服务地址：</strong>' + d.address + '</div>';
-        html += '<div class="col-12"><strong>故障描述：</strong><div class="p-3 bg-light rounded mt-1">' + d.description + '</div></div>';
+        // 信息网格
+        html += '<div class="info-grid">';
+        html += '<div class="info-item"><div class="info-label">联系人</div><div class="info-value">' + d.client_name + '</div></div>';
+        html += '<div class="info-item"><div class="info-label">电话</div><div class="info-value">' + d.phone + '</div></div>';
+        html += '<div class="info-item"><div class="info-label">单位</div><div class="info-value text-muted">' + (d.company || '-') + '</div></div>';
+        if (d.address) {
+            html += '<div class="info-item full"><div class="info-label">服务地址</div><div class="info-value text-muted">' + d.address + '</div></div>';
+        }
         html += '</div>';
 
+        // 故障描述
+        html += '<div class="desc-card">';
+        html += '<div class="desc-label">故障描述</div>';
+        html += '<div class="desc-body">' + d.description + '</div>';
+        html += '</div>';
+
+        // 图片
         if (d.images && d.images.length) {
-            html += '<div class="mb-3"><strong>图片：</strong><div class="thumb-gallery">';
+            html += '<div style="margin-bottom:20px;">'
+            html += '<div style="font-size:11px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">相关图片</div>';
+            html += '<div class="detail-gallery">';
             d.images.forEach(function(img){
                 html += '<a href="' + img + '" target="_blank" title="查看原图">';
-                html += '<img src="' + img + '" onerror="this.parentNode.innerHTML=\'<div class=\\\'img-placeholder\\\'><i class=\\\'fa fa-image\\\'></i></div>\';this.onerror=null">';
+                html += '<img src="' + img + '" onerror="this.parentNode.innerHTML=\'<div class=img-placeholder><i class=fa fa-image></i></div>\';this.onerror=null">';
                 html += '</a>';
             });
             html += '</div></div>';
         }
 
         // 时间信息
-        html += '<div class="row g-2 mb-3 text-muted small">';
-        html += '<div class="col-md-6">提交时间：' + d.create_time + '</div>';
-        if (d.accepted_time) html += '<div class="col-md-6">接单时间：' + d.accepted_time + '</div>';
-        if (d.paused_time) html += '<div class="col-md-6">暂停时间：' + d.paused_time + '</div>';
-        if (d.completed_time) html += '<div class="col-md-6">完成时间：' + d.completed_time + '</div>';
+        html += '<div class="info-grid">';
+        html += '<div class="info-item"><div class="info-label">提交时间</div><div class="info-value text-muted">' + d.create_time + '</div></div>';
+        if (d.accepted_time) html += '<div class="info-item"><div class="info-label">接单时间</div><div class="info-value text-muted">' + d.accepted_time + '</div></div>';
+        if (d.paused_time) html += '<div class="info-item"><div class="info-label">暂停时间</div><div class="info-value text-muted">' + d.paused_time + '</div></div>';
+        if (d.completed_time) html += '<div class="info-item"><div class="info-label">完成时间</div><div class="info-value text-muted">' + d.completed_time + '</div></div>';
         html += '</div>';
 
         // 已完成回执
         if (d.status == 2 && (d.completion_receipt || parseFloat(d.service_price) > 0)) {
-            html += '<div class="receipt-box mb-3">';
-            html += '<strong class="text-success"><i class="fa fa-check-circle me-1"></i>完成回执</strong>';
+            html += '<div class="receipt-card">';
+            html += '<div class="receipt-title"><i class="fa fa-check-circle"></i> 完成回执</div>';
             if (parseFloat(d.service_price) > 0) {
-                html += '<p class="mb-1 mt-1">服务价格：<span class="price-tag">¥' + parseFloat(d.service_price).toFixed(2) + '</span></p>';
+                html += '<div class="receipt-price">¥' + parseFloat(d.service_price).toFixed(2) + '</div>';
             }
             if (d.completion_receipt) {
-                html += '<p class="mb-0">' + d.completion_receipt + '</p>';
+                html += '<div class="receipt-body">' + d.completion_receipt + '</div>';
             }
             html += '</div>';
         }
 
         // 撤销原因
         if (d.status == 3 && d.cancel_reason) {
-            html += '<div class="alert alert-warning"><i class="fa fa-ban me-1"></i>撤销原因：' + d.cancel_reason + '</div>';
+            html += '<div class="alert-card alert-warning"><i class="fa fa-ban"></i><div>撤销原因：' + d.cancel_reason + '</div></div>';
         }
         // 暂停原因
         if (d.status == 4 && d.pause_reason) {
-            html += '<div class="alert alert-danger"><i class="fa fa-pause me-1"></i>暂停原因：' + d.pause_reason + '</div>';
+            html += '<div class="alert-card alert-danger"><i class="fa fa-pause"></i><div>暂停原因：' + d.pause_reason + '</div></div>';
         }
         // 备注
         if (d.remark) {
-            html += '<div class="mb-3"><strong>处理备注：</strong><div class="p-2 bg-light rounded mt-1" style="white-space:pre-wrap;">' + d.remark + '</div></div>';
+            html += '<div class="desc-card">';
+            html += '<div class="desc-label">处理备注</div>';
+            html += '<div class="desc-body">' + d.remark + '</div>';
+            html += '</div>';
         }
 
         // 时间轴
         if (d.timeline && d.timeline.length > 0) {
-            html += '<hr><h6 class="mb-3"><i class="fa fa-history me-1"></i>处理时间轴</h6>';
+            html += '<div class="timeline-section">';
+            html += '<div class="timeline-section-title"><i class="fa fa-history"></i>处理时间轴</div>';
             html += '<div class="timeline">';
             d.timeline.forEach(function(t){
                 html += '<div class="timeline-item">';
@@ -602,8 +1071,25 @@ $(function(){
                 if (t.content) html += '<div class="tl-content">' + t.content + '</div>';
                 html += '</div>';
             });
-            html += '</div>';
+            html += '</div></div>';
         }
+
+        // 操作按钮栏（根据状态动态展示）
+        html += '<div class="detail-actions" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; padding-top:16px; border-top:1px solid #f1f5f9; margin-top:16px;">';
+        if (d.status == 0) {
+            html += '<button class="btn btn-success accept-btn" data-id="' + d.id + '" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none; color: #fff; border-radius: 10px; padding: 8px 20px; font-weight: 500;"><i class="fa fa-user-plus"></i> 接单</button>';
+        }
+        if (d.status == 1) {
+            html += '<button class="btn btn-warning pause-btn" data-id="' + d.id + '" style="background: linear-gradient(135deg, #f59e0b, #f97316); border: none; color: #fff; border-radius: 10px; padding: 8px 20px; font-weight: 500;"><i class="fa fa-pause"></i> 暂停</button>';
+            html += '<button class="btn btn-success complete-btn" data-id="' + d.id + '" data-order-no="' + d.order_no + '" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none; color: #fff; border-radius: 10px; padding: 8px 20px; font-weight: 500;"><i class="fa fa-check"></i> 完成</button>';
+        }
+        if (d.status == 4) {
+            html += '<button class="btn btn-info resume-btn" data-id="' + d.id + '" style="background: linear-gradient(135deg, #3b82f6, #6366f1); border: none; color: #fff; border-radius: 10px; padding: 8px 20px; font-weight: 500;"><i class="fa fa-play"></i> 恢复</button>';
+            html += '<button class="btn btn-success complete-btn" data-id="' + d.id + '" data-order-no="' + d.order_no + '" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none; color: #fff; border-radius: 10px; padding: 8px 20px; font-weight: 500;"><i class="fa fa-check"></i> 完成</button>';
+        }
+        html += '<button class="btn btn-secondary remark-btn" data-id="' + d.id + '" style="background: #f1f5f9; border: 1px solid #e2e8f0; color: #64748b; border-radius: 10px; padding: 8px 20px; font-weight: 500;"><i class="fa fa-comment"></i> 备注</button>';
+        html += '<button class="btn btn-danger delete-btn" data-id="' + d.id + '" style="background: linear-gradient(135deg, #ef4444, #f97316); border: none; color: #fff; border-radius: 10px; padding: 8px 20px; font-weight: 500;"><i class="fa fa-trash"></i> 删除</button>';
+        html += '</div>';
 
         $('#viewContent').html(html);
     }
@@ -646,9 +1132,8 @@ $(function(){
 
     // ============ 完成弹窗 ============
     $(document).on('click', '.complete-btn', function(){
-        var row = $(this).closest('tr');
-        $('#completeId').val(row.data('id'));
-        $('#completeOrderNo').text(row.data('order-no') || '');
+        $('#completeId').val($(this).data('id'));
+        $('#completeOrderNo').text($(this).data('order-no') || '');
         $('#completeReceipt').val('');
         $('#completePrice').val('');
         completeModal.show();
@@ -693,10 +1178,6 @@ $(function(){
     });
 
     function reloadPage() { setTimeout(function(){ location.reload(); }, 400); }
-    function getBadgeClass(status) {
-        var m = {'0':'bg-warning text-dark', '1':'bg-info', '2':'bg-success', '3':'bg-secondary', '4':'bg-danger'};
-        return m[status] || 'bg-secondary';
-    }
 });
 </script>
 {/block}

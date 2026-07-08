@@ -2,31 +2,307 @@
 
 {block name="css"}
 <style>
-    /* 留言列表美化 */
-    .message-card { transition: all 0.2s ease; }
-    .message-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important; }
-
-    /* 会话详情弹窗 - 聊天室风格 */
-    .chat-modal-header {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        color: #fff;
-        border-radius: 8px 8px 0 0;
+    /* ===== 现代配色体系 ===== */
+    :root {
+        --primary: #4f46e5;
+        --primary-light: #818cf8;
+        --primary-soft: rgba(79, 70, 229, 0.08);
+        --success: #10b981;
+        --success-soft: rgba(16, 185, 129, 0.08);
+        --warning: #f59e0b;
+        --warning-soft: rgba(245, 158, 11, 0.08);
+        --danger: #ef4444;
+        --danger-soft: rgba(239, 68, 68, 0.08);
+        --info: #06b6d4;
+        --info-soft: rgba(6, 182, 212, 0.08);
+        --dark: #1e293b;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --gray-600: #475569;
+        --gray-700: #334155;
     }
-    .chat-modal-header .btn-close { filter: brightness(0) invert(1); }
+
+    /* ===== 筛选标签 ===== */
+    .filter-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+    .filter-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+    .filter-tab.active {
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    .filter-tab:not(.active) {
+        background: #fff;
+        border-color: #e2e8f0;
+        color: #64748b;
+    }
+    .filter-tab:not(.active):hover {
+        border-color: #c7d2fe;
+        color: #4f46e5;
+        background: #f8fafc;
+    }
+    .filter-tab .badge {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 10px;
+    }
+
+    /* ===== 数据卡片 ===== */
+    .data-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+        border: 1px solid #f1f5f9;
+        overflow: hidden;
+    }
+    .data-card .table {
+        margin-bottom: 0;
+    }
+    .data-card .table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        border-top: none;
+    }
+    .data-card .table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 13px;
+    }
+    .data-card .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .data-card .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    .data-card .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    /* 未读行高亮 */
+    .table tbody tr.unread-row {
+        background: #fffbeb;
+        border-left: 3px solid #f59e0b;
+    }
+    .table tbody tr.unread-row:hover {
+        background: #fef3c7;
+    }
+    .table tbody tr.unread-row td:first-child {
+        position: relative;
+    }
+    .table tbody tr.unread-row td:first-child::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #f59e0b;
+    }
+
+    /* 留言人信息 */
+    .msg-name {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 14px;
+    }
+    .msg-email {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 2px;
+    }
+    .msg-phone {
+        color: #334155;
+        font-weight: 500;
+    }
+    .msg-source {
+        display: inline-block;
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+
+    /* 留言内容 */
+    .msg-content-preview {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.6;
+        color: #475569;
+        max-width: 300px;
+        font-size: 13px;
+    }
+
+    /* 状态标签 */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    .status-pill .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* 操作按钮 */
+    .action-btns .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .action-btns .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .action-btns .btn i {
+        font-size: 11px;
+    }
+
+    /* 分页 */
+    .card-footer-custom {
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+        padding: 14px 20px;
+        border-radius: 0 0 16px 16px;
+    }
+
+    .bg-warning-soft { background: rgba(245, 158, 11, 0.08) !important; }
+    .text-warning { color: #d97706 !important; }
+    .bg-info-soft { background: rgba(6, 182, 212, 0.08) !important; }
+    .text-info { color: #0891b2 !important; }
+    .bg-success-soft { background: rgba(16, 185, 129, 0.08) !important; }
+    .text-success { color: #059669 !important; }
+    .bg-secondary-soft { background: rgba(100, 116, 139, 0.08) !important; }
+    .text-secondary { color: #475569 !important; }
+    .bg-danger-soft { background: rgba(239, 68, 68, 0.08) !important; }
+    .text-danger { color: #dc2626 !important; }
+
+    /* 空状态 */
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+    }
+    .empty-state i {
+        color: #cbd5e1;
+        margin-bottom: 16px;
+    }
+    .empty-state .empty-text {
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    /* ===== 弹窗现代化 ===== */
+    .modal-modern .modal-content {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2);
+        overflow: hidden;
+    }
+    .modal-modern .modal-header {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 18px 24px;
+    }
+    .modal-modern .modal-title {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 15px;
+    }
+    .modal-modern .modal-body {
+        padding: 24px;
+    }
+    .modal-modern .modal-footer {
+        border-top: 1px solid #f1f5f9;
+        padding: 16px 24px;
+        background: #fafafa;
+    }
+    .modal-modern .btn-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        opacity: 1;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: all 0.2s ease;
+    }
+    .modal-modern .btn-close:hover {
+        background: #cbd5e1;
+    }
+
+    /* 聊天弹窗头部 */
+    .chat-header {
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        color: #fff;
+        border: none !important;
+        padding: 18px 24px !important;
+    }
+    .chat-header .modal-title { color: #fff !important; }
+    .chat-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+        background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    }
+    .chat-header .btn-close:hover { opacity: 1; }
+
+    /* 聊天区域 */
     .chat-thread {
-        max-height: 420px;
+        max-height: 400px;
         overflow-y: auto;
-        padding: 10px 5px;
-        background: #F9FAFB;
-        border-radius: 12px;
+        padding: 16px 8px;
+        background: #f8fafc;
+        border-radius: 14px;
         scrollbar-width: thin;
     }
     .chat-thread::-webkit-scrollbar { width: 6px; }
-    .chat-thread::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+    .chat-thread::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
     .chat-row {
         display: flex;
-        margin-bottom: 18px;
+        margin-bottom: 20px;
         align-items: flex-start;
         animation: fadeInUp 0.3s ease;
     }
@@ -38,10 +314,10 @@
     .chat-row.admin { justify-content: flex-start; }
 
     .chat-avatar {
-        width: 38px; height: 38px;
+        width: 36px; height: 36px;
         border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        color: #fff; font-size: 15px;
+        color: #fff; font-size: 14px;
         flex-shrink: 0;
         box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
@@ -54,25 +330,25 @@
         margin-right: 12px;
     }
 
-    .chat-content { max-width: 75%; }
+    .chat-content { max-width: 78%; }
     .chat-bubble {
         padding: 12px 16px;
-        border-radius: 18px;
+        border-radius: 16px;
         font-size: 14px; line-height: 1.6;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         word-break: break-word;
     }
     .chat-row.user .chat-bubble {
         background: #fff;
-        border: 1px solid #E5E7EB;
+        border: 1px solid #e2e8f0;
         color: #1F2937;
-        border-bottom-left-radius: 18px;
+        border-bottom-left-radius: 16px;
         border-bottom-right-radius: 4px;
     }
     .chat-row.admin .chat-bubble {
-        background: linear-gradient(135deg, #1A5FDC, #00B4D8);
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
         color: #fff;
-        border-bottom-right-radius: 18px;
+        border-bottom-right-radius: 16px;
         border-bottom-left-radius: 4px;
     }
     .chat-time {
@@ -84,51 +360,109 @@
     .chat-row.user .chat-time { text-align: right; }
     .chat-row.admin .chat-time { text-align: left; }
 
-    /* 留言人信息卡片 */
-    .chat-user-info {
-        background: #F0F9FF;
-        border-radius: 10px;
-        padding: 10px 16px;
-        margin-bottom: 15px;
-        display: flex; align-items: center; gap: 10px;
+    /* 用户信息卡片 */
+    .chat-user-card {
+        background: linear-gradient(135deg, #f0f9ff, #f8fafc);
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid #e0f2fe;
     }
-    .chat-user-info .avatar-sm {
-        width: 40px; height: 40px;
+    .chat-user-card .avatar-sm {
+        width: 42px; height: 42px;
         border-radius: 50%;
         background: linear-gradient(135deg, #6366F1, #8B5CF6);
         color: #fff;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 16px;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    }
+    .chat-user-card .user-name {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 14px;
+    }
+    .chat-user-card .user-phone {
+        font-size: 12px;
+        color: #64748b;
+    }
+    .chat-user-card .user-phone i {
+        color: #94a3b8;
+        margin-right: 4px;
     }
 
-    /* 回复弹窗美化 */
-    .reply-preview {
+    /* 回复弹窗 */
+    .reply-preview-box {
         background: #f8fafc;
-        border-left: 3px solid #1A5FDC;
-        border-radius: 0 8px 8px 0;
-        padding: 12px 16px;
+        border-left: 3px solid #4f46e5;
+        border-radius: 0 12px 12px 0;
+        padding: 14px 18px;
         font-size: 14px;
         color: #475569;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+    .reply-preview-box .preview-label {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
     }
     .reply-textarea {
         border-radius: 12px;
-        border: 1px solid #E5E7EB;
+        border: 1px solid #e2e8f0;
         padding: 14px;
         line-height: 1.6;
         resize: vertical;
         transition: all 0.2s ease;
+        font-size: 14px;
     }
     .reply-textarea:focus {
-        border-color: #1A5FDC;
-        box-shadow: 0 0 0 3px rgba(26, 95, 220, 0.1);
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.12);
     }
 
-    /* 未读行高亮 */
-    .table tr.unread-row {
-        background: #FFF7ED;
-        border-left: 3px solid #F97316;
+    .modal-modern .btn {
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 13px;
+        padding: 8px 20px;
+        transition: all 0.2s ease;
     }
-    .table tr.unread-row:hover { background: #FFF1E6; }
+    .modal-modern .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .modal-modern .btn-light {
+        background: #f1f5f9;
+        border-color: #f1f5f9;
+        color: #64748b;
+    }
+    .modal-modern .btn-light:hover {
+        background: #e2e8f0;
+        color: #475569;
+    }
+    .btn-send {
+        background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
+        border: none !important;
+        color: #fff !important;
+    }
+    .btn-send:hover {
+        box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3) !important;
+    }
+
+    .modal-modern .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #475569;
+    }
 </style>
 {/block}
 
@@ -136,41 +470,43 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h5 class="mb-0"><i class="fa fa-comments text-primary me-2"></i>留言管理</h5>
-        <small class="text-muted">
-            管理用户留言，共 <span class="fw-bold text-danger">{$unread_count}</span> 条未读
+        <h5 class="mb-1" style="font-weight:800; color:#1e293b; font-size:18px;">
+            <i class="fa fa-comments text-primary me-2" style="color:#4f46e5 !important;"></i>留言管理
+        </h5>
+        <small style="color:#64748b;">
+            管理用户留言，共 <span style="font-weight:700; color:#ef4444;">{$unread_count}</span> 条未读
         </small>
     </div>
 </div>
 
-<!-- 筛选 -->
-<div class="card border-0 shadow-sm mb-3">
-    <div class="card-body py-2">
-        <div class="d-flex gap-2">
-            <a href="?" class="btn btn-sm {if $is_read===''}btn-primary{else}btn-outline-primary{/if}">全部</a>
-            <a href="?is_read=0" class="btn btn-sm {if $is_read==='0'}btn-primary{else}btn-outline-warning{/if}">
-                未读 <span class="badge bg-danger ms-1">{$unread_count}</span>
-            </a>
-            <a href="?is_read=1" class="btn btn-sm {if $is_read==='1'}btn-primary{else}btn-outline-success{/if}">已读</a>
-        </div>
-    </div>
+<!-- 筛选标签 -->
+<div class="filter-tabs">
+    <a href="?" class="filter-tab {if $is_read===''}active{/if}">
+        <i class="fa fa-list"></i> 全部
+    </a>
+    <a href="?is_read=0" class="filter-tab {if $is_read==='0'}active{/if}">
+        <i class="fa fa-envelope-open"></i> 未读
+        <span class="badge bg-danger">{$unread_count}</span>
+    </a>
+    <a href="?is_read=1" class="filter-tab {if $is_read==='1'}active{/if}">
+        <i class="fa fa-envelope"></i> 已读
+    </a>
 </div>
 
 <!-- 列表 -->
-<div class="card border-0 shadow-sm">
+<div class="data-card">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <table class="table align-middle">
+                <thead>
                     <tr>
                         <th style="width:60px;">#</th>
-                        <th style="width:100px;">留言人</th>
-                        <th>联系方式</th>
+                        <th style="width:120px;">留言人</th>
+                        <th style="width:140px;">联系方式</th>
                         <th>留言内容</th>
-                        <th style="width:90px;">状态</th>
-                        <th style="width:90px;">回复</th>
-                        <th style="width:120px;">时间</th>
-                        <th style="width:160px;">操作</th>
+                        <th style="width:100px;">状态</th>
+                        <th style="width:130px;">时间</th>
+                        <th style="width:140px;">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -179,49 +515,45 @@
                     {foreach $list as $m}
                     {php}$k++;{/php}
                     <tr class="{if !$m.is_read}unread-row{/if}" data-id="{$m.id}" data-name="{$m.name}" data-phone="{$m.phone}" data-content="{$m.content|htmlentities}" data-reply="{$m.reply|default=''|htmlentities}" data-is_replied="{$m.is_replied}">
-                        <td>{$k}</td>
+                        <td class="text-center" style="color:#94a3b8; font-weight:600;">{$k}</td>
                         <td>
-                            <span class="fw-bold">{$m.name}</span>
-                            {if $m.contact}<br><small class="text-muted">{$m.contact}</small>{/if}
+                            <div class="msg-name">{$m.name}</div>
+                            {if $m.contact}
+                            <div class="msg-email">{$m.contact}</div>
+                            {/if}
                         </td>
                         <td>
-                            <span>{$m.phone}</span>
-                            <br><small class="text-muted">{$m.source}</small>
+                            <div class="msg-phone">{$m.phone}</div>
+                            <span class="msg-source">{$m.source}</span>
                         </td>
                         <td>
-                            <div class="text-truncate" style="max-width:250px;" title="{$m.content}">
+                            <div class="msg-content-preview" title="{$m.content}">
                                 {$m.content}
                             </div>
                         </td>
                         <td>
                             {if $m.is_read}
-                            <span class="badge bg-success">已读</span>
+                            <span class="status-pill bg-success-soft text-success">
+                                <span class="dot" style="background:currentColor;"></span>已读
+                            </span>
                             {else}
-                            <span class="badge bg-warning text-dark">未读</span>
+                            <span class="status-pill bg-warning-soft text-warning">
+                                <span class="dot" style="background:currentColor;"></span>未读
+                            </span>
                             {/if}
                         </td>
+                        <td><small style="color:#94a3b8; font-size:12px;">{$m.create_time}</small></td>
                         <td>
-                            {if $m.is_replied}
-                            <span class="badge bg-info">已回复</span>
-                            {else}
-                            <span class="badge bg-secondary">未回复</span>
-                            {/if}
-                        </td>
-                        <td><small class="text-muted">{$m.create_time}</small></td>
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn btn-sm btn-outline-info view-btn" data-id="{$m.id}" title="查看">
+                            <div class="action-btns">
+                                <button class="btn btn-outline-info view-btn" data-id="{$m.id}" title="查看">
                                     <i class="fa fa-eye"></i>
                                 </button>
                                 {if !$m.is_read}
-                                <button class="btn btn-sm btn-outline-secondary read-btn" data-id="{$m.id}" title="标记已读">
+                                <button class="btn btn-outline-secondary read-btn" data-id="{$m.id}" title="标记已读">
                                     <i class="fa fa-check"></i>
                                 </button>
                                 {/if}
-                                <button class="btn btn-sm btn-outline-primary reply-btn" data-id="{$m.id}" title="回复">
-                                    <i class="fa fa-reply"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{$m.id}" title="删除">
+                                <button class="btn btn-outline-danger delete-btn" data-id="{$m.id}" title="删除">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -229,72 +561,57 @@
                     </tr>
                     {/foreach}
                     {else}
-                    <tr><td colspan="8" class="text-center py-5 text-muted"><i class="fa fa-inbox fa-3x d-block mb-2"></i>暂无留言</td></tr>
+                    <tr><td colspan="7">
+                        <div class="empty-state">
+                            <i class="fa fa-inbox fa-3x d-block"></i>
+                            <div class="empty-text">暂无留言</div>
+                        </div>
+                    </td></tr>
                     {/if}
                 </tbody>
             </table>
         </div>
     </div>
     {if $list->count()}
-    <div class="card-footer bg-light">{$list|raw}</div>
+    <div class="card-footer-custom">{$list|raw}</div>
     {/if}
 </div>
 
 <!-- 查看留言弹窗（聊天室风格） -->
-<div class="modal fade" id="viewModal" tabindex="-1">
+<div class="modal fade modal-modern" id="viewModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
-            <div class="modal-header chat-modal-header border-0">
+        <div class="modal-content">
+            <div class="modal-header chat-header">
                 <h6 class="modal-title"><i class="fa fa-comments me-2"></i>会话详情</h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0">
-                <div class="p-3">
-                    <div class="chat-user-info">
+                <div class="p-4">
+                    <div class="chat-user-card">
                         <div class="avatar-sm"><i class="fa fa-user"></i></div>
                         <div>
-                            <strong id="vName">-</strong>
-                            <small class="text-muted d-block"><i class="fa fa-phone me-1"></i><span id="vPhone">-</span></small>
+                            <div class="user-name" id="vName">-</div>
+                            <div class="user-phone">
+                                <i class="fa fa-phone"></i><span id="vPhone">-</span>
+                            </div>
                         </div>
-                        <button class="btn btn-sm btn-outline-primary rounded-pill ms-auto px-3" id="viewReplyBtn">
-                            <i class="fa fa-reply me-1"></i>回复
-                        </button>
+                        <span class="badge ms-auto" id="vStatusBadge" style="font-size:12px; padding:6px 12px; border-radius:20px;">-</span>
                     </div>
                 </div>
-                <div class="px-3 pb-3">
+                <div class="px-4 pb-4">
                     <div id="vConversation" class="chat-thread">
                         <div class="text-center text-muted py-4"><i class="fa fa-spinner fa-spin"></i> 加载中...</div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 回复弹窗 -->
-<div class="modal fade" id="replyModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
-            <div class="modal-header chat-modal-header border-0">
-                <h6 class="modal-title"><i class="fa fa-pen-to-square me-2"></i>回复留言</h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="replyId" value="">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold text-secondary"><i class="fa fa-quote-left me-1 text-muted"></i>用户留言</label>
-                    <p class="reply-preview" id="replyOrigContent"></p>
+                <div class="px-4 pb-4 pt-0" id="replyBox" style="border-top:1px solid #f1f5f9;">
+                    <div class="reply-preview-box" id="replyPreview" style="margin-bottom:12px; display:none;"></div>
+                    <div class="d-flex gap-2">
+                        <textarea class="form-control reply-textarea flex-grow-1" id="replyContent" rows="2" placeholder="输入回复内容..."></textarea>
+                        <button class="btn btn-send" id="replySendBtn" style="height:auto; align-self:flex-end; padding:10px 18px; border-radius:12px; white-space:nowrap;">
+                            <i class="fa fa-paper-plane"></i> 发送
+                        </button>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold text-secondary">回复内容 <span class="text-danger">*</span></label>
-                    <textarea class="form-control reply-textarea" id="replyContent" rows="5" placeholder="输入回复内容，支持多轮对话..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" id="replySaveBtn">
-                    <i class="fa fa-paper-plane me-1"></i> 发送回复
-                </button>
             </div>
         </div>
     </div>
@@ -305,7 +622,7 @@
 {block name="js"}
 <script>
 $(function(){
-    var viewModal = new bootstrap.Modal('#viewModal'), replyModal = new bootstrap.Modal('#replyModal');
+    var viewModal = new bootstrap.Modal('#viewModal');
     var currentViewId = 0, currentViewPhone = '';
 
     // 渲染会话气泡
@@ -345,53 +662,47 @@ $(function(){
         }, 'json');
     }
 
+    // 查看按钮
     $(document).on('click', '.view-btn', function(){
         var $row = $(this).closest('tr');
         currentViewId    = $row.data('id');
         currentViewPhone = $row.data('phone');
+        var isReplied = $row.data('is_replied') == 1;
         $('#vName').text($row.data('name'));
         $('#vPhone').text(currentViewPhone);
-        // 重置会话区域
+        if (isReplied) {
+            $('#vStatusBadge').text('已回复').css({background:'rgba(6,182,212,0.12)', color:'#0891b2'});
+        } else {
+            $('#vStatusBadge').text('待回复').css({background:'rgba(245,158,11,0.12)', color:'#d97706'});
+        }
+        $('#replyBox').show();
+        $('#replyContent').val('');
+        $('#replyPreview').hide();
         $('#vConversation').html('<div class="text-center text-muted py-4"><i class="fa fa-spinner fa-spin"></i> 加载中...</div>');
         loadConversation(currentViewId);
         viewModal.show();
     });
 
-    // 从查看弹窗打开回复
-    $('#viewReplyBtn').click(function(){
-        viewModal.hide();
-        var $row = $('tr[data-id="' + currentViewId + '"]');
-        $('#replyId').val(currentViewId);
-        $('#replyOrigContent').text($row.data('content'));
-        $('#replyContent').val('');
-        replyModal.show();
-    });
-
-    $(document).on('click', '.reply-btn', function(){
-        var $row = $(this).closest('tr');
-        $('#replyId').val($row.data('id'));
-        $('#replyOrigContent').text($row.data('content'));
-        $('#replyContent').val('');
-        replyModal.show();
-    });
-
-    $('#replySaveBtn').click(function(){
-        var id = $('#replyId').val(), content = $('#replyContent').val().trim();
+    // 发送回复（整合在会话详情内）
+    $('#replySendBtn').click(function(){
+        var content = $('#replyContent').val().trim();
         if (!content) { toastr.warning('请输入回复内容'); return; }
         var $btn = $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> 发送中...');
-        $.post(ADMIN_PATH + '/message/reply', {id:id, reply_content:content}, function(res){
-            if (res.code===0) {
+        $.post(ADMIN_PATH + '/message/reply', {id: currentViewId, reply_content: content}, function(res){
+            if (res.code === 0) {
                 toastr.success(res.msg);
-                replyModal.hide();
-                // 刷新会话显示
-                if (currentViewId == id && $('#vConversation').length) {
-                    loadConversation(id);
-                }
+                $('#replyContent').val('');
+                loadConversation(currentViewId);
+                $('#replyBox').hide();
+                $('#vStatusBadge').text('已回复').css({background:'rgba(6,182,212,0.12)', color:'#0891b2'});
                 setTimeout(function(){ location.reload(); }, 800);
-            } else toastr.error(res.msg);
-        }, 'json').always(function(){ $btn.prop('disabled', false).html('<i class="fa fa-paper-plane"></i> 发送回复'); });
+            } else {
+                toastr.error(res.msg);
+            }
+        }, 'json').always(function(){ $btn.prop('disabled', false).html('<i class="fa fa-paper-plane"></i> 发送'); });
     });
 
+    // 标记已读
     $(document).on('click', '.read-btn', function(){
         var id = $(this).data('id');
         var $btn = $(this).prop('disabled', true);
@@ -401,6 +712,7 @@ $(function(){
         }, 'json');
     });
 
+    // 删除
     $(document).on('click', '.delete-btn', function(){
         var id = $(this).data('id');
         if (!confirm('确定删除该留言及全部会话记录吗？')) return;

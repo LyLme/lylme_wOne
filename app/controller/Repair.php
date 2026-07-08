@@ -78,7 +78,7 @@ class Repair extends FrontBase
                 try {
                     $savename = Filesystem::disk('public')->putFile('repair', $file);
                     if ($savename) {
-                        $imagePaths[] = '/storage/' . str_replace('\\', '/', $savename);
+                        $imagePaths[] = '/static/uploads/' . str_replace('\\', '/', $savename);
                     }
                 } catch (\Exception $e) {
                     // 忽略上传失败
@@ -330,7 +330,7 @@ class Repair extends FrontBase
                 try {
                     $savename = Filesystem::disk('public')->putFile('repair', $file);
                     if ($savename) {
-                        $existingImages[] = '/storage/' . str_replace('\\', '/', $savename);
+                        $existingImages[] = '/static/uploads/' . str_replace('\\', '/', $savename);
                     }
                 } catch (\Exception $e) {
                     // 忽略上传失败
