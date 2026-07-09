@@ -81,7 +81,7 @@ class Article extends Base
 
             return $this->success(['id' => $a->id], '添加成功');
         } catch (\Exception $e) {
-            return $this->error('添加失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '添加失败：'));
         }
     }
 
@@ -116,7 +116,7 @@ class Article extends Base
 
             return $this->success(null, '更新成功');
         } catch (\Exception $e) {
-            return $this->error('更新失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '更新失败：'));
         }
     }
 
@@ -134,7 +134,7 @@ class Article extends Base
             $a->delete();
             return $this->success(null, '删除成功');
         } catch (\Exception $e) {
-            return $this->error('删除失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '删除失败：'));
         }
     }
 
@@ -151,7 +151,7 @@ class Article extends Base
             $a->save();
             return $this->success(null, $status ? '已启用' : '已禁用');
         } catch (\Exception $e) {
-            return $this->error('操作失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '操作失败：'));
         }
     }
 
@@ -164,6 +164,9 @@ class Article extends Base
             $ext = strtolower($file->getOriginalExtension());
             $allow = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
             if (!in_array($ext, $allow)) return $this->error('不支持的文件类型');
+            // 验证真实 MIME 类型
+            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/bmp'];
+            if (!in_array($file->getMime(), $allowMime)) return $this->error('不支持的文件类型');
 
             $subPath  = date('Ymd');
             $fileName = date('His') . '_' . substr(md5(uniqid((string)mt_rand(), true)), 0, 8) . '.' . $ext;
@@ -171,7 +174,7 @@ class Article extends Base
             $url = '/static/uploads/' . $subPath . '/' . $fileName;
             return $this->success(['url' => $url, 'name' => $fileName], '上传成功');
         } catch (\Exception $e) {
-            return $this->error('上传失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '上传失败：'));
         }
     }
 
@@ -266,7 +269,7 @@ class Article extends Base
 
             return $this->success($result);
         } catch (\Exception $e) {
-            return $this->error('获取失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '获取失败：'));
         }
     }
 

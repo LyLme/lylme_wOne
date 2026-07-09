@@ -150,6 +150,11 @@ class Notification
         $fromEmail   = $user;
         $fromDisplay = $fromName ?: '系统通知';
 
+        // 对邮件模板中的用户输入进行 HTML 转义
+        $emailHtml = preg_replace_callback('/\{(\w+)\}/', function ($matches) {
+            return htmlspecialchars($matches[0], ENT_QUOTES, 'UTF-8');
+        }, $emailHtml);
+
         $message = "<html><body style='font-family:Arial,sans-serif;padding:20px;background:#f5f5f5;'>";
         $message .= "<div style='max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;'>";
         $message .= "<div style='background:#1A5FDC;color:#fff;padding:18px 24px;font-size:18px;font-weight:bold;'>" . htmlspecialchars($title) . "</div>";
@@ -193,6 +198,8 @@ class Notification
     {
         $text = $template;
         foreach ($data as $key => $value) {
+            // 处理 null 值
+            $value = $value ?? '';
             // 变量值中的换行统一转为 \n，保留 Markdown 的段落/换行语义
             $val = (string) str_replace(["\r\n", "\r"], "\n", $value);
             // 将多个连续换行压缩为双换行（段落分隔），单换行不变

@@ -133,10 +133,12 @@ class RepairOrder extends Model
     }
     
     /**
-     * 生成工单号
+     * 生成工单号（基于时间戳+微秒+随机数，降低碰撞风险）
      */
     public static function generateOrderNo(): string
     {
-        return 'RP' . date('YmdHis') . str_pad((string)mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+        $micro = substr((string)microtime(true), -6);
+        $rand  = str_pad((string)random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        return 'RP' . date('YmdHis') . $micro . $rand;
     }
 }

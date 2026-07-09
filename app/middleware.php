@@ -10,6 +10,6 @@ return [
     // \think\middleware\LoadLangPack::class,
     // Session初始化
     \think\middleware\SessionInit::class,
-    // 表单令牌验证（CSRF防护）- 暂关闭，后台登录表单未适配token
-    // \think\middleware\FormTokenCheck::class,
+    // 表单令牌验证（CSRF防护）
+    \think\middleware\FormTokenCheck::class,
 ];

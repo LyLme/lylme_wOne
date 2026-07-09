@@ -256,12 +256,7 @@ function parseSql(string $sql): array
  */
 function generateRandomString(int $length = 32): string
 {
-    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
-    $result = '';
-    for ($i = 0; $i < $length; $i++) {
-        $result .= $chars[rand(0, strlen($chars) - 1)];
-    }
-    return $result;
+    return substr(bin2hex(random_bytes((int)ceil($length / 2))), 0, $length);
 }
 
 // ======== 纯配置: 需要写入的 Admin 账户密码（不参与生成逻辑,仅复用） ========
@@ -439,16 +434,19 @@ function generateRandomString(int $length = 32): string
             // 读取后台路径（优先从 URL 参数，否则从 .env 文件读取）
             $installedAdminPath = isset($_GET['admin_path']) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['admin_path']) : 'admin';
             if (file_exists(ENV_FILE)) {
-                $envLines = file(ENV_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                $inApp = false;
-                foreach ($envLines as $line) {
-                    $line = trim($line);
-                    if ($line === '[APP]') { $inApp = true; continue; }
-                    if ($inApp && strpos($line, '[') === 0) { $inApp = false; }
-                    if ($inApp && strpos($line, 'ADMIN_PATH') === 0) {
-                        $parts = explode('=', $line, 2);
-                        $installedAdminPath = trim($parts[1] ?? 'admin');
-                        break;
+                $envContent = @file_get_contents(ENV_FILE);
+                if ($envContent !== false) {
+                    $envLines = explode("\n", $envContent);
+                    $inApp = false;
+                    foreach ($envLines as $line) {
+                        $line = trim($line);
+                        if ($line === '[APP]') { $inApp = true; continue; }
+                        if ($inApp && strpos($line, '[') === 0) { $inApp = false; }
+                        if ($inApp && strpos($line, 'ADMIN_PATH') === 0) {
+                            $parts = explode('=', $line, 2);
+                            $installedAdminPath = trim($parts[1] ?? 'admin');
+                            break;
+                        }
                     }
                 }
             }
@@ -482,7 +480,7 @@ function generateRandomString(int $length = 32): string
                         </tr>
                         <tr>
                             <td style="padding:10px 14px;color:#555"><strong>后台密码</strong></td>
-                            <td style="padding:10px 14px;color:#1a1a2e;font-weight:600"><code style="background:#e8f0fe;padding:2px 8px;border-radius:4px">admin123</code></td>
+                            <td style="padding:10px 14px;color:#999;font-size:12px">首次登录后请在后台修改默认密码</td>
                         </tr>
                     </table>
                 </div>

@@ -38,6 +38,19 @@ class Login extends Base
             return $this->error('非法请求');
         }
 
+        // 登录频率限制（同 IP 5 次失败后锁定 15 分钟）
+        $ip = $this->request->ip();
+        $failKey = 'login_fail_' . md5($ip);
+        $lockKey = 'login_lock_' . md5($ip);
+        if (Session::get($lockKey)) {
+            $remain = Session::get($lockKey) - time();
+            if ($remain > 0) {
+                return $this->error('登录尝试次数过多，请 ' . ceil($remain / 60) . ' 分钟后重试');
+            }
+            Session::delete($lockKey);
+            Session::delete($failKey);
+        }
+
         $username = $this->request->post('username', '');
         $password = $this->request->post('password', '');
 
@@ -51,18 +64,25 @@ class Login extends Base
             ->find();
 
         if (!$admin) {
+            $this->recordLoginFail($ip, $failKey, $lockKey);
             return $this->error('用户名或密码错误');
         }
 
         // 检查账号是否已被禁用
         if ((int)$admin['status'] !== 1) {
+            $this->recordLoginFail($ip, $failKey, $lockKey);
             return $this->error('该账号已被禁用，请联系超级管理员');
         }
 
         // 验证密码
         if (!password_verify($password, $admin['password'])) {
+            $this->recordLoginFail($ip, $failKey, $lockKey);
             return $this->error('用户名或密码错误');
         }
+
+        // 登录成功，清除失败记录
+        Session::delete($failKey);
+        Session::delete($lockKey);
 
         // 更新登录信息
         Db::name('admin_user')
@@ -91,6 +111,18 @@ class Login extends Base
         );
 
         return $this->success(null, '登录成功');
+    }
+
+    /**
+     * 记录登录失败次数，超过阈值则锁定
+     */
+    private function recordLoginFail(string $ip, string $failKey, string $lockKey): void
+    {
+        $fails = (int)Session::get($failKey, 0) + 1;
+        Session::set($failKey, $fails);
+        if ($fails >= 5) {
+            Session::set($lockKey, time() + 900); // 15 分钟锁定
+        }
     }
 
     /**

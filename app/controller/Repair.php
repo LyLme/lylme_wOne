@@ -124,7 +124,7 @@ class Repair extends FrontBase
 
             return json(['code' => 0, 'msg' => '报修提交成功', 'data' => ['order_no' => $order->order_no]]);
         } catch (\Exception $e) {
-            return json(['code' => 1, 'msg' => '提交失败：' . $e->getMessage()]);
+            return json(['code' => 1, 'msg' => $this->errMsg($e, '提交失败：')]);
         }
     }
 
@@ -291,6 +291,19 @@ class Repair extends FrontBase
             return json(['code' => 1, 'msg' => '只能编辑待接单状态的工单']);
         }
 
+        // 权限校验：visitor_id 或 phone 必须匹配工单创建者
+        $visitorId = $data['visitor_id'] ?? '';
+        $phone     = $data['phone'] ?? '';
+        $hasAccess = false;
+        if (!empty($visitorId) && $order->visitor_id === $visitorId) {
+            $hasAccess = true;
+        } elseif (!empty($phone) && $order->phone === $phone) {
+            $hasAccess = true;
+        }
+        if (!$hasAccess) {
+            return json(['code' => 1, 'msg' => '无权操作该工单']);
+        }
+
         // 数据验证
         $validate = [
             'client_name' => 'require|max:30',
@@ -368,7 +381,7 @@ class Repair extends FrontBase
 
             return json(['code' => 0, 'msg' => '修改成功']);
         } catch (\Exception $e) {
-            return json(['code' => 1, 'msg' => '修改失败：' . $e->getMessage()]);
+            return json(['code' => 1, 'msg' => $this->errMsg($e, '修改失败：')]);
         }
     }
 
@@ -383,6 +396,7 @@ class Repair extends FrontBase
         $id        = $this->request->post('id', 0);
         $reason    = $this->request->post('reason', '');
         $visitorId = $this->request->post('visitor_id', '');
+        $phone     = $this->request->post('phone', '');
 
         if (empty($id)) {
             return json(['code' => 1, 'msg' => '参数错误']);
@@ -396,8 +410,14 @@ class Repair extends FrontBase
             return json(['code' => 1, 'msg' => '只能撤销待接单状态的工单']);
         }
 
-        // 权限校验
-        if (!empty($visitorId) && $order->visitor_id !== $visitorId) {
+        // 权限校验：visitor_id 或 phone 必须匹配
+        $hasAccess = false;
+        if (!empty($visitorId) && $order->visitor_id === $visitorId) {
+            $hasAccess = true;
+        } elseif (!empty($phone) && $order->phone === $phone) {
+            $hasAccess = true;
+        }
+        if (!$hasAccess) {
             return json(['code' => 1, 'msg' => '无权操作该工单']);
         }
 
@@ -418,7 +438,7 @@ class Repair extends FrontBase
 
             return json(['code' => 0, 'msg' => '工单已撤销']);
         } catch (\Exception $e) {
-            return json(['code' => 1, 'msg' => '撤销失败：' . $e->getMessage()]);
+            return json(['code' => 1, 'msg' => $this->errMsg($e, '撤销失败：')]);
         }
     }
 }

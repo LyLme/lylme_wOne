@@ -122,4 +122,13 @@ abstract class BaseController
             'data'  => $list->items(),
         ]);
     }
+
+    /**
+     * 安全异常消息: 开发环境显示详细错误，生产环境显示友好提示
+     */
+    protected function errMsg(\Exception $e, string $prefix = ''): string
+    {
+        $detail = config('app.app_debug') ? $e->getMessage() : '系统繁忙，请稍后重试';
+        return $prefix . $detail;
+    }
 }

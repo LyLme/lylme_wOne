@@ -84,7 +84,7 @@ class Contact extends FrontBase
             });
             return json(['code' => 0, 'msg' => '留言提交成功，我们将尽快与您联系！']);
         } catch (\Exception $e) {
-            return json(['code' => 1, 'msg' => '提交失败：' . $e->getMessage()]);
+            return json(['code' => 1, 'msg' => $this->errMsg($e, '提交失败：')]);
         }
     }
 
@@ -122,7 +122,7 @@ class Contact extends FrontBase
             });
             return json(['code' => 0, 'msg' => '追评成功，客服将尽快回复您！']);
         } catch (\Exception $e) {
-            return json(['code' => 1, 'msg' => '操作失败：' . $e->getMessage()]);
+            return json(['code' => 1, 'msg' => $this->errMsg($e, '操作失败：')]);
         }
     }
 

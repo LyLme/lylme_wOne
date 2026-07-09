@@ -64,7 +64,7 @@ class Config extends Base
             $this->log(AdminLog::ACTION_CONFIG, '保存站点配置');
             return $this->success(null, '配置保存成功');
         } catch (\Exception $e) {
-            return $this->error('保存失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '保存失败：'));
         }
     }
 
@@ -94,7 +94,7 @@ class Config extends Base
             $this->log(AdminLog::ACTION_CONFIG, '保存分组配置');
             return $this->success(null, '保存成功');
         } catch (\Exception $e) {
-            return $this->error('保存失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '保存失败：'));
         }
     }
 
@@ -115,6 +115,11 @@ class Config extends Base
             if (!in_array($ext, $allowExt)) {
                 return $this->error('不支持的文件类型，仅允许：' . implode(',', $allowExt));
             }
+            // 验证真实 MIME 类型
+            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/x-icon', 'image/bmp'];
+            if (!in_array($file->getMime(), $allowMime)) {
+                return $this->error('不支持的文件类型');
+            }
 
             // 按日期分目录
             $subPath = date('Ymd');
@@ -128,7 +133,7 @@ class Config extends Base
 
             return $this->success(['url' => $url, 'name' => $fileName], '上传成功');
         } catch (\Exception $e) {
-            return $this->error('上传失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '上传失败：'));
         }
     }
 
@@ -161,7 +166,7 @@ class Config extends Base
             \think\facade\Cache::delete('system_config');
             return $this->success(null, '已恢复默认值');
         } catch (\Exception $e) {
-            return $this->error('操作失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '操作失败：'));
         }
     }
 
@@ -174,7 +179,7 @@ class Config extends Base
             $templates = \app\service\Notification::getDefaultTemplates();
             return $this->success($templates);
         } catch (\Exception $e) {
-            return $this->error('获取默认模板失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '获取默认模板失败：'));
         }
     }
 
@@ -256,7 +261,7 @@ class Config extends Base
 
             return $this->success(null, '测试消息发送成功，请检查 ' . $channel . ' 是否收到消息');
         } catch (\Exception $e) {
-            return $this->error('发送失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '发送失败：'));
         }
     }
 

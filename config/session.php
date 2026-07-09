@@ -18,8 +18,8 @@ return [
         'path'     => '/',
         // 有效域名
         'domain'   => '',
-        // 是否仅HTTPS
-        'secure'   => false,
+        // 是否仅HTTPS（生产环境自动启用）
+        'secure'   => env('SESSION.SECURE', !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
         // 是否httponly
         'httponly' => true,
         // 有效期

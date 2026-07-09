@@ -12,9 +12,7 @@ return [
     'time_query_rule' => [],
     // 自动写入时间戳字段
     'auto_timestamp'  => 'datetime',
-    // 时间字段取出后的默认时间格式
-    'datetime_format' => 'Y-m-d H:i:s',
-    // 时间字段是否格式化输出
+    // 时间字段取出后的默认时间格式与格式化输出
     'datetime_format' => 'Y-m-d H:i:s',
     // 数据库连接配置
     'connections'     => [
@@ -25,10 +23,10 @@ return [
             'hostname'        => env('DATABASE.HOSTNAME', '127.0.0.1'),
             // 数据库名
             'database'        => env('DATABASE.DATABASE', 'lylmew'),
-            // 用户名
-            'username'        => env('DATABASE.USERNAME', 'root'),
-            // 密码
-            'password'        => env('DATABASE.PASSWORD', 'root'),
+            // 用户名（必须通过 .env 配置，无默认值）
+            'username'        => env('DATABASE.USERNAME', ''),
+            // 密码（必须通过 .env 配置，无默认值）
+            'password'        => env('DATABASE.PASSWORD', ''),
             // 端口
             'hostport'        => env('DATABASE.HOSTPORT', '3306'),
             // 数据库连接参数

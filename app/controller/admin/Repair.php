@@ -118,7 +118,7 @@ class Repair extends Base
             $this->log(AdminLog::ACTION_REPAIR, '接单工单：' . $order->order_no);
             return $this->success(null, '接单成功');
         } catch (\Exception $e) {
-            return $this->error('操作失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '操作失败：'));
         }
     }
 
@@ -159,7 +159,7 @@ class Repair extends Base
             $this->log(AdminLog::ACTION_REPAIR, '暂停工单：' . $order->order_no);
             return $this->success(null, '工单已暂停');
         } catch (\Exception $e) {
-            return $this->error('操作失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '操作失败：'));
         }
     }
 
@@ -196,7 +196,7 @@ class Repair extends Base
             $this->log(AdminLog::ACTION_REPAIR, '恢复工单：' . $order->order_no);
             return $this->success(null, '工单已恢复');
         } catch (\Exception $e) {
-            return $this->error('操作失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '操作失败：'));
         }
     }
 
@@ -225,7 +225,10 @@ class Repair extends Base
             $order->status = RepairOrder::STATUS_COMPLETED;
             $order->completion_receipt = $receipt ?: '';
             $order->service_price = $price !== '' ? (float)$price : 0;
-            $order->remark = $receipt ?: $order->remark;
+            // 备注追加回执信息，不覆盖已有备注
+            if ($receipt) {
+                $order->remark = trim(($order->remark ? $order->remark . "\n" : '') . '[回执] ' . $receipt);
+            }
             $order->completed_time = date('Y-m-d H:i:s');
             $order->save();
 
@@ -250,12 +253,12 @@ class Repair extends Base
             $this->log(AdminLog::ACTION_REPAIR, '完成工单：' . $order->order_no);
             return $this->success(null, '工单已完成');
         } catch (\Exception $e) {
-            return $this->error('操作失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '操作失败：'));
         }
     }
 
     /**
-     * 更新状态 + 备注（保留通用方法）
+     * 更新状态 + 备注（保留通用方法，带状态转换校验）
      */
     public function updateStatus()
     {
@@ -269,21 +272,45 @@ class Repair extends Base
         $order = RepairOrder::find($id);
         if (!$order) return $this->error('工单不存在');
 
+        // 校验目标状态合法性
+        $oldStatus = (int)$order->status;
+        $newStatus = (int)$status;
+        $validStatuses = [
+            RepairOrder::STATUS_PENDING,
+            RepairOrder::STATUS_PROCESSING,
+            RepairOrder::STATUS_PAUSED,
+            RepairOrder::STATUS_COMPLETED,
+            RepairOrder::STATUS_CANCELLED,
+        ];
+        if (!in_array($newStatus, $validStatuses)) {
+            return $this->error('无效的状态值');
+        }
+        // 仅允许合法的状态转换
+        $allowedTransitions = [
+            RepairOrder::STATUS_PENDING    => [RepairOrder::STATUS_PROCESSING, RepairOrder::STATUS_CANCELLED],
+            RepairOrder::STATUS_PROCESSING => [RepairOrder::STATUS_PAUSED, RepairOrder::STATUS_COMPLETED, RepairOrder::STATUS_CANCELLED],
+            RepairOrder::STATUS_PAUSED     => [RepairOrder::STATUS_PROCESSING, RepairOrder::STATUS_COMPLETED, RepairOrder::STATUS_CANCELLED],
+            RepairOrder::STATUS_COMPLETED  => [],
+            RepairOrder::STATUS_CANCELLED  => [],
+        ];
+        if ($oldStatus !== $newStatus && !in_array($newStatus, $allowedTransitions[$oldStatus] ?? [])) {
+            return $this->error('不允许从"' . RepairOrder::getStatusText($oldStatus) . '"变更为"' . RepairOrder::getStatusText($newStatus) . '"');
+        }
+
         try {
-            $oldStatus = (int)$order->status;
-            $order->status = (int)$status;
+            $order->status = $newStatus;
             if ($remark !== '') $order->remark = $remark;
             $order->handler_id = $this->adminInfo['id'] ?? 0;
             $order->handler_name = $this->adminInfo['nickname'] ?? $this->adminInfo['username'] ?? '';
             $order->save();
 
             // 记录时间轴
-            if ($oldStatus !== (int)$status) {
+            if ($oldStatus !== $newStatus) {
                 $adminName = $this->adminInfo['nickname'] ?? $this->adminInfo['username'] ?? '';
                 RepairTimeline::record(
                     $order->id,
                     RepairTimeline::ACTION_REMARK,
-                    '状态变更：' . RepairOrder::getStatusText((int)$status),
+                    '状态变更：' . RepairOrder::getStatusText($newStatus),
                     ($remark ?: '无备注') . ' (由 ' . $adminName . ' 操作)',
                     $this->adminInfo['id'] ?? 0,
                     $adminName,
@@ -291,19 +318,21 @@ class Repair extends Base
                 );
             }
 
-            $this->log(AdminLog::ACTION_REPAIR, '修改工单状态：' . $order->order_no . ' → ' . RepairOrder::getStatusText((int)$status));
+            $this->log(AdminLog::ACTION_REPAIR, '修改工单状态：' . $order->order_no . ' → ' . RepairOrder::getStatusText($newStatus));
             return $this->success(null, '状态更新成功');
         } catch (\Exception $e) {
-            return $this->error('更新失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '更新失败：'));
         }
     }
 
     /**
-     * 删除工单（同时删除时间轴记录）
+     * 删除工单（同时删除时间轴记录；仅超级管理员可操作）
      */
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        $this->checkSuperAdmin();
+
         $id = $this->request->post('id', 0);
         if (empty($id)) return $this->error('参数错误');
 
@@ -319,7 +348,7 @@ class Repair extends Base
             $this->log(AdminLog::ACTION_DELETE, '删除工单：' . $orderNo);
             return $this->success(null, '删除成功');
         } catch (\Exception $e) {
-            return $this->error('删除失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '删除失败：'));
         }
     }
 
@@ -355,7 +384,7 @@ class Repair extends Base
             $this->log(AdminLog::ACTION_REPAIR, '工单备注：' . $order->order_no);
             return $this->success(null, '备注已添加');
         } catch (\Exception $e) {
-            return $this->error('操作失败：' . $e->getMessage());
+            return $this->error($this->errMsg($e, '操作失败：'));
         }
     }
 }
