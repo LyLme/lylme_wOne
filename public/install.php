@@ -101,6 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $dbPass = trim($_POST['db_pass'] ?? '');
             $dbPrefix = trim($_POST['db_prefix'] ?? 'lylmew_');
             $adminPath = trim($_POST['admin_path'] ?? 'admin');
+            $adminUser = trim($_POST['admin_user'] ?? 'admin');
+            $adminUser = $adminUser ?: 'admin';
+            $adminPass = trim($_POST['admin_pass'] ?? '');
+            if (empty($adminPass)) {
+                echo json_encode(['success' => false, 'msg' => '请设置管理员密码'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
             $adminPath = $adminPath ?: 'admin';
             // 安全过滤：只允许字母数字下划线横线
             $adminPath = preg_replace('/[^a-zA-Z0-9_\-]/', '', $adminPath);
@@ -162,6 +169,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             
+            // SQL 文件中设置了 AUTOCOMMIT=0，导入完成后需恢复正常自动提交
+            $pdo->exec("SET AUTOCOMMIT = 1");
+
+            // 更新管理员密码（使用用户设置的密码）
+            $adminTable = $dbPrefix . 'admin_user';
+            $hashedPassword = password_hash($adminPass, PASSWORD_DEFAULT);
+            try {
+                // 先尝试更新，如果用户改了用户名也一并更新
+                $stmt = $pdo->prepare("UPDATE `{$adminTable}` SET `password` = :pwd, `username` = :uname WHERE `id` = 1");
+                $stmt->execute(['pwd' => $hashedPassword, 'uname' => $adminUser]);
+                if ($stmt->rowCount() === 0) {
+                    // 如果 id=1 的记录不存在，则插入
+                    $now = date('Y-m-d H:i:s');
+                    $pdo->exec("INSERT INTO `{$adminTable}` (`id`, `username`, `password`, `nickname`, `avatar`, `status`, `role`, `create_time`, `update_time`) VALUES (1, '{$adminUser}', '{$hashedPassword}', '超级管理员', '', 1, 0, '{$now}', '{$now}')");
+                }
+            } catch (PDOException $e) {
+                echo json_encode(['success' => false, 'msg' => '管理员密码设置失败：' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            
             // 写入 .env 配置
             $envContent = "APP_DEBUG = false\n\n";
             $envContent .= "[APP]\n";
@@ -191,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 创建锁定文件
             file_put_contents(LOCK_FILE, date('Y-m-d H:i:s') . "\n" . $_SERVER['REMOTE_ADDR']);
             
-            echo json_encode(['success' => true, 'msg' => '安装成功！', 'admin_path' => $adminPath], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['success' => true, 'msg' => '安装成功！', 'admin_path' => $adminPath, 'admin_user' => $adminUser, 'admin_pass' => $adminPass], JSON_UNESCAPED_UNICODE);
             
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'msg' => '安装失败：' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
@@ -410,7 +437,7 @@ function generateRandomString(int $length = 32): string
                     </div>
                     <div class="form-group">
                         <label>数据库密码</label>
-                        <input type="password" name="db_pass" class="form-control" value="root">
+                        <input type="password" name="db_pass" class="form-control" value="">
                     </div>
                 </div>
                 <div class="form-group">
@@ -422,6 +449,18 @@ function generateRandomString(int $length = 32): string
                     <input type="text" name="admin_path" class="form-control" value="admin" required>
                     <p class="form-hint">自定义后台入口路径，仅允许字母数字下划线横线，不可使用前台路径（如 news/product/about 等）</p>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>管理员用户名</label>
+                        <input type="text" name="admin_user" class="form-control" value="admin">
+                        <p class="form-hint">后台登录用户名</p>
+                    </div>
+                    <div class="form-group">
+                        <label>管理员密码<span class="required">*</span></label>
+                        <input type="text" name="admin_pass" class="form-control" value="admin123" required>
+                        <p class="form-hint">默认密码 admin123，建议修改为强密码</p>
+                    </div>
+                </div>
                 <div class="progress-area" id="installProgress">
                     <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
                     <div class="progress-text" id="progressText"></div>
@@ -431,8 +470,10 @@ function generateRandomString(int $length = 32): string
             <?php else: ?>
             <!-- ===== 步骤3: 安装完成 ===== -->
             <?php
-            // 读取后台路径（优先从 URL 参数，否则从 .env 文件读取）
+            // 读取后台路径和管理员用户名密码（优先从 URL 参数，否则从 .env 文件读取）
             $installedAdminPath = isset($_GET['admin_path']) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['admin_path']) : 'admin';
+            $installedAdminUser = isset($_GET['admin_user']) ? htmlspecialchars(trim($_GET['admin_user'])) : 'admin';
+            $installedAdminPass = isset($_GET['admin_pass']) ? htmlspecialchars(trim($_GET['admin_pass'])) : 'admin123';
             if (file_exists(ENV_FILE)) {
                 $envContent = @file_get_contents(ENV_FILE);
                 if ($envContent !== false) {
@@ -476,23 +517,23 @@ function generateRandomString(int $length = 32): string
                         </tr>
                         <tr style="border-bottom:1px solid #e6f0ff">
                             <td style="padding:10px 14px;color:#555"><strong>后台账号</strong></td>
-                            <td style="padding:10px 14px;color:#1a1a2e;font-weight:600"><code style="background:#e8f0fe;padding:2px 8px;border-radius:4px">admin</code></td>
+                            <td style="padding:10px 14px;color:#1a1a2e;font-weight:600"><code style="background:#e8f0fe;padding:2px 8px;border-radius:4px"><?= $installedAdminUser ?></code></td>
                         </tr>
                         <tr>
                             <td style="padding:10px 14px;color:#555"><strong>后台密码</strong></td>
-                            <td style="padding:10px 14px;color:#999;font-size:12px">首次登录后请在后台修改默认密码</td>
+                            <td style="padding:10px 14px;color:#1a1a2e;font-weight:600"><code style="background:#e8f0fe;padding:2px 8px;border-radius:4px"><?= $installedAdminPass ?></code></td>
                         </tr>
                     </table>
                 </div>
                 
                 <p class="warning" style="color:#ff4d4f;font-size:13px;margin-bottom:24px">
-                    请妥善保管以上信息，首次登录后建议立即修改密码！
+                    请妥善保管以上信息！
                 </p>
                 
                 <!-- 按钮组 -->
                 <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-                    <a href="/" class="btn btn-outline" style="padding:10px 28px;font-size:14px">返回首页</a>
-                    <a href="/<?= $installedAdminPath ?>/index" class="btn btn-primary" style="padding:10px 28px;font-size:14px;background:#1677ff;color:#fff;border-radius:6px;text-decoration:none">登录后台</a>
+                    <a href="/" class="btn btn-outline" style="padding:10px 28px;font-size:14px" target="_blank">返回首页</a>
+                    <a href="/<?= $installedAdminPath ?>/index" class="btn btn-primary" style="padding:10px 28px;font-size:14px;background:#1677ff;color:#fff;border-radius:6px;text-decoration:none" target="_blank">登录后台</a>
                 </div>
                 
                 <p style="color:#999;font-size:12px;margin-top:28px">
@@ -627,7 +668,7 @@ function startInstall() {
             progressText.textContent = '安装完成！';
             msg.innerHTML = '<div class="alert alert-success">✅ ' + data.msg + '</div>';
             setTimeout(function() {
-                window.location.href = '?step=3&admin_path=' + encodeURIComponent(data.admin_path || 'admin');
+                window.location.href = '?step=3&admin_path=' + encodeURIComponent(data.admin_path || 'admin') + '&admin_user=' + encodeURIComponent(data.admin_user || 'admin') + '&admin_pass=' + encodeURIComponent(data.admin_pass || '');
             }, 1500);
         } else {
             progressBar.style.width = '0';

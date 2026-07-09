@@ -42,3 +42,4 @@ package-lock.json
 # 测试
 /tests/
 .phpunit.cache
+.env
