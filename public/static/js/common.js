@@ -64,16 +64,34 @@
 
     // ==================== CSRF Token 处理 ====================
     function initCsrfToken() {
-        // 如果有 CSRF token meta 标签，则设置全局 AJAX 头
-        var $token = $('meta[name="csrf-token"]');
-        if ($token.length) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $token.attr('content')
+        // 对所有 AJAX POST/PUT/DELETE 请求自动注入 __token__ 字段
+        $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(options.type)) {
+                var token = $('meta[name="csrf-token"]').attr('content');
+                if (token) {
+                    if (options.data instanceof FormData) {
+                        options.data.append('__token__', token);
+                    } else if ($.isPlainObject(options.data)) {
+                        options.data.__token__ = token;
+                    } else if (typeof options.data === 'string') {
+                        options.data += (options.data ? '&' : '') + '__token__=' + encodeURIComponent(token);
+                    }
                 }
-            });
-        }
+            }
+        });
     }
+
+    // fetch() API 用 CSRF helper
+    lylmew.getCsrfToken = function() {
+        var $token = $('meta[name="csrf-token"]');
+        return $token.length ? $token.attr('content') : '';
+    };
+
+    lylmew.appendCsrfToken = function(formData) {
+        var token = lylmew.getCsrfToken();
+        if (token) formData.append('__token__', token);
+        return formData;
+    };
 
     // ==================== 平滑滚动（锚点链接）====================
     function initSmoothScroll() {

@@ -48,6 +48,8 @@ abstract class BaseController
      */
     protected function initialize(): void
     {
+        // CSRF Token 由视图模板中的 {:token()} 函数在渲染时生成，
+        // 此时 SessionInit 中间件已完成 session 初始化。
     }
 
     /**

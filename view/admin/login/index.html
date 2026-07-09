@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{:token()}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>后台登录 - {$company_name_short}</title>
     <link href="/static/lib/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
@@ -110,6 +111,18 @@
 </div>
 
 <script src="/static/lib/jquery/3.7.1/jquery.min.js"></script>
+<script>
+$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(options.type)) {
+        var token = $('meta[name="csrf-token"]').attr('content');
+        if (token) {
+            if (typeof options.data === 'string') {
+                options.data += (options.data ? '&' : '') + '__token__=' + encodeURIComponent(token);
+            }
+        }
+    }
+});
+</script>
 <script>var ADMIN_PATH = '/{$admin_path|default="admin"}';</script>
 <script>
 $(function () {

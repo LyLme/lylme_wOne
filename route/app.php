@@ -71,8 +71,9 @@ if (in_array(strtolower($adminPath), $reservedPaths)) {
     $adminPath = 'admin';
 }
 
+// 后台路由
 Route::group($adminPath, function () {
-    // 登录
+    // 登录/退出
     Route::get('login', 'admin.Login/index')->name('admin_login');
     Route::post('login', 'admin.Login/doLogin')->name('admin_dologin');
     Route::get('logout', 'admin.Login/logout')->name('admin_logout');

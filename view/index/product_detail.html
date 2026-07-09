@@ -674,6 +674,9 @@
         var formData = new FormData(form);
         formData.append('product_id', '{$product.id}');
         formData.append('product_name', '{$product.name}');
+        if (window.lylmew && lylmew.appendCsrfToken) {
+            lylmew.appendCsrfToken(formData);
+        }
 
         fetch('/api/inquiry', {
             method: 'POST',

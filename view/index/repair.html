@@ -885,6 +885,7 @@
         var formData = new FormData(document.getElementById('editForm'));
         formData.set('id', document.getElementById('editId').value);
         if (window.lylmew && lylmew.appendVisitorId) lylmew.appendVisitorId(formData);
+        if (window.lylmew && lylmew.appendCsrfToken) lylmew.appendCsrfToken(formData);
 
         fetch('/repair/editOrder', { method: 'POST', body: formData })
         .then(function(res) { return res.json(); })
@@ -913,6 +914,7 @@
         formData.append('id', id);
         formData.append('visitor_id', visitorId);
         if (reason) formData.append('reason', reason);
+        if (window.lylmew && lylmew.appendCsrfToken) lylmew.appendCsrfToken(formData);
 
         fetch('/repair/cancelOrder', { method: 'POST', body: formData })
         .then(function(res) { return res.json(); })
@@ -946,6 +948,9 @@
 
         if (window.lylmew && lylmew.appendVisitorId) {
             lylmew.appendVisitorId(formData);
+        }
+        if (window.lylmew && lylmew.appendCsrfToken) {
+            lylmew.appendCsrfToken(formData);
         }
 
         fetch('/repair/submit', { method: 'POST', body: formData })

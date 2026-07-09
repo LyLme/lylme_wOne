@@ -598,6 +598,9 @@
                     var formData = new FormData();
                     formData.append('message_id', msgId);
                     formData.append('content', content);
+                    if (window.lylmew && lylmew.appendCsrfToken) {
+                        lylmew.appendCsrfToken(formData);
+                    }
 
                     fetch('/contact/followUp', { method: 'POST', body: formData })
                         .then(function (res) { return res.json(); })
@@ -643,6 +646,9 @@
 
             if (window.lylmew && lylmew.appendVisitorId) {
                 lylmew.appendVisitorId(formData);
+            }
+            if (window.lylmew && lylmew.appendCsrfToken) {
+                lylmew.appendCsrfToken(formData);
             }
 
             fetch('/contact/message', {

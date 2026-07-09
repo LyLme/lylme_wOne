@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{:token()}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$page_title|default='后台管理系统'} - {$company_name_short}</title>
 
@@ -151,6 +152,23 @@
 
 <!-- jQuery 必须在所有依赖它的库之前加载 -->
 <script src="/static/lib/jquery/3.7.1/jquery.min.js"></script>
+<!-- CSRF Token 注入到所有 AJAX POST 请求 -->
+<script>
+$.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(options.type)) {
+        var token = $('meta[name="csrf-token"]').attr('content');
+        if (token) {
+            if (options.data instanceof FormData) {
+                options.data.append('__token__', token);
+            } else if ($.isPlainObject(options.data)) {
+                options.data.__token__ = token;
+            } else if (typeof options.data === 'string') {
+                options.data += (options.data ? '&' : '') + '__token__=' + encodeURIComponent(token);
+            }
+        }
+    }
+});
+</script>
 <!-- Bootstrap 5 JS -->
 <script src="/static/lib/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <!-- Summernote 富文本 -->
