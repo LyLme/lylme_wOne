@@ -179,8 +179,11 @@ $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
                 options.data.append('__token__', token);
             } else if ($.isPlainObject(options.data)) {
                 options.data.__token__ = token;
-            } else if (typeof options.data === 'string') {
-                options.data += (options.data ? '&' : '') + '__token__=' + encodeURIComponent(token);
+            } else if (typeof options.data === 'string' && options.data) {
+                options.data += '&__token__=' + encodeURIComponent(token);
+            } else {
+                // data 为空，注入 token
+                options.data = '__token__=' + encodeURIComponent(token);
             }
         }
     }
