@@ -5,6 +5,9 @@
 (function($) {
     'use strict';
 
+    // ==================== 初始化全局命名空间（需放在所有 lylmew.* 使用之前）====================
+    window.lylmew = window.lylmew || {};
+
     // ==================== 导航栏滚动效果 ====================
     function initNavbarScroll() {
         var $navbar = $('#mainNavbar');
@@ -128,7 +131,6 @@
     }
 
     // ==================== 访客标识（浏览器本地存储）====================
-    window.lylmew = window.lylmew || {};
     lylmew.VISITOR_KEY = 'lylmew_visitor_info';
 
     function generateUUID() {
