@@ -1557,7 +1557,9 @@ $(function () {
     if (typeof $.fn.summernote === 'undefined') {
         console.warn('[config] Summernote 未加载，富文本编辑器不可用');
     } else {
+        window.__snUploadUrl = ADMIN_PATH + '/config/upload';
         $('#aboutIntroEditor').summernote({
+            buttons: window.__snShareBtn,
             height: 250,
             lang: 'zh-CN',
             toolbar: [
@@ -1567,21 +1569,21 @@ $(function () {
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
-                ['insert', ['link', 'picture', 'table', 'hr']],
+                ['insert', ['link', 'uploadImage', 'table', 'hr']],
                 ['view', ['fullscreen', 'codeview', 'help']]
             ],
             fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '30', '36'],
             styleTags: ['p', 'h3', 'h4', 'h5', 'blockquote', 'pre'],
             callbacks: {
                 onImageUpload: function (files) {
-                    var editor = $(this);
-                    uploadSummernoteImage(files[0], editor);
+                    uploadSummernoteImage(files[0], $(this), ADMIN_PATH + '/config/upload');
                 }
             }
         });
 
         // 邮件模板富文本编辑器（共享配置）
         var emailSummernoteCfg = {
+            buttons: window.__snShareBtn,
             height: 300,
             lang: 'zh-CN',
             toolbar: [
@@ -1591,42 +1593,18 @@ $(function () {
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['table', ['table']],
-                ['insert', ['link', 'picture', 'hr']],
+                ['insert', ['link', 'uploadImage', 'hr']],
                 ['view', ['fullscreen', 'codeview', 'help']]
             ],
             fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '30', '36'],
             callbacks: {
                 onImageUpload: function (files) {
-                    var editor = $(this);
-                    uploadSummernoteImage(files[0], editor);
+                    uploadSummernoteImage(files[0], $(this), ADMIN_PATH + '/config/upload');
                 }
             }
         };
         $('#emailRepairEditor').summernote(emailSummernoteCfg);
         $('#emailMsgEditor').summernote(emailSummernoteCfg);
-    }
-
-    function uploadSummernoteImage(file, editor) {
-        var fd = new FormData();
-        fd.append('file', file);
-        $.ajax({
-            url: ADMIN_PATH + '/config/upload',
-            type: 'POST',
-            data: fd,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function (res) {
-                if (res.code === 0 && res.data && res.data.url) {
-                    editor.summernote('insertImage', res.data.url);
-                } else {
-                    if (typeof toastr !== 'undefined') toastr.error(res.msg || '上传失败');
-                }
-            },
-            error: function () {
-                if (typeof toastr !== 'undefined') toastr.error('图片上传失败');
-            }
-        });
     }
 
     // 同步头像/logo 隐藏字段（事件触发时更新）

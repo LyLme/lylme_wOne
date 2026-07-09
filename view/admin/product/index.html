@@ -286,7 +286,7 @@ $(function(){
     if (typeof bootstrap === 'undefined') { console.error('Bootstrap JS 未加载，页面功能不可用'); return; }
     var modal = new bootstrap.Modal('#modal'), isEdit = false, editId = null;
     // Summernote（存在性检查）
-    if ($.fn.summernote) { $('#prodDesc').summernote({lang:'zh-CN',height:200,toolbar:[['style',['bold','italic','underline','clear']],['fontsize',['fontsize']],['color',['color']],['para',['ul','ol','paragraph']],['insert',['link','picture']],['view',['codeview']]]}); }
+    if ($.fn.summernote) { window.__snUploadUrl = ADMIN_PATH + '/product/upload'; $('#prodDesc').summernote({buttons:window.__snShareBtn,lang:'zh-CN',height:200,toolbar:[['style',['bold','italic','underline','clear']],['fontsize',['fontsize']],['color',['color']],['para',['ul','ol','paragraph']],['insert',['link','uploadImage']],['view',['codeview']]],callbacks:{onImageUpload:function(files){uploadSummernoteImage(files[0],$(this),ADMIN_PATH+'/product/upload');}}}); }
     else { $.fn.summernote = function(op, val) { if (op === 'code') return val === undefined ? '' : this; return this; }; console.warn('Summernote 未加载，富文本编辑不可用'); }
 
     function resetForm(){

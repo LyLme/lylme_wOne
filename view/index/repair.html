@@ -149,6 +149,278 @@
         gap: 8px;
     }
 
+    /* 现代化工单卡片 */
+    .order-card-modern {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        margin-bottom: 24px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .order-card-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .ocm-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 22px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid #eef2f6;
+        flex-wrap: wrap;
+    }
+    .ocm-id {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'SFMono-Regular', Consolas, monospace;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e40af;
+    }
+    .ocm-id i {
+        color: #3b82f6;
+        font-size: 14px;
+    }
+    .ocm-date {
+        font-size: 13px;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .ocm-progress {
+        padding: 16px 22px;
+        background: #fff;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .ocm-body {
+        padding: 22px;
+    }
+    .ocm-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+    .ocm-info-item {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 14px 16px;
+        border: 1px solid #f1f5f9;
+    }
+    .ocm-info-label {
+        font-size: 12px;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .ocm-info-value {
+        font-size: 14px;
+        color: #1e293b;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+    .ocm-desc {
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 16px;
+        border: 1px solid #f1f5f9;
+        margin-bottom: 18px;
+    }
+    .ocm-desc-text {
+        font-size: 14px;
+        color: #334155;
+        line-height: 1.7;
+        white-space: pre-wrap;
+    }
+    .ocm-images {
+        margin-bottom: 18px;
+    }
+    .ocm-images-label {
+        font-size: 12px;
+        color: #94a3b8;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .ocm-img-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .ocm-img-thumb {
+        width: 72px;
+        height: 72px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        cursor: zoom-in;
+        position: relative;
+        background: #f1f5f9;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .ocm-img-thumb:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .ocm-img-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .ocm-img-more {
+        position: absolute;
+        inset: 0;
+        background: rgba(30,41,59,0.65);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .ocm-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 22px;
+        background: #f8fafc;
+        border-top: 1px solid #eef2f6;
+        flex-wrap: wrap;
+    }
+    .ocm-actions .btn {
+        border-radius: 8px;
+        padding: 7px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .ocm-update {
+        font-size: 12px;
+        color: #94a3b8;
+    }
+    .ocm-timeline-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #3b82f6;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 4px;
+        user-select: none;
+    }
+    .ocm-timeline-toggle:hover {
+        color: #1d4ed8;
+    }
+    .ocm-timeline-wrap {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px dashed #e2e8f0;
+        display: none;
+    }
+    .ocm-timeline-wrap.show {
+        display: block;
+    }
+    .ocm-timeline-wrap .timeline {
+        margin-top: 0;
+    }
+
+    /* 图片灯箱 */
+    .img-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.92);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+    .img-lightbox.show {
+        display: flex;
+        opacity: 1;
+    }
+    .img-lightbox img {
+        max-width: 92vw;
+        max-height: 88vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        transform: scale(0.96);
+        transition: transform 0.25s ease;
+    }
+    .img-lightbox.show img {
+        transform: scale(1);
+    }
+    .img-lightbox .lb-close,
+    .img-lightbox .lb-nav {
+        position: absolute;
+        color: #fff;
+        background: rgba(255,255,255,0.12);
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 18px;
+    }
+    .img-lightbox .lb-close:hover,
+    .img-lightbox .lb-nav:hover {
+        background: rgba(255,255,255,0.25);
+    }
+    .img-lightbox .lb-close {
+        top: 20px;
+        right: 20px;
+    }
+    .img-lightbox .lb-prev {
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .img-lightbox .lb-next {
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .img-lightbox .lb-counter {
+        position: absolute;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255,255,255,0.85);
+        font-size: 14px;
+        background: rgba(0,0,0,0.35);
+        padding: 6px 14px;
+        border-radius: 20px;
+    }
+    @media (max-width: 576px) {
+        .ocm-header, .ocm-body, .ocm-footer, .ocm-progress { padding-left: 16px; padding-right: 16px; }
+        .ocm-info-grid { grid-template-columns: 1fr; gap: 12px; }
+        .ocm-id { font-size: 13px; }
+    }
+
     /* 时间轴 */
     .timeline {
         position: relative;
@@ -564,6 +836,15 @@
     </div>
 </div>
 
+<!-- 图片灯箱 -->
+<div class="img-lightbox" id="imgLightbox">
+    <button type="button" class="lb-close" title="关闭"><i class="fa fa-times"></i></button>
+    <button type="button" class="lb-nav lb-prev" title="上一张"><i class="fa fa-chevron-left"></i></button>
+    <img src="" alt="预览">
+    <button type="button" class="lb-nav lb-next" title="下一张"><i class="fa fa-chevron-right"></i></button>
+    <div class="lb-counter"><span id="lbCurrent">1</span> / <span id="lbTotal">1</span></div>
+</div>
+
 <!-- 编辑工单弹窗 -->
 <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -737,7 +1018,7 @@
         .then(function(res) { return res.json(); });
     }
 
-    // 渲染工单卡片
+    // 渲染工单卡片（现代风格）
     function renderOrderCard(order) {
         var statusClass = getStatusClass(order.status);
         var flowHtml = renderFlowSteps(order.status);
@@ -745,27 +1026,40 @@
         var canEdit = order.status === 0;
         var canCancel = order.status === 0;
 
-        var timelineHtml = '';
-        if (order.timeline && order.timeline.length > 0) {
-            timelineHtml = '<div class="timeline">';
-            order.timeline.forEach(function(t) {
-                timelineHtml += '<div class="timeline-item">';
-                timelineHtml += '<div class="tl-dot tl-' + t.action + '"><i class="fa ' + t.icon + '"></i></div>';
-                timelineHtml += '<div class="tl-title">' + t.title + '</div>';
-                timelineHtml += '<div class="tl-time">' + t.create_time + ' · ' + t.operator_name + '</div>';
-                if (t.content) timelineHtml += '<div class="tl-content">' + t.content + '</div>';
-                timelineHtml += '</div>';
-            });
-            timelineHtml += '</div>';
+        var infoGrid = '';
+        infoGrid += '<div class="ocm-info-item"><div class="ocm-info-label"><i class="fa fa-user"></i> 联系人</div><div class="ocm-info-value">' + escapeHtml(order.client_name) + '</div></div>';
+        infoGrid += '<div class="ocm-info-item"><div class="ocm-info-label"><i class="fa fa-phone"></i> 联系电话</div><div class="ocm-info-value">' + escapeHtml(order.phone) + '</div></div>';
+        if (order.company) {
+            infoGrid += '<div class="ocm-info-item"><div class="ocm-info-label"><i class="fa fa-building"></i> 单位</div><div class="ocm-info-value">' + escapeHtml(order.company) + '</div></div>';
+        }
+        if (order.address) {
+            infoGrid += '<div class="ocm-info-item"><div class="ocm-info-label"><i class="fa fa-map-marker"></i> 服务地址</div><div class="ocm-info-value">' + escapeHtml(order.address) + '</div></div>';
+        }
+
+        var descHtml = '';
+        if (order.description) {
+            descHtml += '<div class="ocm-desc">';
+            descHtml += '<div class="ocm-info-label"><i class="fa fa-exclamation-circle"></i> 故障描述</div>';
+            descHtml += '<div class="ocm-desc-text">' + escapeHtml(order.description) + '</div>';
+            descHtml += '</div>';
         }
 
         var imagesHtml = '';
         if (order.images && order.images.length > 0) {
-            imagesHtml = '<div class="d-flex gap-1 flex-wrap mt-2">';
-            order.images.forEach(function(img) {
-                imagesHtml += '<a href="' + img + '" target="_blank"><img src="' + img + '" style="width:50px;height:40px;object-fit:cover;border-radius:4px;"></a>';
-            });
-            imagesHtml += '</div>';
+            imagesHtml += '<div class="ocm-images">';
+            imagesHtml += '<div class="ocm-images-label"><i class="fa fa-image"></i> 故障图片（点击放大）</div>';
+            imagesHtml += '<div class="ocm-img-list">';
+            var maxPreview = 4;
+            for (var iIdx = 0; iIdx < order.images.length && iIdx < maxPreview; iIdx++) {
+                var img = order.images[iIdx];
+                imagesHtml += '<div class="ocm-img-thumb" data-src="' + img + '" data-index="' + iIdx + '" data-total="' + order.images.length + '">';
+                imagesHtml += '<img src="' + img + '" alt="故障图片">';
+                if (iIdx === maxPreview - 1 && order.images.length > maxPreview) {
+                    imagesHtml += '<div class="ocm-img-more">+' + (order.images.length - maxPreview) + '</div>';
+                }
+                imagesHtml += '</div>';
+            }
+            imagesHtml += '</div></div>';
         }
 
         var receiptHtml = '';
@@ -781,50 +1075,81 @@
             receiptHtml += '</div>';
         }
 
-        var html = '<div class="order-card" data-id="' + order.id + '">';
+        var remarkHtml = '';
+        if (order.remark && order.status !== 2) {
+            remarkHtml += '<div class="ocm-desc mt-3" style="background:#f0fdf4;border-color:#bbf7d0;">';
+            remarkHtml += '<div class="ocm-info-label" style="color:#16a34a;"><i class="fa fa-comment"></i> 处理备注</div>';
+            remarkHtml += '<div class="ocm-desc-text text-success">' + escapeHtml(order.remark) + '</div>';
+            remarkHtml += '</div>';
+        }
+
+        var timelineHtml = '';
+        if (order.timeline && order.timeline.length > 0) {
+            timelineHtml = '<div class="ocm-timeline-wrap" id="timeline-' + order.id + '">';
+            timelineHtml += '<div class="timeline">';
+            order.timeline.forEach(function(t) {
+                timelineHtml += '<div class="timeline-item">';
+                timelineHtml += '<div class="tl-dot tl-' + t.action + '"><i class="fa ' + t.icon + '"></i></div>';
+                timelineHtml += '<div class="tl-title">' + t.title + '</div>';
+                timelineHtml += '<div class="tl-time">' + t.create_time + ' · ' + t.operator_name + '</div>';
+                if (t.content) timelineHtml += '<div class="tl-content">' + t.content + '</div>';
+                timelineHtml += '</div>';
+            });
+            timelineHtml += '</div></div>';
+        }
+
+        var html = '<div class="order-card-modern" data-id="' + order.id + '" data-images=\'' + JSON.stringify(order.images || []) + '\'>';
 
         // Header
-        html += '<div class="order-card-header">';
-        html += '<div>';
-        html += '<span class="fw-bold text-primary me-2">' + order.order_no + '</span>';
-        html += '<span class="status-badge-lg badge ' + statusClass + '"><i class="fa ' + order.status_icon + '"></i>' + order.status_text + '</span>';
+        html += '<div class="ocm-header">';
+        html += '<div class="ocm-id">';
+        html += '<i class="fa fa-ticket"></i>';
+        html += '<span>' + order.order_no + '</span>';
+        html += '<span class="badge ' + statusClass + '"><i class="fa ' + order.status_icon + ' me-1"></i>' + order.status_text + '</span>';
         html += '</div>';
-        html += '<div><small class="text-muted">' + order.create_time + '</small></div>';
+        html += '<div class="ocm-date"><i class="fa fa-clock-o"></i> ' + order.create_time + '</div>';
         html += '</div>';
+
+        // Progress
+        html += '<div class="ocm-progress">' + flowHtml + '</div>';
 
         // Body
-        html += '<div class="order-card-body">';
-        html += flowHtml;
-        html += '<div class="row g-3 mt-3">';
-        html += '<div class="col-md-6"><small class="text-muted">联系人</small><br><strong>' + order.client_name + '</strong></div>';
-        html += '<div class="col-md-6"><small class="text-muted">联系电话</small><br><strong>' + order.phone + '</strong></div>';
-        if (order.company) html += '<div class="col-md-6"><small class="text-muted">单位</small><br>' + order.company + '</div>';
-        if (order.address) html += '<div class="col-md-6"><small class="text-muted">服务地址</small><br>' + order.address + '</div>';
-        html += '<div class="col-12"><small class="text-muted">故障描述</small><br>' + order.description + '</div>';
-        html += '</div>';
+        html += '<div class="ocm-body">';
+        html += '<div class="ocm-info-grid">' + infoGrid + '</div>';
+        html += descHtml;
         html += imagesHtml;
-
-        if (order.remark && order.status !== 2) {
-            html += '<div class="mt-3 p-3 bg-light rounded"><small class="text-muted">处理备注</small><br><span class="text-success">' + order.remark + '</span></div>';
-        }
+        html += remarkHtml;
         html += receiptHtml;
-        html += timelineHtml;
+        if (timelineHtml) {
+            html += '<div class="ocm-timeline-toggle" data-target="timeline-' + order.id + '">';
+            html += '<i class="fa fa-history"></i> 查看进度记录 <i class="fa fa-chevron-down ms-1"></i>';
+            html += '</div>';
+            html += timelineHtml;
+        }
         html += '</div>';
 
         // Footer
-        html += '<div class="order-card-footer">';
-        html += '<div>';
-        html += '<button class="btn btn-sm btn-outline-info me-1 view-detail-btn" data-id="' + order.id + '"><i class="fa fa-eye"></i> 详情</button>';
+        html += '<div class="ocm-footer">';
+        html += '<div class="ocm-actions">';
+        html += '<button class="btn btn-outline-info view-detail-btn" data-id="' + order.id + '"><i class="fa fa-eye"></i> 详情</button>';
         if (canEdit) {
-            html += '<button class="btn btn-sm btn-outline-primary me-1 edit-btn" data-id="' + order.id + '" data-order=\'' + JSON.stringify(order) + '\'><i class="fa fa-pencil"></i> 编辑</button>';
-            html += '<button class="btn btn-sm btn-outline-danger cancel-btn" data-id="' + order.id + '"><i class="fa fa-ban"></i> 撤销</button>';
+            html += '<button class="btn btn-outline-primary edit-btn" data-id="' + order.id + '" data-order=\'' + JSON.stringify(order) + '\'><i class="fa fa-pencil"></i> 编辑</button>';
+            html += '<button class="btn btn-outline-danger cancel-btn" data-id="' + order.id + '"><i class="fa fa-ban"></i> 撤销</button>';
         }
         html += '</div>';
-        html += '<small class="text-muted">更新于 ' + (order.update_time || order.create_time) + '</small>';
+        html += '<div class="ocm-update"><i class="fa fa-refresh me-1"></i>更新于 ' + (order.update_time || order.create_time) + '</div>';
         html += '</div>';
 
         html += '</div>';
         return html;
+    }
+
+    // HTML 转义
+    function escapeHtml(text) {
+        if (text == null) return '';
+        return String(text).replace(/[&<>"']/g, function(m) {
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+        });
     }
 
     // 渲染流程步骤
@@ -922,9 +1247,11 @@
         html += '</div>';
 
         if (order.images && order.images.length > 0) {
-            html += '<div class="detail-section mt-3"><div class="detail-label">图片</div><div class="d-flex gap-2 flex-wrap">';
-            order.images.forEach(function(img) {
-                html += '<a href="' + img + '" target="_blank"><img src="' + img + '" style="width:80px;height:60px;object-fit:cover;border-radius:6px;"></a>';
+            html += '<div class="detail-section mt-3"><div class="detail-label">图片（点击放大）</div><div class="ocm-img-list">';
+            order.images.forEach(function(img, idx) {
+                html += '<div class="ocm-img-thumb" data-src="' + img + '" data-index="' + idx + '" data-total="' + order.images.length + '">';
+                html += '<img src="' + img + '" style="width:72px;height:72px;object-fit:cover;border-radius:10px;">';
+                html += '</div>';
             });
             html += '</div></div>';
         }
@@ -1173,6 +1500,94 @@
     // 监听Tab切换，加载工单列表
     document.getElementById('ordersTabLink').addEventListener('shown.bs.tab', function() {
         loadMyOrders();
+    });
+
+    // ============ 图片灯箱 ============
+    var lbImages = [];
+    var lbIndex = 0;
+    var lightbox = document.getElementById('imgLightbox');
+    var lbImg = lightbox.querySelector('img');
+
+    function openLightbox(images, index) {
+        lbImages = images;
+        lbIndex = index || 0;
+        updateLightbox();
+        lightbox.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        lightbox.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    function updateLightbox() {
+        if (lbIndex < 0) lbIndex = lbImages.length - 1;
+        if (lbIndex >= lbImages.length) lbIndex = 0;
+        lbImg.src = lbImages[lbIndex];
+        document.getElementById('lbCurrent').textContent = lbImages.length ? lbIndex + 1 : 0;
+        document.getElementById('lbTotal').textContent = lbImages.length;
+        lightbox.querySelector('.lb-prev').style.display = lbImages.length > 1 ? 'flex' : 'none';
+        lightbox.querySelector('.lb-next').style.display = lbImages.length > 1 ? 'flex' : 'none';
+    }
+
+    lightbox.querySelector('.lb-close').addEventListener('click', closeLightbox);
+    lightbox.querySelector('.lb-prev').addEventListener('click', function(e) {
+        e.stopPropagation();
+        lbIndex--;
+        updateLightbox();
+    });
+    lightbox.querySelector('.lb-next').addEventListener('click', function(e) {
+        e.stopPropagation();
+        lbIndex++;
+        updateLightbox();
+    });
+    lightbox.addEventListener('click', function(e) {
+        if (e.target === lightbox || e.target === lbImg) closeLightbox();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (!lightbox.classList.contains('show')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') { lbIndex--; updateLightbox(); }
+        if (e.key === 'ArrowRight') { lbIndex++; updateLightbox(); }
+    });
+
+    // 全局图片灯箱点击（工单卡片 + 详情弹窗）
+    document.addEventListener('click', function(e) {
+        var thumb = e.target.closest('.ocm-img-thumb');
+        if (!thumb) return;
+        e.preventDefault();
+        var card = thumb.closest('.order-card-modern');
+        var images = [];
+        if (card) {
+            // 从工单卡片 data-images 读取全部原图地址
+            images = JSON.parse(card.dataset.images || '[]');
+        } else {
+            // 详情弹窗：收集当前所有 ocm-img-thumb 的 src
+            var container = thumb.closest('.ocm-img-list, .detail-section');
+            if (container) {
+                container.querySelectorAll('.ocm-img-thumb').forEach(function(t) {
+                    images.push(t.dataset.src);
+                });
+            } else {
+                images = [thumb.dataset.src];
+            }
+        }
+        var index = parseInt(thumb.dataset.index, 10) || 0;
+        openLightbox(images, index);
+    });
+
+    // 工单卡片时间轴折叠
+    document.getElementById('ordersList').addEventListener('click', function(e) {
+        var toggle = e.target.closest('.ocm-timeline-toggle');
+        if (!toggle) return;
+        var target = document.getElementById(toggle.dataset.target);
+        if (target) {
+            target.classList.toggle('show');
+            var icon = toggle.querySelector('.fa-chevron-down, .fa-chevron-up');
+            if (icon) {
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            }
+        }
     });
 
     // 提交报修

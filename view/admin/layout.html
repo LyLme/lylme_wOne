@@ -17,6 +17,23 @@
     <!-- 后台CSS -->
     <link href="/static/admin/css/admin.css" rel="stylesheet">
     {block name="css"}{/block}
+    <!-- Summernote 图片上传中遮罩 -->
+    <style>
+    .note-editor.note-uploading { position: relative; pointer-events: none; }
+    .note-editor.note-uploading::after {
+        content: '';
+        position: absolute; inset: 0; z-index: 999;
+        background: rgba(255,255,255,.6);
+        border-radius: 4px;
+    }
+    .note-editor.note-uploading::before {
+        content: '图片上传中...';
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+        z-index: 1000; background: rgba(0,0,0,.75); color: #fff;
+        padding: 8px 20px; border-radius: 4px; font-size: 14px;
+        white-space: nowrap;
+    }
+    </style>
 
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
 </head>
@@ -188,6 +205,80 @@ $(document).ajaxComplete(function(event, jqXHR) {
 <!-- 后台JS -->
 <script src="/static/admin/js/admin.js?v=20250708"></script>
 <script>var ADMIN_PATH = '/{$admin_path}';</script>
+<!-- Summernote 自定义图片上传按钮：绕过内置对话框（内置对话框会 readAsDataURL 阻塞浏览器） -->
+<script>
+/**
+ * Summernote 图片上传（返回 URL 模式，不再使用 base64）
+ */
+function uploadSummernoteImage(file, editor, uploadUrl) {
+    var fd = new FormData();
+    fd.append('file', file);
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    if (csrfToken) { fd.append('__token__', csrfToken); }
+    var $note = editor.next('.note-editor');
+    $note.addClass('note-uploading');
+    $.ajax({
+        url: uploadUrl, type: 'POST', data: fd,
+        processData: false, contentType: false, dataType: 'json',
+        success: function (res) {
+            if (res.code === 0 && res.data && res.data.url) {
+                editor.summernote('insertImage', res.data.url);
+            } else {
+                if (typeof toastr !== 'undefined') toastr.error(res.msg || '上传失败');
+            }
+        },
+        error: function () {
+            if (typeof toastr !== 'undefined') toastr.error('图片上传失败');
+        },
+        complete: function () {
+            $note.removeClass('note-uploading');
+        }
+    });
+}
+
+// 共享自定义按钮定义，各页面通过 buttons 选项引用
+window.__snShareBtn = {
+    uploadImage: function (context) {
+        var ui = $.summernote.ui;
+        var $fi = $('<input type="file" accept="image/*" style="display:none">');
+        $fi.on('change', function () {
+            var file = this.files[0];
+            if (!file) return;
+            var url = window.__snUploadUrl || (ADMIN_PATH + '/config/upload');
+            var $note = context.layoutInfo.editor.closest('.note-editor');
+            var fd = new FormData();
+            fd.append('file', file);
+            var csrf = $('meta[name="csrf-token"]').attr('content');
+            if (csrf) fd.append('__token__', csrf);
+            $note.addClass('note-uploading');
+            $.ajax({
+                url: url, type: 'POST', data: fd,
+                processData: false, contentType: false, dataType: 'json',
+                success: function (res) {
+                    if (res.code === 0 && res.data && res.data.url) {
+                        context.invoke('editor.insertImage', res.data.url);
+                    } else {
+                        if (typeof toastr !== 'undefined') toastr.error(res.msg || '上传失败');
+                    }
+                },
+                error: function () {
+                    if (typeof toastr !== 'undefined') toastr.error('图片上传失败');
+                },
+                complete: function () {
+                    $note.removeClass('note-uploading');
+                }
+            });
+            this.value = '';
+        });
+        return ui.button({
+            contents: '<i class="note-icon-picture"></i>',
+            tooltip: '上传图片',
+            click: function () { $fi.trigger('click'); }
+        }).render();
+    }
+};
+</script>
+</script>
 {block name="js"}{/block}
 
 </body>
