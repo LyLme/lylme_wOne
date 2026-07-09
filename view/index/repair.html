@@ -312,6 +312,86 @@
         font-size: 14px;
         font-weight: 500;
     }
+
+    /* 图片上传组件 */
+    .upload-widget { width: 100%; }
+    .upload-area {
+        border: 2px dashed #d1d5db;
+        border-radius: 10px;
+        padding: 24px;
+        text-align: center;
+        color: #6B7280;
+        background: #f9fafb;
+        transition: all 0.2s;
+        cursor: pointer;
+        user-select: none;
+    }
+    .upload-area:hover, .upload-area:focus {
+        border-color: #1A5FDC;
+        background: #eff6ff;
+        color: #1A5FDC;
+        outline: none;
+    }
+    .upload-area i { font-size: 28px; display: block; margin-bottom: 8px; }
+    .upload-area span { display: block; font-weight: 500; margin-bottom: 4px; }
+    .upload-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+    }
+    .upload-thumb {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        background: #f3f4f6;
+    }
+    .upload-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .upload-thumb .remove {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(239, 68, 68, 0.9);
+        color: #fff;
+        border: none;
+        font-size: 12px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .upload-thumb .remove:hover { background: #dc2626; }
+    .upload-thumb .loading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.8);
+        font-size: 12px;
+        color: #1A5FDC;
+    }
+    .upload-thumb.error {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ef4444;
+        font-size: 12px;
+        padding: 4px;
+        text-align: center;
+    }
 </style>
 {/block}
 
@@ -354,6 +434,7 @@
                         <div class="tab-pane fade show active" id="tab-submit" role="tabpanel">
                             <h4 class="form-title"><i class="fa fa-wrench text-primary"></i> 报修信息填写</h4>
                             <form id="repairForm" enctype="multipart/form-data">
+                                <input type="hidden" name="__token__" value="{:token()}">
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label required">故障现象</label>
@@ -377,7 +458,17 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">上传图片</label>
-                                        <input type="file" name="images[]" class="form-control" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" multiple>
+                                        <div class="upload-widget" id="submitUploadWidget">
+                                            <label class="upload-label" for="submitFileInput">
+                                                <div class="upload-area" role="button" tabindex="0">
+                                                    <i class="fa fa-cloud-upload"></i>
+                                                    <span>点击选择或拖拽图片到此处</span>
+                                                    <small class="text-muted">支持 JPG/PNG/WebP/GIF，最多 5 张，每张不超过 5MB</small>
+                                                </div>
+                                            </label>
+                                            <div class="upload-list"></div>
+                                            <input type="file" id="submitFileInput" name="images[]" class="d-none upload-input" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" multiple>
+                                        </div>
                                         <small class="text-muted">可上传故障照片，支持多张（选填）</small>
                                     </div>
                                     <div class="col-12">
@@ -483,6 +574,7 @@
             </div>
             <div class="modal-body">
                 <form id="editForm" enctype="multipart/form-data">
+                    <input type="hidden" name="__token__" value="{:token()}">
                     <input type="hidden" id="editId">
                     <div class="row g-3">
                         <div class="col-12">
@@ -511,7 +603,17 @@
                         </div>
                         <div class="col-12">
                             <label class="form-label">补充图片</label>
-                            <input type="file" name="images[]" class="form-control" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" multiple>
+                            <div class="upload-widget" id="editUploadWidget">
+                                <label class="upload-label" for="editFileInput">
+                                    <div class="upload-area" role="button" tabindex="0">
+                                        <i class="fa fa-cloud-upload"></i>
+                                        <span>点击选择或拖拽图片到此处</span>
+                                        <small class="text-muted">支持 JPG/PNG/WebP/GIF，最多 5 张，每张不超过 5MB</small>
+                                    </div>
+                                </label>
+                                <div class="upload-list"></div>
+                                <input type="file" id="editFileInput" name="images[]" class="d-none upload-input" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" multiple>
+                            </div>
                             <small class="text-muted">新上传的图片将追加到已有图片中</small>
                         </div>
                     </div>
@@ -563,6 +665,10 @@
     if (window.lylmew && lylmew.fillVisitorForm) {
         lylmew.fillVisitorForm('#repairForm');
     }
+
+    // 初始化图片上传组件
+    var submitUploader = initUploadWidget('submitUploadWidget', { maxCount: 5, maxSize: 5 * 1024 * 1024 });
+    var editUploader = initUploadWidget('editUploadWidget', { maxCount: 5, maxSize: 5 * 1024 * 1024 });
 
     // 获取访客标识
     function getVisitorId() {
@@ -876,6 +982,132 @@
         editModal.show();
     }
 
+    // ============ 图片上传组件（使用原生 label 触发，避免 input.click() 卡顿）============
+    function initUploadWidget(widgetId, options) {
+        options = options || {};
+        var maxCount = options.maxCount || 5;
+        var maxSize = options.maxSize || 5 * 1024 * 1024; // 5MB
+        var widget = document.getElementById(widgetId);
+        if (!widget) return;
+        var area = widget.querySelector('.upload-area');
+        var input = widget.querySelector('.upload-input');
+        var list = widget.querySelector('.upload-list');
+        var files = [];
+
+        var blobUrls = []; // 用于后续释放
+
+        function addThumb(file, index) {
+            var thumb = document.createElement('div');
+            thumb.className = 'upload-thumb';
+
+            if (!/^image\//.test(file.type)) {
+                thumb.className = 'upload-thumb error';
+                thumb.textContent = '格式错误';
+                list.appendChild(thumb);
+                return;
+            }
+            if (file.size > maxSize) {
+                thumb.className = 'upload-thumb error';
+                thumb.textContent = '超过大小';
+                list.appendChild(thumb);
+                return;
+            }
+
+            // URL.createObjectURL 瞬间创建 blob URL，无需读取文件，不会阻塞主线程
+            var url = URL.createObjectURL(file);
+            blobUrls.push(url);
+            thumb.dataset.index = index;
+            thumb.dataset.blobUrl = url;
+            var img = document.createElement('img');
+            img.alt = file.name;
+            img.src = url;
+            thumb.appendChild(img);
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'remove';
+            btn.title = '删除';
+            btn.textContent = '×';
+            thumb.appendChild(btn);
+
+            list.appendChild(thumb);
+        }
+
+        function refreshThumbs() {
+            // 释放旧的 blob URL
+            blobUrls.forEach(function(url) { URL.revokeObjectURL(url); });
+            blobUrls = [];
+            list.innerHTML = '';
+            files.forEach(function(file, index) {
+                addThumb(file, index);
+            });
+        }
+
+        function handleFiles(fileList) {
+            var added = 0;
+            Array.prototype.slice.call(fileList).forEach(function(file) {
+                if (files.length >= maxCount) return;
+                if (!/^image\//.test(file.type)) return;
+                if (file.size > maxSize) return;
+                files.push(file);
+                added++;
+            });
+            if (added > 0) {
+                refreshThumbs();
+            }
+        }
+
+        // label 原生触发文件选择，无需 JS input.click()，避免浏览器卡顿
+        input.addEventListener('change', function() {
+            if (!this.files || !this.files.length) return;
+            // 先拷贝文件再清空 input，允许重复选择同一文件
+            var selected = Array.prototype.slice.call(this.files);
+            input.value = '';
+            handleFiles(selected);
+        });
+
+        // 拖拽支持（拖拽区域与点击区域一致）
+        area.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            area.classList.add('dragover');
+        });
+        area.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            area.classList.remove('dragover');
+        });
+        area.addEventListener('drop', function(e) {
+            e.preventDefault();
+            area.classList.remove('dragover');
+            if (e.dataTransfer && e.dataTransfer.files) {
+                handleFiles(e.dataTransfer.files);
+            }
+        });
+
+        list.addEventListener('click', function(e) {
+            var btn = e.target.closest('.remove');
+            if (!btn) return;
+            var thumb = btn.closest('.upload-thumb');
+            var index = parseInt(thumb.dataset.index, 10);
+            if (!isNaN(index) && index >= 0 && index < files.length) {
+                files.splice(index, 1);
+                refreshThumbs();
+            }
+        });
+
+        return {
+            reset: function() {
+                files = [];
+                refreshThumbs();
+            },
+            getFiles: function() {
+                return files.slice();
+            },
+            getInput: function() {
+                return input;
+            }
+        };
+    }
+
     // ============ 事件绑定 ============
 
     // 编辑保存
@@ -884,10 +1116,17 @@
         btn.disabled = true;
         var formData = new FormData(document.getElementById('editForm'));
         formData.set('id', document.getElementById('editId').value);
+        // 手动添加文件
+        formData.delete('images[]');
+        if (editUploader) {
+            editUploader.getFiles().forEach(function(f) {
+                formData.append('images[]', f);
+            });
+        }
         if (window.lylmew && lylmew.appendVisitorId) lylmew.appendVisitorId(formData);
         if (window.lylmew && lylmew.appendCsrfToken) lylmew.appendCsrfToken(formData);
 
-        fetch('/repair/editOrder', { method: 'POST', body: formData })
+        fetch('/repair/editOrder', { method: 'POST', body: formData, credentials: 'same-origin' })
         .then(function(res) { return res.json(); })
         .then(function(data) {
             btn.disabled = false;
@@ -916,7 +1155,7 @@
         if (reason) formData.append('reason', reason);
         if (window.lylmew && lylmew.appendCsrfToken) lylmew.appendCsrfToken(formData);
 
-        fetch('/repair/cancelOrder', { method: 'POST', body: formData })
+        fetch('/repair/cancelOrder', { method: 'POST', body: formData, credentials: 'same-origin' })
         .then(function(res) { return res.json(); })
         .then(function(data) {
             btn.disabled = false;
@@ -946,6 +1185,14 @@
         var name = form.querySelector('[name="client_name"]').value.trim();
         var phone = form.querySelector('[name="phone"]').value.trim();
 
+        // 手动添加文件（因隐藏 input 的 DataTransfer 文件可能不被 FormData(form) 收集）
+        formData.delete('images[]');
+        if (submitUploader) {
+            submitUploader.getFiles().forEach(function(f) {
+                formData.append('images[]', f);
+            });
+        }
+
         if (window.lylmew && lylmew.appendVisitorId) {
             lylmew.appendVisitorId(formData);
         }
@@ -953,7 +1200,7 @@
             lylmew.appendCsrfToken(formData);
         }
 
-        fetch('/repair/submit', { method: 'POST', body: formData })
+        fetch('/repair/submit', { method: 'POST', body: formData, credentials: 'same-origin' })
         .then(function(res) { return res.json(); })
         .then(function(data) {
             submitBtn.disabled = false;
@@ -968,6 +1215,7 @@
                 var modal = new bootstrap.Modal(document.getElementById('successModal'));
                 modal.show();
                 form.reset();
+                if (submitUploader) submitUploader.reset();
             } else {
                 alert(data.msg || '提交失败，请检查表单');
             }

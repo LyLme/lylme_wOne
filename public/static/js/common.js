@@ -82,6 +82,16 @@
                 }
             }
         });
+
+        // 每次 AJAX 完成后自动更新 meta 中的 token，实现连续提交
+        $(document).ajaxComplete(function(event, jqXHR) {
+            var newToken = jqXHR.getResponseHeader('X-CSRF-TOKEN');
+            if (newToken) {
+                $('meta[name="csrf-token"]').attr('content', newToken);
+                // 同步更新页面中所有 __token__ 隐藏字段
+                $('input[name="__token__"]').val(newToken);
+            }
+        });
     }
 
     // fetch() API 用 CSRF helper
@@ -143,7 +153,11 @@
     lylmew.getVisitorInfo = function() {
         try {
             var info = JSON.parse(localStorage.getItem(lylmew.VISITOR_KEY) || '{}');
-            if (!info.visitor_id) info.visitor_id = generateUUID();
+            if (!info.visitor_id) {
+                info.visitor_id = generateUUID();
+                // 必须立即持久化，否则每次调用都会生成不同的 UUID
+                localStorage.setItem(lylmew.VISITOR_KEY, JSON.stringify(info));
+            }
             return info;
         } catch (e) {
             return { visitor_id: generateUUID() };

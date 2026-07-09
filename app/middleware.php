@@ -10,6 +10,6 @@ return [
     // \think\middleware\LoadLangPack::class,
     // Session初始化
     \think\middleware\SessionInit::class,
-    // 表单令牌验证（CSRF防护）
-    \think\middleware\FormTokenCheck::class,
+    // 表单令牌验证 + 自动刷新（每次 POST 后自动生成新 token 通过响应头下发）
+    \app\middleware\RefreshTokenCheck::class,
 ];

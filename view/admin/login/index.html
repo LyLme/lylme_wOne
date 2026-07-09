@@ -122,6 +122,14 @@ $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
         }
     }
 });
+// 每次 AJAX 完成后自动更新 meta 中的 token，支持连续提交
+$(document).ajaxComplete(function(event, jqXHR) {
+    var newToken = jqXHR.getResponseHeader('X-CSRF-TOKEN');
+    if (newToken) {
+        $('meta[name="csrf-token"]').attr('content', newToken);
+        $('input[name="__token__"]').val(newToken);
+    }
+});
 </script>
 <script>var ADMIN_PATH = '/{$admin_path|default="admin"}';</script>
 <script>
