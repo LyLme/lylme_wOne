@@ -441,7 +441,7 @@
                 <div class="tab-pane fade show active" id="detail">
                     {if $product.description}
                     <div class="product-detail-content">
-                        {$product.description|htmlspecialchars_decode|raw}
+                        {$product.description|htmlspecialchars_decode|purify_html}
                     </div>
                     {else}
                     <p class="text-muted">暂无详细描述</p>

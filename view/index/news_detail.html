@@ -233,7 +233,7 @@
 
                     <!-- 新闻内容 -->
                     <div class="news-detail-content">
-                        {if isset($article.content)}{$article.content|raw}{/if}
+                        {if isset($article.content)}{$article.content|purify_html}{/if}
                     </div>
 
                     <!-- 标签 -->

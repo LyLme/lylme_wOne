@@ -80,7 +80,7 @@ class Article extends FrontBase
             if (is_numeric($slug)) {
                 return $this->detail((int)$slug);
             }
-            return View::fetch('index/error/404', ['message' => '分类不存在']);
+            return response(View::fetch('index/error/404', ['message' => '分类不存在']))->code(404);
         }
 
         $list = ArticleModel::where('status', 1)
@@ -111,7 +111,7 @@ class Article extends FrontBase
             ->find($id);
 
         if (!$article) {
-            return View::fetch('index/error/404', ['message' => '文章不存在']);
+            return response(View::fetch('index/error/404', ['message' => '文章不存在']))->code(404);
         }
 
         // 增加浏览量

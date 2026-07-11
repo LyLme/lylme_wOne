@@ -75,7 +75,7 @@ class Product extends FrontBase
             ->find();
 
         if (!$category) {
-            return View::fetch('index/error/404', ['message' => '分类不存在']);
+            return response(View::fetch('index/error/404', ['message' => '分类不存在']))->code(404);
         }
 
         $childIds = ProductCategory::getChildIds($category->id);
@@ -106,7 +106,7 @@ class Product extends FrontBase
         $product = ProductModel::with('category')->where('status', 1)->find($id);
 
         if (!$product) {
-            return View::fetch('index/error/404', ['message' => '产品不存在']);
+            return response(View::fetch('index/error/404', ['message' => '产品不存在']))->code(404);
         }
 
         // 增加浏览量

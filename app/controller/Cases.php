@@ -116,7 +116,7 @@ class Cases extends FrontBase
             ->find($id);
 
         if (!$article) {
-            return View::fetch('index/error/404', ['message' => '案例不存在']);
+            return response(View::fetch('index/error/404', ['message' => '案例不存在']))->code(404);
         }
 
         $article->incViewCount();

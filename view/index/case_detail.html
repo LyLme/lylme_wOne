@@ -188,7 +188,7 @@
                 <!-- 案例内容 -->
                 {if $article.content}
                 <div class="case-content mt-4">
-                    {$article.content|raw}
+                    {$article.content|purify_html}
                 </div>
                 {/if}
 

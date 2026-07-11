@@ -75,7 +75,7 @@ class Service extends FrontBase
     {
         $serviceTypes = $this->getServiceTypes();
         if (!isset($serviceTypes[$slug])) {
-            return View::fetch('index/error/404', ['message' => '服务不存在']);
+            return response(View::fetch('index/error/404', ['message' => '服务不存在']))->code(404);
         }
 
         $service = $serviceTypes[$slug];
