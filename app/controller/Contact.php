@@ -64,10 +64,10 @@ class Contact extends FrontBase
         }
         $saveData = [
             'visitor_id' => $data['visitor_id'] ?? '',
-            'name'       => $data['name'],
+            'name'       => strip_tags($data['name']),
             'phone'      => $data['phone'],
-            'contact'    => $data['contact'] ?? '',
-            'content'    => $data['content'],
+            'contact'    => isset($data['contact']) ? strip_tags($data['contact']) : '',
+            'content'    => strip_tags($data['content']),
             'source'     => 'website',
             'is_read'    => 0,
         ];
@@ -93,8 +93,14 @@ class Contact extends FrontBase
         if (!$this->request->isPost()) {
             return json(['code' => 1, 'msg' => '非法请求']);
         }
+        // 验证码校验
+        $captchaCode = $this->request->post('captcha', '');
+        if (empty($captchaCode) || !captcha_check($captchaCode)) {
+            return json(['code' => 1, 'msg' => '验证码错误']);
+        }
         $messageId = $this->request->post('message_id', 0);
-        $content   = $this->request->post('content', '');
+        $phone     = $this->request->post('phone', '');
+        $content   = strip_tags($this->request->post('content', ''));
         if (empty($messageId)) return json(['code' => 1, 'msg' => '参数错误']);
         if (empty($content) || mb_strlen($content) > 500) {
             return json(['code' => 1, 'msg' => '回复内容不能为空且不超过500字']);
@@ -102,6 +108,10 @@ class Contact extends FrontBase
         try {
             $m = Message::find($messageId);
             if (!$m) return json(['code' => 1, 'msg' => '留言不存在']);
+            // 归属权验证：需提供原始留言手机号
+            if (empty($phone) || $m->phone !== $phone) {
+                return json(['code' => 1, 'msg' => '手机号不匹配，无法追评']);
+            }
             $reply = new MessageReply();
             $reply->save([
                 'message_id'  => $messageId,

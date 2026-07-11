@@ -2,6 +2,10 @@
   Options +FollowSymlinks -Multiviews
   RewriteEngine On
 
+  # sitemap.xml / robots.txt 显式重写（避免 ThinkPHP 后缀解析导致 404）
+  RewriteRule ^sitemap\.xml$ index.php?s=sitemap [QSA,PT,L]
+  RewriteRule ^robots\.txt$ index.php?s=robots [QSA,PT,L]
+
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^(.*)$ index.php?s=$1 [QSA,PT,L]

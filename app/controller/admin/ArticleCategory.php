@@ -69,6 +69,7 @@ class ArticleCategory extends Base
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        $this->checkSuperAdmin();
         $id = (int)$this->request->post('id', 0);
         if (empty($id)) return $this->error('参数错误');
 

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace app\controller\admin;
 
+use think\facade\Cache;
 use think\facade\Db;
 use think\facade\Session;
 use think\facade\View;
@@ -38,17 +39,17 @@ class Login extends Base
             return $this->error('非法请求');
         }
 
-        // 登录频率限制（同 IP 5 次失败后锁定 15 分钟）
+        // 登录频率限制（基于 Cache，同 IP 5 次失败后锁定 15 分钟，不依赖 Session 防绕过）
         $ip = $this->request->ip();
         $failKey = 'login_fail_' . md5($ip);
         $lockKey = 'login_lock_' . md5($ip);
-        if (Session::get($lockKey)) {
-            $remain = Session::get($lockKey) - time();
+        if (Cache::get($lockKey)) {
+            $remain = Cache::get($lockKey) - time();
             if ($remain > 0) {
                 return $this->error('登录尝试次数过多，请 ' . ceil($remain / 60) . ' 分钟后重试');
             }
-            Session::delete($lockKey);
-            Session::delete($failKey);
+            Cache::delete($lockKey);
+            Cache::delete($failKey);
         }
 
         $username = $this->request->post('username', '');
@@ -81,8 +82,8 @@ class Login extends Base
         }
 
         // 登录成功，清除失败记录
-        Session::delete($failKey);
-        Session::delete($lockKey);
+        Cache::delete($failKey);
+        Cache::delete($lockKey);
 
         // 更新登录信息
         Db::name('admin_user')
@@ -118,10 +119,10 @@ class Login extends Base
      */
     private function recordLoginFail(string $ip, string $failKey, string $lockKey): void
     {
-        $fails = (int)Session::get($failKey, 0) + 1;
-        Session::set($failKey, $fails);
+        $fails = (int)Cache::get($failKey, 0) + 1;
+        Cache::set($failKey, $fails, 900);
         if ($fails >= 5) {
-            Session::set($lockKey, time() + 900); // 15 分钟锁定
+            Cache::set($lockKey, time() + 900, 900); // 15 分钟锁定
         }
     }
 

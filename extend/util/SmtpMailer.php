@@ -158,9 +158,9 @@ class SmtpMailer
             curl_setopt($ch, CURLOPT_USE_SSL, CURLUSESSL_TRY);
         }
 
-        // 忽略 SSL 证书验证（兼容自签名/企业证书）
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        // 验证 SSL 证书（关闭可跳过自签名/企业证书校验）
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
         // 调试日志（需要时取消注释）
         // curl_setopt($ch, CURLOPT_VERBOSE, true);

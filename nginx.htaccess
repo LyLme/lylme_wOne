@@ -1,3 +1,23 @@
+# 禁止执行 uploads 目录下的脚本文件（纵深防御）
+location ~* ^/static/uploads/.*\.(php|phtml|php\d+|phar|pl|py|cgi|asp|aspx|jsp)$ {
+    return 403;
+}
+
+# 安全响应头（Bug #13）
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+
+# sitemap.xml / robots.txt 显式重写（Bug #16）
+location = /sitemap.xml {
+    rewrite ^ /index.php?s=sitemap last;
+}
+location = /robots.txt {
+    rewrite ^ /index.php?s=robots last;
+}
+
 location / {
     if (!-e $request_filename) {
         rewrite ^(.*)$ /index.php?s=$1 last;

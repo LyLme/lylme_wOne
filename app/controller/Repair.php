@@ -74,8 +74,14 @@ class Repair extends FrontBase
             if (!is_array($files)) {
                 $files = [$files];
             }
+            $allowExt  = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
             foreach ($files as $file) {
                 try {
+                    $ext = strtolower($file->getOriginalExtension());
+                    if (!in_array($ext, $allowExt) || !in_array($file->getMime(), $allowMime)) {
+                        continue; // 跳过非图片文件
+                    }
                     $savename = Filesystem::disk('public')->putFile('repair', $file);
                     if ($savename) {
                         $imagePaths[] = '/static/uploads/' . str_replace('\\', '/', $savename);
@@ -91,11 +97,11 @@ class Repair extends FrontBase
             $order->save([
                 'order_no'    => RepairOrder::generateOrderNo(),
                 'visitor_id'  => $data['visitor_id'] ?? '',
-                'client_name' => $data['client_name'],
+                'client_name' => strip_tags($data['client_name']),
                 'phone'       => $data['phone'],
-                'company'     => $data['company'] ?? '',
-                'address'     => $data['address'] ?? '',
-                'description' => $data['fault_desc'],
+                'company'     => isset($data['company']) ? strip_tags($data['company']) : '',
+                'address'     => isset($data['address']) ? strip_tags($data['address']) : '',
+                'description' => strip_tags($data['fault_desc']),
                 'images'      => !empty($imagePaths) ? json_encode($imagePaths, JSON_UNESCAPED_UNICODE) : '',
                 'status'      => RepairOrder::STATUS_PENDING,
                 'ip'          => $this->request->ip(),
@@ -339,8 +345,14 @@ class Repair extends FrontBase
             if (!is_array($files)) {
                 $files = [$files];
             }
+            $allowExt  = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
             foreach ($files as $file) {
                 try {
+                    $ext = strtolower($file->getOriginalExtension());
+                    if (!in_array($ext, $allowExt) || !in_array($file->getMime(), $allowMime)) {
+                        continue; // 跳过非图片文件
+                    }
                     $savename = Filesystem::disk('public')->putFile('repair', $file);
                     if ($savename) {
                         $existingImages[] = '/static/uploads/' . str_replace('\\', '/', $savename);

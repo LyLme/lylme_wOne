@@ -96,6 +96,7 @@ class Banner extends Base
         if (!$this->request->isPost()) {
             return $this->error('非法请求');
         }
+        // $this->checkSuperAdmin(); 允许编辑角色删除
 
         $id = $this->request->post('id', 0);
         if (empty($id)) {
@@ -122,6 +123,7 @@ class Banner extends Base
         if (!$this->request->isPost()) {
             return $this->error('非法请求');
         }
+        // $this->checkSuperAdmin();
 
         $id     = $this->request->post('id', 0);
         $status = $this->request->post('status', 1);
@@ -151,12 +153,12 @@ class Banner extends Base
 
         try {
             $ext = strtolower($file->getOriginalExtension());
-            $allowExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+            $allowExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
             if (!in_array($ext, $allowExt)) {
                 return $this->error('不支持的文件类型，仅允许：' . implode(',', $allowExt));
             }
             // 验证真实 MIME 类型
-            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/bmp'];
+            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
             if (!in_array($file->getMime(), $allowMime)) {
                 return $this->error('不支持的文件类型');
             }

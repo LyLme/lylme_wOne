@@ -36,6 +36,7 @@ class Message extends Base
     public function reply()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        // $this->checkSuperAdmin();
         $id      = $this->request->post('id', 0);
         $content = $this->request->post('reply_content', '');
 
@@ -112,6 +113,7 @@ class Message extends Base
     public function markRead()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        // $this->checkSuperAdmin();
         $id = $this->request->post('id', 0);
         if (empty($id)) return $this->error('参数错误');
 
@@ -129,6 +131,7 @@ class Message extends Base
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        $this->checkSuperAdmin(); //禁止编辑角色删除
         $id = $this->request->post('id', 0);
         if (empty($id)) return $this->error('参数错误');
 

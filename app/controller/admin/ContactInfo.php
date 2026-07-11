@@ -90,6 +90,7 @@ class ContactInfo extends Base
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        // $this->checkSuperAdmin();  允许编辑角色删除
 
         $id = (int)$this->request->post('id', 0);
         if ($id <= 0) return $this->error('参数错误');
@@ -109,6 +110,7 @@ class ContactInfo extends Base
     public function batchSave()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        $this->checkSuperAdmin();
 
         $itemsJson = $this->request->post('items', '[]');
         $items = json_decode($itemsJson, true);

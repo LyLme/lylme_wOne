@@ -56,9 +56,9 @@ Route::group('/', function () {
     // 搜索
     Route::get('search', 'Index/search')->name('search');
 
-    // Sitemap
-    Route::get('sitemap.xml', 'Index/sitemap')->name('sitemap');
-    Route::get('robots.txt', 'Index/robots')->name('robots');
+    // Sitemap（不含扩展名，由 .htaccess 显式重写处理）
+    Route::get('sitemap', 'Index/sitemap')->name('sitemap');
+    Route::get('robots', 'Index/robots')->name('robots');
 });
 
 // ==================== 后台路由 ====================
@@ -66,7 +66,7 @@ Route::group('/', function () {
 $adminPath = env('APP.ADMIN_PATH', 'admin');
 $adminPath = $adminPath ? trim($adminPath, '/') : 'admin';
 // 安全校验：禁止使用前台路由路径作为后台入口
-$reservedPaths = ['home', 'index', 'products', 'product', 'services', 'service', 'cases', 'case', 'news', 'article', 'about', 'contact', 'repair', 'search', 'captcha', 'sitemap.xml', 'robots.txt', 'login', 'logout'];
+$reservedPaths = ['home', 'index', 'products', 'product', 'services', 'service', 'cases', 'case', 'news', 'article', 'about', 'contact', 'repair', 'search', 'captcha', 'sitemap', 'sitemap.xml', 'robots', 'robots.txt', 'login', 'logout'];
 if (in_array(strtolower($adminPath), $reservedPaths)) {
     $adminPath = 'admin';
 }

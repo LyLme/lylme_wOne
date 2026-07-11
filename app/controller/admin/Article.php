@@ -123,6 +123,7 @@ class Article extends Base
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        $this->checkSuperAdmin();
         $id = $this->request->post('id', 0);
         if (empty($id)) return $this->error('参数错误');
 
@@ -141,6 +142,7 @@ class Article extends Base
     public function toggleStatus()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
+        // $this->checkSuperAdmin();
         $id     = $this->request->post('id', 0);
         $status = $this->request->post('status', 1);
 
@@ -162,10 +164,10 @@ class Article extends Base
 
         try {
             $ext = strtolower($file->getOriginalExtension());
-            $allow = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+            $allow = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
             if (!in_array($ext, $allow)) return $this->error('不支持的文件类型');
             // 验证真实 MIME 类型
-            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/bmp'];
+            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
             if (!in_array($file->getMime(), $allowMime)) return $this->error('不支持的文件类型');
 
             $subPath  = date('Ymd');

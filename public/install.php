@@ -124,6 +124,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             
+            // 安全校验：数据库名只允许字母数字下划线
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $dbName)) {
+                echo json_encode(['success' => false, 'msg' => '数据库名只能包含字母、数字和下划线'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            // 安全校验：管理员用户名只允许字母数字下划线
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $adminUser)) {
+                echo json_encode(['success' => false, 'msg' => '管理员用户名只能包含字母、数字和下划线'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            // 安全校验：数据库端口只允许数字
+            if (!preg_match('/^\d{1,5}$/', $dbPort)) {
+                echo json_encode(['success' => false, 'msg' => '数据库端口格式不正确'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            
             // 测试数据库连接
             $dsn = "mysql:host={$dbHost};port={$dbPort};charset=utf8mb4";
             try {
@@ -136,8 +152,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             
-            // 检查数据库是否存在，不存在则创建
-            $stmt = $pdo->query("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{$dbName}'");
+            // 检查数据库是否存在，不存在则创建（使用参数化查询防注入）
+            $stmt = $pdo->prepare("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = :dbname");
+            $stmt->execute(['dbname' => $dbName]);
             if ($stmt->rowCount() === 0) {
                 $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
             }
@@ -180,9 +197,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE `{$adminTable}` SET `password` = :pwd, `username` = :uname WHERE `id` = 1");
                 $stmt->execute(['pwd' => $hashedPassword, 'uname' => $adminUser]);
                 if ($stmt->rowCount() === 0) {
-                    // 如果 id=1 的记录不存在，则插入
+                    // 如果 id=1 的记录不存在，则使用预处理语句插入
                     $now = date('Y-m-d H:i:s');
-                    $pdo->exec("INSERT INTO `{$adminTable}` (`id`, `username`, `password`, `nickname`, `avatar`, `status`, `role`, `create_time`, `update_time`) VALUES (1, '{$adminUser}', '{$hashedPassword}', '超级管理员', '', 1, 0, '{$now}', '{$now}')");
+                    $insStmt = $pdo->prepare("INSERT INTO `{$adminTable}` (`id`, `username`, `password`, `nickname`, `avatar`, `status`, `role`, `create_time`, `update_time`) VALUES (1, :uname, :pwd, '超级管理员', '', 1, 0, :ctime, :ctime)");
+                    $insStmt->execute(['uname' => $adminUser, 'pwd' => $hashedPassword, 'ctime' => $now]);
                 }
             } catch (PDOException $e) {
                 echo json_encode(['success' => false, 'msg' => '管理员密码设置失败：' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
@@ -218,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 创建锁定文件
             file_put_contents(LOCK_FILE, date('Y-m-d H:i:s') . "\n" . $_SERVER['REMOTE_ADDR']);
             
-            echo json_encode(['success' => true, 'msg' => '安装成功！', 'admin_path' => $adminPath, 'admin_user' => $adminUser, 'admin_pass' => $adminPass], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['success' => true, 'msg' => '安装成功！请牢记您设定的管理员密码', 'admin_path' => $adminPath, 'admin_user' => $adminUser], JSON_UNESCAPED_UNICODE);
             
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'msg' => '安装失败：' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
@@ -470,10 +488,9 @@ function generateRandomString(int $length = 32): string
             <?php else: ?>
             <!-- ===== 步骤3: 安装完成 ===== -->
             <?php
-            // 读取后台路径和管理员用户名密码（优先从 URL 参数，否则从 .env 文件读取）
+            // 读取后台路径和管理员用户名（优先从 URL 参数，否则从 .env 文件读取）
             $installedAdminPath = isset($_GET['admin_path']) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['admin_path']) : 'admin';
             $installedAdminUser = isset($_GET['admin_user']) ? htmlspecialchars(trim($_GET['admin_user'])) : 'admin';
-            $installedAdminPass = isset($_GET['admin_pass']) ? htmlspecialchars(trim($_GET['admin_pass'])) : 'admin123';
             if (file_exists(ENV_FILE)) {
                 $envContent = @file_get_contents(ENV_FILE);
                 if ($envContent !== false) {
@@ -515,13 +532,9 @@ function generateRandomString(int $length = 32): string
                             <td style="padding:10px 14px;color:#555"><strong>后台地址</strong></td>
                             <td style="padding:10px 14px"><a href="/<?= $installedAdminPath ?>/index" target="_blank" style="color:#1677ff"><?= $adminUrl ?></a></td>
                         </tr>
-                        <tr style="border-bottom:1px solid #e6f0ff">
+                        <tr>
                             <td style="padding:10px 14px;color:#555"><strong>后台账号</strong></td>
                             <td style="padding:10px 14px;color:#1a1a2e;font-weight:600"><code style="background:#e8f0fe;padding:2px 8px;border-radius:4px"><?= $installedAdminUser ?></code></td>
-                        </tr>
-                        <tr>
-                            <td style="padding:10px 14px;color:#555"><strong>后台密码</strong></td>
-                            <td style="padding:10px 14px;color:#1a1a2e;font-weight:600"><code style="background:#e8f0fe;padding:2px 8px;border-radius:4px"><?= $installedAdminPass ?></code></td>
                         </tr>
                     </table>
                 </div>
@@ -668,7 +681,7 @@ function startInstall() {
             progressText.textContent = '安装完成！';
             msg.innerHTML = '<div class="alert alert-success">✅ ' + data.msg + '</div>';
             setTimeout(function() {
-                window.location.href = '?step=3&admin_path=' + encodeURIComponent(data.admin_path || 'admin') + '&admin_user=' + encodeURIComponent(data.admin_user || 'admin') + '&admin_pass=' + encodeURIComponent(data.admin_pass || '');
+                window.location.href = '?step=3&admin_path=' + encodeURIComponent(data.admin_path || 'admin') + '&admin_user=' + encodeURIComponent(data.admin_user || 'admin');
             }, 1500);
         } else {
             progressBar.style.width = '0';

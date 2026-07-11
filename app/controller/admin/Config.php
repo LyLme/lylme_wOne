@@ -111,12 +111,12 @@ class Config extends Base
         try {
             // 验证文件类型和大小
             $ext = strtolower($file->getOriginalExtension());
-            $allowExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'ico', 'bmp'];
+            $allowExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'ico', 'bmp'];
             if (!in_array($ext, $allowExt)) {
                 return $this->error('不支持的文件类型，仅允许：' . implode(',', $allowExt));
             }
             // 验证真实 MIME 类型
-            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'image/x-icon', 'image/bmp'];
+            $allowMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/x-icon', 'image/bmp'];
             if (!in_array($file->getMime(), $allowMime)) {
                 return $this->error('不支持的文件类型');
             }
@@ -275,8 +275,8 @@ class Config extends Base
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => 10,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
         ]);
         $res = curl_exec($ch);
         $err = curl_error($ch);
