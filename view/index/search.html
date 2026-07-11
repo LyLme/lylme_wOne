@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .search-section {
@@ -38,7 +37,7 @@
         color: #6B7280;
     }
     .search-result-info strong {
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .result-card {
         background: #fff;
@@ -61,7 +60,7 @@
     }
     .result-type.product {
         background: #E8F0FE;
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .result-type.article {
         background: #ECFDF5;
@@ -77,7 +76,7 @@
         text-decoration: none;
     }
     .result-card .result-title a:hover {
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .result-card .result-desc {
         color: #6B7280;

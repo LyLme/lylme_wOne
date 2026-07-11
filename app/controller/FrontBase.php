@@ -128,7 +128,27 @@ class FrontBase extends BaseController
         // 服务热线：使用后台“联系电话”字段，为空时回退到联系方式表中的第一个电话
         $servicePhone = $this->contact_phone ?: ContactInfo::getServicePhone();
 
-        // 7. 共享变量到所有视图
+        // 7. 加载主题颜色配置
+        $themePrimary = $cfg('theme_primary_color', '#1A5FDC');
+        $themeSecond  = $cfg('theme_second_color', '#00B4D8');
+        $themeAccent  = $cfg('theme_accent_color', '#f18437');
+
+        // 计算衍生色
+        $primaryRgb = self::hexToRgb($themePrimary);
+        $primaryDark = self::adjustBrightness($themePrimary, -30);
+        $primaryLight = self::adjustBrightness($themePrimary, 210);
+
+        $themeCss = ":root {\n"
+            . "    --primary: {$themePrimary};\n"
+            . "    --primary-dark: {$primaryDark};\n"
+            . "    --primary-light: {$primaryLight};\n"
+            . "    --primary-rgb: {$primaryRgb};\n"
+            . "    --primary-second: {$themeSecond};\n"
+            . "    --gradient: linear-gradient(135deg, {$themePrimary} 0%, {$themeSecond} 100%);\n"
+            . "    --accent: {$themeAccent};\n"
+            . "}";
+
+        // 8. 共享变量到所有视图
         View::assign([
             'site_name'          => $this->site_name,
             'site_slogan'        => $this->site_slogan,
@@ -149,6 +169,12 @@ class FrontBase extends BaseController
             'site_config'        => $this->siteConfig,
             'contact_info_list'  => $this->contactInfoList,
             'service_phone'      => $servicePhone,
+            // 主题颜色
+            'theme_css'          => $themeCss,
+            'theme_primary'      => $themePrimary,
+            'theme_second'       => $themeSecond,
+            'theme_accent'       => $themeAccent,
+            'theme_gradient'     => "linear-gradient(135deg, {$themePrimary} 0%, {$themeSecond} 100%)",
             // Meta SEO
             'meta_description'   => $this->siteConfig['meta_description'] ?? $this->company_desc,
             'meta_keywords'      => $this->siteConfig['meta_keywords'] ?? $this->company_keywords,
@@ -169,5 +195,36 @@ class FrontBase extends BaseController
     protected function getSiteConfig(string $key, $default = null)
     {
         return $this->siteConfig[$key] ?? $default;
+    }
+
+    /**
+     * 将 hex 颜色转为 RGB 字符串 "R, G, B"
+     */
+    public static function hexToRgb(string $hex): string
+    {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        return "{$r}, {$g}, {$b}";
+    }
+
+    /**
+     * 调整颜色亮度，返回 hex 颜色
+     * $amount > 0 变亮（趋向白），$amount < 0 变暗（趋向黑）
+     */
+    public static function adjustBrightness(string $hex, int $amount): string
+    {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
+        $r = max(0, min(255, hexdec(substr($hex, 0, 2)) + $amount));
+        $g = max(0, min(255, hexdec(substr($hex, 2, 2)) + $amount));
+        $b = max(0, min(255, hexdec(substr($hex, 4, 2)) + $amount));
+        return '#' . sprintf('%02X%02X%02X', $r, $g, $b);
     }
 }

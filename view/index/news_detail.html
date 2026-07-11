@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .breadcrumb-nav .breadcrumb-item a {
@@ -45,7 +44,7 @@
         padding: 3px 12px;
         border-radius: 4px;
         background: #E8F0FE;
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .news-detail-content {
         line-height: 2;
@@ -76,7 +75,7 @@
     }
     .news-tags .tag:hover {
         background: #E8F0FE;
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .news-nav {
         display: flex;
@@ -86,7 +85,7 @@
         border-top: 1px solid #E5E7EB;
     }
     .news-nav a {
-        color: #1A5FDC;
+        color: var(--primary);
         text-decoration: none;
         font-weight: 500;
         max-width: 45%;
@@ -175,18 +174,18 @@
         margin: 20px 0;
     }
     .news-detail-content blockquote {
-        border-left: 4px solid #1A5FDC;
+        border-left: 4px solid var(--primary);
         background: #F8FAFC;
         padding: 15px 20px;
         margin: 1em 0;
         color: #4B5563;
     }
     .news-detail-content a {
-        color: #1A5FDC;
+        color: var(--primary);
         text-decoration: underline;
     }
     .news-detail-content a:hover {
-        color: #0D47A1;
+        color: var(--primary-dark);
     }
 </style>
 {/block}

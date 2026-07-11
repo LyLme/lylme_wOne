@@ -37,7 +37,7 @@ class RefreshTokenCheck
             // 验证失败也生成新 token，防止客户端一直卡在旧 token 上
             $newToken = $request->buildToken($token);
             // 返回 JSON 错误并携带新 token，前端 ajaxComplete 会自动更新 meta 标签
-            return json(['code' => 0, 'message' => '令牌数据无效，请重新提交'])
+            return json(['code' => 1001, 'message' => '令牌数据无效，请重新提交'])
                 ->header(['X-CSRF-TOKEN' => $newToken]);
         }
 

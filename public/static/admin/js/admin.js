@@ -203,6 +203,62 @@ $(function () {
     // ====================================================================
     //  保存分组配置
     // ====================================================================
+    // 通用保存 AJAX，支持令牌失效自动重试一次 + 可选自定义回调
+    // options: { url, timeout, onSuccess(res), onError(res), onAjaxError() }
+    function doSaveAjax($btn, origHtml, data, retryCount, options) {
+        retryCount = retryCount || 0;
+        options = options || {};
+        $.ajax({
+            url: options.url || (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/save',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            timeout: options.timeout,
+            success: function (res, textStatus, jqXHR) {
+                console.log('[save] 响应:', res);
+                if (res.code === 0) {
+                    if (options.onSuccess) {
+                        options.onSuccess(res);
+                    } else {
+                        if (typeof toastr !== 'undefined') toastr.success(res.msg || '保存成功');
+                        else alert('保存成功');
+                        $btn.prop('disabled', false).html(origHtml);
+                    }
+                } else if (res.code === 1001 && retryCount < 1) {
+                    // 令牌失效：立即用响应头中的新 token 更新 meta / 表单，并同步到 data 后重试
+                    var newToken = jqXHR.getResponseHeader('X-CSRF-TOKEN');
+                    if (newToken) {
+                        $('meta[name="csrf-token"]').attr('content', newToken);
+                        $('input[name="__token__"]').val(newToken);
+                        if (data && typeof data === 'object') {
+                            data.__token__ = newToken;
+                        }
+                        console.log('[save] 令牌已刷新，自动重试...');
+                    }
+                    doSaveAjax($btn, origHtml, data, retryCount + 1, options);
+                } else {
+                    if (options.onError) {
+                        options.onError(res);
+                    } else {
+                        if (typeof toastr !== 'undefined') toastr.error(res.msg || '保存失败');
+                        else alert('保存失败: ' + (res.msg || ''));
+                    }
+                    $btn.prop('disabled', false).html(origHtml);
+                }
+            },
+            error: function (xhr, status, err) {
+                console.error('[save] AJAX错误:', status, err);
+                if (options.onAjaxError) {
+                    options.onAjaxError(xhr, status, err);
+                } else {
+                    if (typeof toastr !== 'undefined') toastr.error('网络错误，请重试');
+                    else alert('网络错误: ' + status);
+                }
+                $btn.prop('disabled', false).html(origHtml);
+            }
+        });
+    }
+
     $(document).on('click', '.save-group-btn', function () {
         var $btn = $(this);
         var group = $btn.data('group');
@@ -253,31 +309,8 @@ $(function () {
             return;
         }
 
-        // 3. AJAX 提交
-        $.ajax({
-            url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/save',
-            type: 'POST',
-            data: data,
-            dataType: 'json',
-            success: function (res) {
-                console.log('[save] 响应:', res);
-                if (res.code === 0) {
-                    if (typeof toastr !== 'undefined') toastr.success(res.msg || '保存成功');
-                    else alert('保存成功');
-                } else {
-                    if (typeof toastr !== 'undefined') toastr.error(res.msg || '保存失败');
-                    else alert('保存失败: ' + (res.msg || ''));
-                }
-            },
-            error: function (xhr, status, err) {
-                console.error('[save] AJAX错误:', status, err);
-                if (typeof toastr !== 'undefined') toastr.error('网络错误，请重试');
-                else alert('网络错误: ' + status);
-            },
-            complete: function () {
-                $btn.prop('disabled', false).html(origHtml);
-            }
-        });
+        // 3. AJAX 提交（支持令牌失效自动重试一次）
+        doSaveAjax($btn, origHtml, data, 0);
     });
 
     /**
@@ -304,47 +337,44 @@ $(function () {
             });
         });
 
-        // 先保存配置字段
-        $.ajax({
-            url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/config/save',
-            type: 'POST',
-            data: configData,
-            dataType: 'json',
-            timeout: 30000,
-            success: function (res1) {
-                if (res1.code !== 0) {
-                    if (typeof toastr !== 'undefined') toastr.error(res1.msg || '基础信息保存失败');
-                    else alert('基础信息保存失败: ' + (res1.msg || ''));
-                    resetBtn();
-                    return;
-                }
-                // 再批量保存联系列表
-                $.ajax({
-                    url: (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin') + '/contact-info/batch-save',
-                    type: 'POST',
-                    data: { items: JSON.stringify(items) },
-                    dataType: 'json',
-                    timeout: 30000,
-                    success: function (res2) {
-                        if (res2.code === 0) {
-                            if (typeof toastr !== 'undefined') toastr.success('联系方式保存成功');
-                            else alert('联系方式保存成功');
-                            if (typeof loadContactInfo === 'function') {
-                                try { loadContactInfo(); } catch (e) {}
-                            }
-                        } else {
-                            if (typeof toastr !== 'undefined') toastr.error(res2.msg || '联系方式保存失败');
-                            else alert('联系方式保存失败: ' + (res2.msg || ''));
+        var apiBase = (typeof ADMIN_PATH !== 'undefined' ? ADMIN_PATH : '/admin');
+
+        // 先保存配置字段（支持令牌自动重试）
+        doSaveAjax($btn, origHtml, configData, 0, {
+            onSuccess: function () {
+                // 再批量保存联系列表，必须带最新 __token__，也支持令牌失效重试
+                var token = $('input[name="__token__"]').val() || $('meta[name="csrf-token"]').attr('content') || '';
+                doSaveAjax($btn, origHtml, {
+                    items: JSON.stringify(items),
+                    __token__: token
+                }, 0, {
+                    url: apiBase + '/contact-info/batch-save',
+                    onSuccess: function (res2) {
+                        if (typeof toastr !== 'undefined') toastr.success(res2.msg || '联系方式保存成功');
+                        else alert(res2.msg || '联系方式保存成功');
+                        if (typeof loadContactInfo === 'function') {
+                            try { loadContactInfo(); } catch (e) {}
                         }
+                        resetBtn();
                     },
-                    error: function () {
+                    onError: function (res2) {
+                        if (typeof toastr !== 'undefined') toastr.error(res2.msg || '联系方式保存失败');
+                        else alert('联系方式保存失败: ' + (res2.msg || ''));
+                        resetBtn();
+                    },
+                    onAjaxError: function () {
                         if (typeof toastr !== 'undefined') toastr.error('联系方式保存请求失败');
                         else alert('联系方式保存请求失败');
-                    },
-                    complete: resetBtn
+                        resetBtn();
+                    }
                 });
             },
-            error: function () {
+            onError: function (res) {
+                if (typeof toastr !== 'undefined') toastr.error(res.msg || '基础信息保存失败');
+                else alert('基础信息保存失败: ' + (res.msg || ''));
+                resetBtn();
+            },
+            onAjaxError: function () {
                 if (typeof toastr !== 'undefined') toastr.error('基础信息保存请求失败');
                 else alert('基础信息保存请求失败');
                 resetBtn();

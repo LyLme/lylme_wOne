@@ -86,6 +86,10 @@ class Config extends Model
                 $group = 'base';
                 if (strpos($key, 'contact_') === 0 || in_array($key, ['icp_number', 'wechat_qrcode', 'map_src'])) {
                     $group = 'contact';
+                } elseif (strpos($key, 'theme_') === 0) {
+                    $group = 'theme';
+                } elseif (strpos($key, 'notif') === 0) {
+                    $group = 'notify';
                 } elseif (strpos($key, 'meta_') === 0 || strpos($key, 'keyword') !== false || strpos($key, '_desc') !== false) {
                     $group = 'seo';
                 } elseif (strpos($key, 'nav_') === 0) {

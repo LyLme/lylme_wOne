@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .breadcrumb-nav {
@@ -63,7 +62,7 @@
     }
     .thumbnails .thumb.active,
     .thumbnails .thumb:hover {
-        border-color: #1A5FDC;
+        border-color: var(--primary);
     }
     .thumbnails .thumb img {
         max-width: 100%;
@@ -127,8 +126,8 @@
         color: #fff;
     }
     .product-cta .btn-consult {
-        background: #1A5FDC;
-        border-color: #1A5FDC;
+        background: var(--primary);
+        border-color: var(--primary);
         color: #fff;
     }
     .product-tabs {
@@ -145,7 +144,7 @@
         position: relative;
     }
     .nav-tabs-custom .nav-link.active {
-        color: #1A5FDC;
+        color: var(--primary);
         background: transparent;
     }
     .nav-tabs-custom .nav-link.active::after {
@@ -155,7 +154,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: #1A5FDC;
+        background: var(--primary);
     }
     .tab-content-custom {
         padding: 30px 0;
@@ -242,8 +241,8 @@
     .product-detail-content th { background: #F8FAFC; font-weight: 600; }
     .product-detail-content tr:nth-child(even) td { background: #FAFBFC; }
     .product-detail-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
-    .product-detail-content blockquote { border-left: 4px solid #1A5FDC; background: #F8FAFC; padding: 15px 20px; margin: 1em 0; color: #4B5563; }
-    .product-detail-content a { color: #1A5FDC; text-decoration: underline; }
+    .product-detail-content blockquote { border-left: 4px solid var(--primary); background: #F8FAFC; padding: 15px 20px; margin: 1em 0; color: #4B5563; }
+    .product-detail-content a { color: var(--primary); text-decoration: underline; }
 
     /* 分享弹窗 */
     .share-modal .modal-content {

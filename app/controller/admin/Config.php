@@ -238,7 +238,7 @@ class Config extends Base
                     $mailer->setAuth($user, $pass);
                     $mailer->send($to,
                         "[OK] 测试消息 - " . $this->siteConfig['company_name_short'] . " 通知配置成功",
-                        "<html><body style='font-family:Arial,sans-serif;padding:20px;background:#f5f5f5;'><div style='max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;'><div style='background:#1A5FDC;color:#fff;padding:18px 24px;font-size:18px;font-weight:bold;'>[OK] 测试消息</div><div style='padding:24px;'><p style='font-size:16px;color:#333;'>消息通知配置成功！</p><p style='color:#666;'>此邮件来自" . $this->siteConfig['company_name_short'] . "后台。</p></div><div style='padding:0 24px 24px;'><hr style='border:0;border-top:1px solid #eee;'><p style='color:#999;font-size:12px;'>此邮件由系统自动发送，请勿回复。</p></div></div></body></html>",
+                        "<html><body style='font-family:Arial,sans-serif;padding:20px;background:#f5f5f5;'><div style='max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;'><div style='background:" . ($this->siteConfig['theme_primary_color'] ?? '#1A5FDC') . ";color:#fff;padding:18px 24px;font-size:18px;font-weight:bold;'>[OK] 测试消息</div><div style='padding:24px;'><p style='font-size:16px;color:#333;'>消息通知配置成功！</p><p style='color:#666;'>此邮件来自" . $this->siteConfig['company_name_short'] . "后台。</p></div><div style='padding:0 24px 24px;'><hr style='border:0;border-top:1px solid #eee;'><p style='color:#999;font-size:12px;'>此邮件由系统自动发送，请勿回复。</p></div></div></body></html>",
                         $fromEmail,
                         $fromDisplay
                     );

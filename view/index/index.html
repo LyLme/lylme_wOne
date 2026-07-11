@@ -37,7 +37,7 @@
     }
     .banner-btns .btn-outline-light:hover {
         background: #fff;
-        color: #1A5FDC;
+        color: {$theme_primary};
         border-color: #fff;
     }
     /* 数据统计条 */
@@ -57,7 +57,7 @@
     .stats-strip .stat-num {
         font-size: 36px;
         font-weight: 800;
-        color: #1A5FDC;
+        color: {$theme_primary};
         line-height: 1;
     }
     .stats-strip .stat-label {
@@ -84,7 +84,7 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: var(--service-color, #1A5FDC);
+        background: var(--service-color, var(--primary));
         transform: scaleX(0);
         transition: transform 0.3s;
     }
@@ -107,7 +107,7 @@
         right: 0;
         width: 80%;
         height: 80%;
-        border: 3px solid #1A5FDC;
+        border: 3px solid {$theme_primary};
         border-radius: 12px;
         z-index: 0;
     }
@@ -142,7 +142,7 @@
     <div class="banner-slider">
         {if $banners}
         {foreach $banners as $key=>$banner}
-        <div class="banner-slide {if $key==0}active{/if}" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+        <div class="banner-slide {if $key==0}active{/if}" style="background: {$theme_gradient};">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 banner-content">
@@ -168,7 +168,7 @@
         {/foreach}
         {else}
         <!-- 默认Banner -->
-        <div class="banner-slide active" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+        <div class="banner-slide active" style="background: {$theme_gradient};">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 banner-content">
@@ -254,7 +254,7 @@
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <div class="about-img-wrapper">
                     <div class="about-decor"></div>
-                    <div class="about-img-card" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+                    <div class="about-img-card" style="background: {$theme_gradient};">
                         <div class="about-card-shine"></div>
                         <div class="about-card-grid"></div>
                         <div class="about-logo-wrap">
@@ -375,7 +375,7 @@
     <div class="container">
         <div class="section-header text-center">
             <span class="section-subtitle">客户案例</span>
-            <h2 class="section-title">成功案例展示</h2>
+            <h2 class="section-title">案例展示</h2>
         </div>
 
         <div class="row g-4">
@@ -482,12 +482,12 @@
 </section>
 
 <!-- ==================== CTA区域 ==================== -->
-<section class="cta-section" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+<section class="cta-section" style="background: {$theme_gradient};">
     <div class="container text-center text-white">
         <h2 class="cta-title">{$company_keywords|default=''}</h2>
         <p class="cta-desc">{$company_desc|default=''}</p>
         <div class="cta-btns">
-            <a href="/contact" class="btn btn-light btn-lg me-3" style="background: #fff; border-color: #fff; color: #1A5FDC; font-weight: 600;">立即咨询</a>
+            <a href="/contact" class="btn btn-light btn-lg me-3" style="background: #fff; border-color: #fff; color: {$theme_primary}; font-weight: 600;">立即咨询</a>
             <a href="tel:{$contact_phone}" class="btn btn-outline-light btn-lg"><i class="fa fa-phone-alt"></i> {$contact_phone}</a>
         </div>
     </div>

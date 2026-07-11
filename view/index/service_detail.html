@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .breadcrumb-nav .breadcrumb-item a {
@@ -51,7 +50,7 @@
         color: #1F2937;
         margin-bottom: 25px;
         padding-bottom: 15px;
-        border-bottom: 3px solid #1A5FDC;
+        border-bottom: 3px solid var(--primary);
         display: inline-block;
     }
     .service-item-grid {
@@ -71,14 +70,14 @@
     .service-item-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        border-top-color: #1A5FDC;
+        border-top-color: var(--primary);
     }
     .service-item-card .item-icon {
         width: 50px;
         height: 50px;
         border-radius: 12px;
         background: #E8F0FE;
-        color: #1A5FDC;
+        color: var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -97,7 +96,7 @@
         line-height: 1.7;
     }
     .service-cta {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-second) 100%);
         border-radius: 16px;
         padding: 50px;
         text-align: center;
@@ -175,7 +174,7 @@
         text-decoration: none;
     }
     .product-mini-card .prod-info h5 a:hover {
-        color: #1A5FDC;
+        color: var(--primary);
     }
     @media (max-width: 992px) {
         .service-item-grid {
@@ -219,7 +218,7 @@
     <div class="container">
         <!-- 服务介绍 -->
         <div class="service-intro-card">
-            <div class="service-detail-icon" style="background: {if $slug=='device-sales'}#1A5FDC{elseif $slug=='after-sales'}#00B4D8{elseif $slug=='maintenance'}#10B981{elseif $slug=='supplies'}#F59E0B{else}#1A5FDC{/if};">
+            <div class="service-detail-icon" style="background: {if $slug=='device-sales'}var(--primary){elseif $slug=='after-sales'}var(--primary-second){elseif $slug=='maintenance'}#10B981{elseif $slug=='supplies'}#F59E0B{else}var(--primary){/if};">
                 <i class="fa {$service.icon}"></i>
             </div>
             <h2 class="text-center mb-4">{$service.name}</h2>
@@ -265,7 +264,7 @@
             <h3>需要{$service.name}服务？</h3>
             <p>专业团队为您提供一站式解决方案，立即联系我们获取服务</p>
             <div class="cta-btns">
-                <a href="/repair" class="btn" style="background: #fff; border-color: #fff; color: #1A5FDC; font-weight: 600;">预约上门</a>
+                <a href="/repair" class="btn" style="background: #fff; border-color: #fff; color: var(--primary); font-weight: 600;">预约上门</a>
                 <a href="/contact" class="btn btn-outline-light">在线留言</a>
                 <a href="tel:{$contact_phone}" class="btn btn-outline-light"><i class="fa fa-phone-alt"></i> {$contact_phone}</a>
             </div>

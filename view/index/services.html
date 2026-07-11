@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .breadcrumb-nav {
@@ -38,7 +37,7 @@
     .service-card-lg:hover {
         transform: translateY(-8px);
         box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-        border-color: var(--card-color, #1A5FDC);
+        border-color: var(--card-color, var(--primary));
     }
     .service-card-lg .service-icon-lg {
         width: 80px;
@@ -77,7 +76,7 @@
     }
     .service-features li {
         padding: 4px 12px;
-        color: #1A5FDC;
+        color: var(--primary);
         background: #E8F0FE;
         border-radius: 20px;
         font-size: 13px;
@@ -127,7 +126,7 @@
         left: 10%;
         right: 10%;
         height: 3px;
-        background: linear-gradient(90deg, #1A5FDC, #00B4D8, #10B981, #F59E0B, #1A5FDC);
+        background: linear-gradient(90deg, var(--primary), var(--primary-second), #10B981, #F59E0B, var(--primary));
         z-index: 0;
         border-radius: 2px;
     }
@@ -143,18 +142,18 @@
         height: 80px;
         border-radius: 50%;
         background: #fff;
-        border: 3px solid #1A5FDC;
+        border: 3px solid var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 28px;
-        color: #1A5FDC;
+        color: var(--primary);
         margin: 0 auto 15px;
         transition: all 0.3s;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     .flow-step:hover .step-icon {
-        background: #1A5FDC;
+        background: var(--primary);
         color: #fff;
         transform: scale(1.1);
     }
@@ -166,7 +165,7 @@
         width: 24px;
         height: 24px;
         border-radius: 50%;
-        background: #1A5FDC;
+        background: var(--primary);
         color: #fff;
         font-size: 12px;
         font-weight: 700;
@@ -222,8 +221,8 @@
         <div class="row">
             {foreach $service_types as $key=>$service}
             <div class="col-lg-6">
-                <div class="service-card-lg" style="--card-color: {$service.color|default='#1A5FDC'};">
-                    <div class="service-icon-lg" style="background: {$service.color|default='#1A5FDC'};">
+                <div class="service-card-lg" style="--card-color: {$service.color|default='var(--primary)'};">
+                    <div class="service-icon-lg" style="background: {$service.color|default='var(--primary)'};">
                         <i class="fa {$service.icon}"></i>
                     </div>
                     <h3 class="service-title-lg">{$service.name}</h3>
@@ -233,7 +232,7 @@
                         <li><i class="fa fa-check"></i> {$feature}</li>
                         {/foreach}
                     </ul>
-                    <a href="/services/{$key}" class="btn-service" style="background: {$service.color|default='#1A5FDC'};">
+                    <a href="/services/{$key}" class="btn-service" style="background: {$service.color|default='var(--primary)'};">
                         查看详情 <i class="fa fa-arrow-right"></i>
                     </a>
                 </div>
@@ -267,11 +266,11 @@
 </section>
 
 <!-- CTA -->
-<section class="py-5" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-second) 100%);">
     <div class="container text-center text-white">
         <h2 class="mb-3">需要我们的服务？立即联系！</h2>
         <p class="mb-4">专业团队为您提供一站式解决方案</p>
-        <a href="/repair" class="btn btn-lg me-3" style="background: #fff; border-color: #fff; color: #1A5FDC; font-weight: 600;">预约上门</a>
+        <a href="/repair" class="btn btn-lg me-3" style="background: #fff; border-color: #fff; color: var(--primary); font-weight: 600;">预约上门</a>
         <a href="tel:{$contact_phone}" class="btn btn-outline-light btn-lg"><i class="fa fa-phone-alt"></i> 拨打电话</a>
     </div>
 </section>

@@ -146,6 +146,67 @@
     /* 特性标签 */
     .st-feature-tag { border-radius: 6px; font-size: 11px; padding: 3px 8px; }
     .st-feature-input { border-radius: 6px; font-size: 11px; padding: 4px 8px; border-color: #e2e8f0; }
+
+    /* 主题预设卡片 */
+    .theme-preset-card {
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 0;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.25s;
+        overflow: hidden;
+        position: relative;
+        background: #fff;
+    }
+    .theme-preset-card:hover {
+        border-color: #c7d2fe;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+    .theme-preset-card.active {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    }
+    .theme-preview {
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .theme-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        position: absolute;
+        bottom: 8px;
+        right: 10px;
+    }
+    .theme-name {
+        padding: 10px 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+    }
+    .theme-check {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #4f46e5;
+        color: #fff;
+        font-size: 11px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    .theme-preset-card.active .theme-check {
+        display: flex;
+    }
 </style>
 {/block}
 
@@ -191,6 +252,11 @@
     <li class="nav-item">
         <a class="nav-link" data-tab="tab-footer" href="javascript:;">
             <i class="fa fa-window-maximize"></i> 页脚设置
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-tab="tab-theme" href="javascript:;">
+            <i class="fa fa-palette"></i> 主题设置
         </a>
     </li>
     <li class="nav-item">
@@ -1238,7 +1304,134 @@
     </div>
 </div>
 
-<!-- ========== Tab 9: 消息通知 ========== -->
+<!-- ========== Tab 9: 主题设置 ========== -->
+<div class="config-pane" id="tab-theme">
+    <!-- 预设主题 -->
+    <div class="data-card">
+        <div class="card-header"><h6 class="mb-0"><i class="fa fa-swatchbook me-2"></i>选择预设主题</h6></div>
+        <div class="card-body">
+            <p class="text-muted mb-3" style="font-size:13px;">一键切换前台配色方案，也可在下方自行微调各项颜色。</p>
+            <div class="row g-3" id="themePresets">
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="theme-preset-card" data-theme="default"
+                         data-primary="#1A5FDC" data-second="#00B4D8" data-accent="#f18437">
+                        <div class="theme-preview" style="background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);">
+                            <span class="theme-dot" style="background:#f18437;"></span>
+                        </div>
+                        <div class="theme-name">科技蓝</div>
+                        <div class="theme-check"><i class="fa fa-check"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="theme-preset-card" data-theme="red"
+                         data-primary="#DC2626" data-second="#F87171" data-accent="#F59E0B">
+                        <div class="theme-preview" style="background: linear-gradient(135deg, #DC2626 0%, #F87171 100%);">
+                            <span class="theme-dot" style="background:#F59E0B;"></span>
+                        </div>
+                        <div class="theme-name">商务红</div>
+                        <div class="theme-check"><i class="fa fa-check"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="theme-preset-card" data-theme="gold"
+                         data-primary="#C6952E" data-second="#E0C568" data-accent="#7B4B1E">
+                        <div class="theme-preview" style="background: linear-gradient(135deg, #C6952E 0%, #E0C568 100%);">
+                            <span class="theme-dot" style="background:#7B4B1E;"></span>
+                        </div>
+                        <div class="theme-name">高端金</div>
+                        <div class="theme-check"><i class="fa fa-check"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="theme-preset-card" data-theme="green"
+                         data-primary="#059669" data-second="#34D399" data-accent="#F59E0B">
+                        <div class="theme-preview" style="background: linear-gradient(135deg, #059669 0%, #34D399 100%);">
+                            <span class="theme-dot" style="background:#F59E0B;"></span>
+                        </div>
+                        <div class="theme-name">自然绿</div>
+                        <div class="theme-check"><i class="fa fa-check"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="theme-preset-card" data-theme="purple"
+                         data-primary="#7C3AED" data-second="#A78BFA" data-accent="#F59E0B">
+                        <div class="theme-preview" style="background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);">
+                            <span class="theme-dot" style="background:#F59E0B;"></span>
+                        </div>
+                        <div class="theme-name">深邃紫</div>
+                        <div class="theme-check"><i class="fa fa-check"></i></div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6">
+                    <div class="theme-preset-card" data-theme="sky"
+                         data-primary="#0284C7" data-second="#38BDF8" data-accent="#F97316">
+                        <div class="theme-preview" style="background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);">
+                            <span class="theme-dot" style="background:#F97316;"></span>
+                        </div>
+                        <div class="theme-name">天空蓝</div>
+                        <div class="theme-check"><i class="fa fa-check"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定义颜色 -->
+    <div class="data-card mt-3">
+        <div class="card-header"><h6 class="mb-0"><i class="fa fa-sliders-h me-2"></i>自定义颜色</h6></div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">主色调</label>
+                    <div class="input-group color-input-group">
+                        <input type="color" class="form-control form-control-color color-picker" value="{$config.theme_primary_color|default='#1A5FDC'}">
+                        <input type="text" class="form-control theme-primary" name="theme_primary_color" value="{$config.theme_primary_color|default='#1A5FDC'}" placeholder="#1A5FDC" maxlength="7">
+                        <span class="input-group-text color-preview" style="background:{$config.theme_primary_color|default='#1A5FDC'};min-width:38px;"></span>
+                    </div>
+                    <small class="text-muted">主导航、按钮、标题等主要颜色</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">辅色调</label>
+                    <div class="input-group color-input-group">
+                        <input type="color" class="form-control form-control-color color-picker" value="{$config.theme_second_color|default='#00B4D8'}">
+                        <input type="text" class="form-control theme-second" name="theme_second_color" value="{$config.theme_second_color|default='#00B4D8'}" placeholder="#00B4D8" maxlength="7">
+                        <span class="input-group-text color-preview" style="background:{$config.theme_second_color|default='#00B4D8'};min-width:38px;"></span>
+                    </div>
+                    <small class="text-muted">渐变终点、Banner次要颜色</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">强调色</label>
+                    <div class="input-group color-input-group">
+                        <input type="color" class="form-control form-control-color color-picker" value="{$config.theme_accent_color|default='#f18437'}">
+                        <input type="text" class="form-control theme-accent" name="theme_accent_color" value="{$config.theme_accent_color|default='#f18437'}" placeholder="#f18437" maxlength="7">
+                        <span class="input-group-text color-preview" style="background:{$config.theme_accent_color|default='#f18437'};min-width:38px;"></span>
+                    </div>
+                    <small class="text-muted">"预约上门"按钮、价格等突出元素</small>
+                </div>
+            </div>
+
+            <!-- 实时预览条 -->
+            <div class="mt-4 p-3 rounded" id="themeLivePreview" style="background: linear-gradient(135deg, {$config.theme_primary_color|default='#1A5FDC'} 0%, {$config.theme_second_color|default='#00B4D8'} 100%); border-radius:12px;">
+                <div class="d-flex align-items-center justify-content-between text-white">
+                    <span><strong>预览效果</strong> — 导航栏 · 按钮 · Banner</span>
+                    <button class="btn btn-sm" style="background:{$config.theme_accent_color|default='#f18437'};color:#fff;border:none;">预约上门</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重置按钮 -->
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-outline-secondary me-2" id="resetThemeBtn">
+            <i class="fa fa-undo"></i> 恢复默认
+        </button>
+        <button type="button" class="btn btn-primary save-group-btn" data-group="tab-theme">
+            <i class="fa fa-save"></i> 保存主题设置
+        </button>
+    </div>
+</div>
+
+<!-- ========== Tab 10: 消息通知 ========== -->
 <div class="config-pane" id="tab-notify">
     <div class="alert alert-info mb-3">
         <i class="fa fa-info-circle"></i> 当有新服务工单、新留言或用户追评时，系统可通过以下渠道自动通知管理员。
@@ -1798,6 +1991,102 @@ $(function () {
     $(document).on('input', 'input[type="text"].svc-icon, input[type="text"].adv-icon, input[type="text"].flow-icon, input[type="text"].qual-icon, input[type="text"].bid-icon', function() {
         updateIconPreview($(this));
     });
+
+    // ========== 主题预设选择 ==========
+    var $themePane       = $('#tab-theme');
+    var $themePresetCards = $themePane.find('.theme-preset-card');
+    var $themePrimary    = $themePane.find('.theme-primary');
+    var $themeSecond     = $themePane.find('.theme-second');
+    var $themeAccent     = $themePane.find('.theme-accent');
+    var themeUpdating    = false;  // 标记是否正在由预设卡触发更新，避免 input 事件反复重置活性状态
+
+    function updateThemeColors(primary, second, accent) {
+        themeUpdating = true;
+        $themePrimary.val(primary);
+        $themeSecond.val(second);
+        $themeAccent.val(accent);
+        // 同步颜色选择器
+        $themePrimary.closest('.color-input-group').find('.color-picker').val(primary);
+        $themeSecond.closest('.color-input-group').find('.color-picker').val(second);
+        $themeAccent.closest('.color-input-group').find('.color-picker').val(accent);
+        // 更新预览色块
+        $themePrimary.closest('.color-input-group').find('.color-preview').css('background-color', primary);
+        $themeSecond.closest('.color-input-group').find('.color-preview').css('background-color', second);
+        $themeAccent.closest('.color-input-group').find('.color-preview').css('background-color', accent);
+        // 更新实时预览区
+        $themePane.find('#themeLivePreview').css('background', 'linear-gradient(135deg, ' + primary + ' 0%, ' + second + ' 100%)');
+        $themePane.find('#themeLivePreview .btn').css('background', accent);
+        themeUpdating = false;
+    }
+
+    $themePresetCards.on('click', function() {
+        var $card = $(this);
+        if ($card.hasClass('active')) return;
+        $themePresetCards.removeClass('active');
+        $card.addClass('active');
+        updateThemeColors($card.data('primary'), $card.data('second'), $card.data('accent'));
+    });
+
+    // 同步自定义颜色到实时预览
+    function syncLivePreview() {
+        var p = $themePrimary.val() || '#1A5FDC';
+        var s = $themeSecond.val() || '#00B4D8';
+        var a = $themeAccent.val() || '#f18437';
+        $themePane.find('#themeLivePreview').css('background', 'linear-gradient(135deg, ' + p + ' 0%, ' + s + ' 100%)');
+        $themePane.find('#themeLivePreview .btn').css('background', a);
+    }
+
+    $themePrimary.on('input', function() {
+        if (themeUpdating) return;
+        $themePresetCards.removeClass('active');
+        syncLivePreview();
+        var $g = $(this).closest('.color-input-group');
+        $g.find('.color-picker').val($(this).val());
+        $g.find('.color-preview').css('background-color', $(this).val());
+    });
+    $themeSecond.on('input', function() {
+        if (themeUpdating) return;
+        $themePresetCards.removeClass('active');
+        syncLivePreview();
+        var $g = $(this).closest('.color-input-group');
+        $g.find('.color-picker').val($(this).val());
+        $g.find('.color-preview').css('background-color', $(this).val());
+    });
+    $themeAccent.on('input', function() {
+        if (themeUpdating) return;
+        $themePresetCards.removeClass('active');
+        syncLivePreview();
+        var $g = $(this).closest('.color-input-group');
+        $g.find('.color-picker').val($(this).val());
+        $g.find('.color-preview').css('background-color', $(this).val());
+    });
+
+    // 重置默认
+    $('#resetThemeBtn').on('click', function() {
+        if (!confirm('确定恢复默认主题（科技蓝）？未保存的修改将丢失。')) return;
+        updateThemeColors('#1A5FDC', '#00B4D8', '#f18437');
+        $themePresetCards.removeClass('active');
+        $themePane.find('.theme-preset-card[data-theme="default"]').addClass('active');
+    });
+
+    // 初始化：标记当前预设卡片
+    (function() {
+        var cp = ($themePrimary.val() || '#1A5FDC').toUpperCase();
+        var cs = ($themeSecond.val()  || '#00B4D8').toUpperCase();
+        var ca = ($themeAccent.val()   || '#f18437').toUpperCase();
+        var matched = false;
+
+        $themePresetCards.removeClass('active');
+        $themePresetCards.each(function() {
+            var $card = $(this);
+            if ($card.data('primary').toUpperCase() === cp &&
+                $card.data('second').toUpperCase()  === cs &&
+                $card.data('accent').toUpperCase()  === ca) {
+                $card.addClass('active');
+                matched = true;
+            }
+        });
+    })();
 
     // ========== 颜色选择器 ==========
     function updateColorPreview($group) {

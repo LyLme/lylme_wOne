@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .breadcrumb-nav .breadcrumb-item a {
@@ -94,7 +93,7 @@
         transition: color 0.3s;
     }
     .news-card-link:hover .news-title {
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .news-card .news-summary {
         color: #6B7280;
@@ -108,13 +107,13 @@
         padding: 3px 10px;
         border-radius: 4px;
         background: #E8F0FE;
-        color: #1A5FDC;
+        color: var(--primary);
         font-size: 12px;
         margin-bottom: 10px;
         width: fit-content;
     }
     .read-more {
-        color: #1A5FDC;
+        color: var(--primary);
         font-size: 14px;
         font-weight: 500;
         transition: all 0.3s;
@@ -135,7 +134,7 @@
         font-weight: 600;
         margin-bottom: 15px;
         padding-bottom: 10px;
-        border-bottom: 2px solid #1A5FDC;
+        border-bottom: 2px solid var(--primary);
         color: #1F2937;
     }
     .category-list {
@@ -160,7 +159,7 @@
     }
     .category-list a:hover,
     .category-list a.active {
-        color: #1A5FDC;
+        color: var(--primary);
         font-weight: 500;
     }
     @media (max-width: 768px) {

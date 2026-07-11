@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .breadcrumb-nav .breadcrumb-item a {
@@ -35,8 +34,8 @@
     }
     .industry-filter .filter-btn:hover,
     .industry-filter .filter-btn.active {
-        border-color: #1A5FDC;
-        background: #1A5FDC;
+        border-color: var(--primary);
+        background: var(--primary);
         color: #fff;
     }
     .case-card {
@@ -84,7 +83,7 @@
         padding: 3px 12px;
         border-radius: 4px;
         background: #E8F0FE;
-        color: #1A5FDC;
+        color: var(--primary);
         font-size: 12px;
         margin-bottom: 10px;
     }
@@ -98,7 +97,7 @@
         text-decoration: none;
     }
     .case-card .case-title a:hover {
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .case-card .case-summary {
         color: #6B7280;
@@ -107,7 +106,7 @@
         margin-bottom: 15px;
     }
     .case-card .case-link {
-        color: #1A5FDC;
+        color: var(--primary);
         text-decoration: none;
         font-weight: 500;
         font-size: 14px;

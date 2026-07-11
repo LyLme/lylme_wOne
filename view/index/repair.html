@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .repair-section {
@@ -23,7 +22,7 @@
         color: #1F2937;
         margin-bottom: 30px;
         padding-bottom: 15px;
-        border-bottom: 2px solid #1A5FDC;
+        border-bottom: 2px solid var(--primary);
     }
     .repair-form-box .form-label {
         font-weight: 500;
@@ -50,7 +49,7 @@
         margin-bottom: 8px;
     }
     .repair-sidebar .info-card p i {
-        color: #1A5FDC;
+        color: var(--primary);
         width: 20px;
     }
     .success-box {
@@ -94,10 +93,10 @@
         transition: all 0.2s;
     }
     .repair-tabs .nav-tabs .nav-link:hover {
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .repair-tabs .nav-tabs .nav-link.active {
-        color: #1A5FDC;
+        color: var(--primary);
         background: transparent;
     }
     .repair-tabs .nav-tabs .nav-link.active::after {
@@ -107,7 +106,7 @@
         left: 28px;
         right: 28px;
         height: 3px;
-        background: #1A5FDC;
+        background: var(--primary);
         border-radius: 3px 3px 0 0;
     }
     .repair-tabs .tab-content {
@@ -599,9 +598,9 @@
         user-select: none;
     }
     .upload-area:hover, .upload-area:focus {
-        border-color: #1A5FDC;
+        border-color: var(--primary);
         background: #eff6ff;
-        color: #1A5FDC;
+        color: var(--primary);
         outline: none;
     }
     .upload-area i { font-size: 28px; display: block; margin-bottom: 8px; }
@@ -653,7 +652,7 @@
         justify-content: center;
         background: rgba(255,255,255,0.8);
         font-size: 12px;
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .upload-thumb.error {
         display: flex;

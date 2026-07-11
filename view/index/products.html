@@ -3,8 +3,7 @@
 {block name="css"}
 <style>
     .page-banner {
-        background: linear-gradient(135deg, #1A5FDC 0%, #00B4D8 100%);
-        padding: 60px 0 40px;
+        background: var(--gradient); padding: 60px 0 40px;
         color: #fff;
     }
     .breadcrumb-nav {
@@ -35,7 +34,7 @@
         font-weight: 600;
         margin-bottom: 15px;
         padding-bottom: 10px;
-        border-bottom: 2px solid #1A5FDC;
+        border-bottom: 2px solid var(--primary);
         color: #1F2937;
     }
     .category-tree {
@@ -60,7 +59,7 @@
     }
     .category-tree a:hover,
     .category-tree a.active {
-        color: #1A5FDC;
+        color: var(--primary);
         font-weight: 500;
     }
     .category-tree .sub-category {
@@ -133,7 +132,7 @@
         text-decoration: none;
     }
     .product-card .product-name a:hover {
-        color: #1A5FDC;
+        color: var(--primary);
     }
     .product-card .product-meta {
         font-size: 13px;
@@ -261,7 +260,7 @@
                                     {/if}
                                 </div>
                                 {if $product.price_type==0}
-                                <a href="/product/{$product.id}" class="btn btn-sm w-100" style="background: #1A5FDC; color: #fff;">在线询价</a>
+                                <a href="/product/{$product.id}" class="btn btn-sm w-100" style="background: var(--primary); color: #fff;">在线询价</a>
                                 {else}
                                 <a href="/product/{$product.id}" class="btn btn-outline-primary btn-sm w-100">查看详情</a>
                                 {/if}
