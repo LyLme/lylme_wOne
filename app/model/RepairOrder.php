@@ -6,7 +6,7 @@ namespace app\model;
 use think\Model;
 
 /**
- * 报修工单模型
+ * 服务工单模型
  */
 class RepairOrder extends Model
 {
@@ -90,7 +90,7 @@ class RepairOrder extends Model
     public static function getFlowSteps(int $currentStatus): array
     {
         $steps = [
-            ['key' => 'created',    'label' => '提交报修',  'icon' => 'fa-edit',      'status_field' => null],
+            ['key' => 'created',    'label' => '预约上门',  'icon' => 'fa-edit',      'status_field' => null],
             ['key' => 'accepted',   'label' => '已接单',    'icon' => 'fa-user-plus', 'status_field' => self::STATUS_PROCESSING],
             ['key' => 'paused',     'label' => '暂停',      'icon' => 'fa-pause',     'status_field' => self::STATUS_PAUSED],
             ['key' => 'completed',  'label' => '已完成',    'icon' => 'fa-check',     'status_field' => self::STATUS_COMPLETED],

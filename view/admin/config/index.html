@@ -1241,7 +1241,7 @@
 <!-- ========== Tab 9: 消息通知 ========== -->
 <div class="config-pane" id="tab-notify">
     <div class="alert alert-info mb-3">
-        <i class="fa fa-info-circle"></i> 当有新报修工单、新留言或用户追评时，系统可通过以下渠道自动通知管理员。
+        <i class="fa fa-info-circle"></i> 当有新服务工单、新留言或用户追评时，系统可通过以下渠道自动通知管理员。
     </div>
 
     <!-- 总开关 -->
@@ -1404,12 +1404,12 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">
-                        <i class="fa fa-wrench me-1"></i> 报修通知模板
+                        <i class="fa fa-wrench me-1"></i> 服务通知模板
                         <button type="button" class="btn btn-sm btn-link text-decoration-none reset-template-btn" data-target="notification_template_repair" data-type="md_repair">
                             <i class="fa fa-undo"></i> 恢复默认
                         </button>
                     </label>
-                    <textarea class="form-control font-monospace" rows="8" name="notification_template_repair" style="font-size:12px;">{if !empty($config.notification_template_repair)}{$config.notification_template_repair}{else}## [报修] 新报修工单
+                    <textarea class="form-control font-monospace" rows="8" name="notification_template_repair" style="font-size:12px;">{if !empty($config.notification_template_repair)}{$config.notification_template_repair}{else}## [服务] 新服务工单
 
 > **工单号**：{order_no}
 
@@ -1421,7 +1421,7 @@
 
 > **地　址**：{address}
 
-> **故障描述**：{description}
+> **问题描述**：{description}
 
 > **提交时间**：{create_time}{/if}</textarea>
                     <small class="text-muted">变量：{order_no}, {client_name}, {phone}, {company}, {address}, {description}, {create_time}</small>
@@ -1458,7 +1458,7 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">
-                        <i class="fa fa-wrench me-1"></i> 报修邮件模板
+                        <i class="fa fa-wrench me-1"></i> 服务邮件模板
                         <button type="button" class="btn btn-sm btn-link text-decoration-none reset-template-btn" data-target="notification_email_template_repair" data-type="email_repair">
                             <i class="fa fa-undo"></i> 恢复默认
                         </button>
@@ -1470,10 +1470,9 @@
   <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">电话</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{phone}</td></tr>
   <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">单位</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{company}</td></tr>
   <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">地址</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{address}</td></tr>
-  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">故障描述</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{description}</td></tr>
+  <tr><td style="padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;">问题描述</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">{description}</td></tr>
   <tr><td style="padding:8px 12px;background:#f9f9f9;color:#666;">提交时间</td><td style="padding:8px 12px;">{create_time}</td></tr>
 </table>{/if}</textarea>
-                    <small class="text-muted">变量同上报修，使用富文本编辑器自由排版</small>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">

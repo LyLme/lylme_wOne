@@ -9,7 +9,7 @@ use app\model\RepairTimeline;
 use think\facade\View;
 
 /**
- * 后台报修工单管理 - 支持完整工作流
+ * 后台服务工单管理 - 支持完整工作流
  */
 class Repair extends Base
 {
@@ -42,7 +42,7 @@ class Repair extends Base
         ];
 
         return View::fetch('admin/repair/index', [
-            'page_title' => '报修工单',
+            'page_title' => '服务工单',
             'list'       => $list,
             'status'     => $status,
             'keyword'    => $keyword,

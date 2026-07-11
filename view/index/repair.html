@@ -674,15 +674,15 @@
         <nav class="breadcrumb-nav">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">首页</a></li>
-                <li class="breadcrumb-item active">在线报修</li>
+                <li class="breadcrumb-item active">预约上门</li>
             </ol>
         </nav>
-        <h1 class="page-title">在线报修</h1>
-        <p class="page-desc">填写报修信息，我们将尽快与您联系</p>
+        <h1 class="page-title">预约上门</h1>
+        <p class="page-desc">填写服务信息，我们将尽快与您联系</p>
     </div>
 </section>
 
-<!-- 报修内容区域 -->
+<!-- 服务内容区域 -->
 <section class="repair-section">
     <div class="container">
         <div class="row">
@@ -692,7 +692,7 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#tab-submit" role="tab">
-                                <i class="fa fa-pencil-square-o me-1"></i>提交报修
+                                <i class="fa fa-pencil-square-o me-1"></i>预约上门
                             </a>
                         </li>
                         <li class="nav-item">
@@ -702,15 +702,15 @@
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <!-- Tab1：提交报修 -->
+                        <!-- Tab1：预约上门 -->
                         <div class="tab-pane fade show active" id="tab-submit" role="tabpanel">
-                            <h4 class="form-title"><i class="fa fa-wrench text-primary"></i> 报修信息填写</h4>
+                            <h4 class="form-title"><i class="fa fa-wrench text-primary"></i> 上门信息填写</h4>
                             <form id="repairForm" enctype="multipart/form-data">
                                 <input type="hidden" name="__token__" value="{:token()}">
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label class="form-label required">故障现象</label>
-                                        <textarea name="fault_desc" class="form-control" rows="5" placeholder="请详细描述设备故障现象..." required></textarea>
+                                        <label class="form-label required">问题描述</label>
+                                        <textarea name="fault_desc" class="form-control" rows="5" placeholder="请详细描述您的服务需求..." required></textarea>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label required">联系人</label>
@@ -741,7 +741,7 @@
                                             <div class="upload-list"></div>
                                             <input type="file" id="submitFileInput" name="images[]" class="d-none upload-input" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" multiple>
                                         </div>
-                                        <small class="text-muted">可上传故障照片，支持多张（选填）</small>
+                                        <small class="text-muted">可上传图片描述，支持多张（选填）</small>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label required">验证码</label>
@@ -754,7 +754,7 @@
                                 </div>
                                 <div class="mt-4">
                                     <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
-                                        <i class="fa fa-paper-plane"></i> 提交报修
+                                        <i class="fa fa-paper-plane"></i> 提交
                                     </button>
                                 </div>
                             </form>
@@ -771,7 +771,7 @@
                                 </div>
                                 <div class="text-center py-5 d-none" id="ordersEmpty">
                                     <i class="fa fa-inbox fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted">暂无报修工单</p>
+                                    <p class="text-muted">暂无服务工单</p>
                                 </div>
                                 <div id="ordersList"></div>
                             </div>
@@ -789,11 +789,11 @@
                         <p><i class="fa fa-clock"></i> {$contact_hours}</p>
                     </div>
                     <div class="info-card">
-                        <h5><i class="fa fa-list-check text-primary"></i> 报修须知</h5>
+                        <h5><i class="fa fa-list-check text-primary"></i> 上门须知</h5>
                         <p>1. 请准确填写联系信息，以便我们与您联系</p>
-                        <p>2. 请详细描述故障现象，便于工程师预判</p>
+                        <p>2. 请详细描述问题情况，便于提前做好准备</p>
                         <p>3. 提交后请耐心等待，我们将尽快接单</p>
-                        <p>4. 紧急故障可直接拨打服务热线</p>
+                        <p>4. 紧急情况可直接拨打服务热线</p>
                     </div>
                     <div class="info-card">
                         <h5><i class="fa fa-map-marker-alt text-primary"></i> 服务地址</h5>
@@ -812,7 +812,7 @@
             <div class="modal-body p-0">
                 <div class="success-box">
                     <div class="success-icon"><i class="fa fa-check"></i></div>
-                    <h3 class="text-success mb-3">报修提交成功！</h3>
+                    <h3 class="text-success mb-3">提交成功！</h3>
                     <p class="text-muted mb-2">您的工单号是：</p>
                     <h4 class="text-primary mb-4" id="orderNoDisplay"></h4>
                     <p class="text-muted">我们将尽快接单处理，请保持电话畅通。</p>
@@ -863,7 +863,7 @@
                             <input type="text" id="editOrderNo" class="form-control" readonly>
                         </div>
                         <div class="col-12">
-                            <label class="form-label required">故障现象</label>
+                            <label class="form-label required">问题描述</label>
                             <textarea name="fault_desc" id="editFaultDesc" class="form-control" rows="4" required></textarea>
                         </div>
                         <div class="col-md-6">
@@ -1039,7 +1039,7 @@
         var descHtml = '';
         if (order.description) {
             descHtml += '<div class="ocm-desc">';
-            descHtml += '<div class="ocm-info-label"><i class="fa fa-exclamation-circle"></i> 故障描述</div>';
+            descHtml += '<div class="ocm-info-label"><i class="fa fa-exclamation-circle"></i> 问题描述</div>';
             descHtml += '<div class="ocm-desc-text">' + escapeHtml(order.description) + '</div>';
             descHtml += '</div>';
         }
@@ -1047,13 +1047,13 @@
         var imagesHtml = '';
         if (order.images && order.images.length > 0) {
             imagesHtml += '<div class="ocm-images">';
-            imagesHtml += '<div class="ocm-images-label"><i class="fa fa-image"></i> 故障图片（点击放大）</div>';
+            imagesHtml += '<div class="ocm-images-label"><i class="fa fa-image"></i> 现场图片（点击放大）</div>';
             imagesHtml += '<div class="ocm-img-list">';
             var maxPreview = 4;
             for (var iIdx = 0; iIdx < order.images.length && iIdx < maxPreview; iIdx++) {
                 var img = order.images[iIdx];
                 imagesHtml += '<div class="ocm-img-thumb" data-src="' + img + '" data-index="' + iIdx + '" data-total="' + order.images.length + '">';
-                imagesHtml += '<img src="' + img + '" alt="故障图片">';
+                imagesHtml += '<img src="' + img + '" alt="现场图片">';
                 if (iIdx === maxPreview - 1 && order.images.length > maxPreview) {
                     imagesHtml += '<div class="ocm-img-more">+' + (order.images.length - maxPreview) + '</div>';
                 }
@@ -1155,7 +1155,7 @@
     // 渲染流程步骤
     function renderFlowSteps(status) {
         var steps = [
-            { key: 'created', label: '提交报修', icon: 'fa-edit' },
+            { key: 'created', label: '预约上门', icon: 'fa-edit' },
             { key: 'accepted', label: '已接单', icon: 'fa-user-plus' },
             { key: 'processing', label: '处理中', icon: 'fa-spinner' },
             { key: 'completed', label: '已完成', icon: 'fa-check' }
@@ -1243,7 +1243,7 @@
         html += '<div class="col-6"><div class="detail-label">联系电话</div><div class="detail-value">' + order.phone + '</div></div>';
         if (order.company) html += '<div class="col-6"><div class="detail-label">单位名称</div><div class="detail-value">' + order.company + '</div></div>';
         if (order.address) html += '<div class="col-6"><div class="detail-label">服务地址</div><div class="detail-value">' + order.address + '</div></div>';
-        html += '<div class="col-12"><div class="detail-label">故障描述</div><div class="p-3 bg-light rounded">' + order.description + '</div></div>';
+        html += '<div class="col-12"><div class="detail-label">问题描述</div><div class="p-3 bg-light rounded">' + order.description + '</div></div>';
         html += '</div>';
 
         if (order.images && order.images.length > 0) {
@@ -1590,7 +1590,7 @@
         }
     });
 
-    // 提交报修
+    // 预约上门
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         submitBtn.disabled = true;
@@ -1619,7 +1619,7 @@
         .then(function(res) { return res.json(); })
         .then(function(data) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fa fa-paper-plane"></i> 提交报修';
+            submitBtn.innerHTML = '<i class="fa fa-paper-plane"></i> 预约上门';
 
         document.querySelector('.captcha-img').src += '?t=' + Date.now();
             if (data.code === 0) {
@@ -1637,7 +1637,7 @@
         })
         .catch(function() {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fa fa-paper-plane"></i> 提交报修';
+            submitBtn.innerHTML = '<i class="fa fa-paper-plane"></i> 预约上门';
             
             alert('提交失败，请稍后重试');
         });

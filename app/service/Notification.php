@@ -29,7 +29,7 @@ class Notification
     }
 
     /**
-     * 发送新报修工单通知
+     * 发送新服务工单通知
      */
     public static function sendRepair(array $data): void
     {
@@ -39,7 +39,7 @@ class Notification
         $emailTemplate = self::getConfig('notification_email_template_repair');
         $emailHtml = self::renderTemplate($emailTemplate ?: self::defaultRepairEmailTemplate(), $data);
 
-        self::dispatch('[报修] 新报修工单', $mdText, $emailHtml);
+        self::dispatch('[服务] 新服务工单', $mdText, $emailHtml);
     }
 
     /**
@@ -216,13 +216,13 @@ class Notification
 
     private static function defaultRepairMdTemplate(): string
     {
-        return "## [报修] 新报修工单\n\n"
+        return "## [服务] 新服务工单\n\n"
             . "**工单号**：{order_no}\n\n"
             . "**联系人**：{client_name}\n\n"
             . "**电　话**：{phone}\n\n"
             . "**单　位**：{company}\n\n"
             . "**地　址**：{address}\n\n"
-            . "**故障描述**：{description}\n\n"
+            . "**问题描述**：{description}\n\n"
             . "**提交时间**：{create_time}";
     }
 
@@ -247,7 +247,7 @@ class Notification
             . "<tr><td style='padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;'>电话</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>{phone}</td></tr>"
             . "<tr><td style='padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;'>单位</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>{company}</td></tr>"
             . "<tr><td style='padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;'>地址</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>{address}</td></tr>"
-            . "<tr><td style='padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;'>故障描述</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>{description}</td></tr>"
+            . "<tr><td style='padding:8px 12px;background:#f9f9f9;border-bottom:1px solid #eee;color:#666;'>问题描述</td><td style='padding:8px 12px;border-bottom:1px solid #eee;'>{description}</td></tr>"
             . "<tr><td style='padding:8px 12px;background:#f9f9f9;color:#666;'>提交时间</td><td style='padding:8px 12px;'>{create_time}</td></tr>"
             . "</table>";
     }

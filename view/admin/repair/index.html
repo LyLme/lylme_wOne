@@ -666,9 +666,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h5 class="mb-1" style="font-weight:800; color:#1e293b; font-size:18px;">
-            <i class="fa fa-wrench text-primary me-2" style="color:#4f46e5 !important;"></i>报修工单管理
+            <i class="fa fa-wrench text-primary me-2" style="color:#4f46e5 !important;"></i>服务工单管理
         </h5>
-        <small style="color:#64748b;">管理用户提交的在线报修，按流程处理工单</small>
+        <small style="color:#64748b;">管理用户提交的上门服务，按流程处理工单</small>
     </div>
 </div>
 
@@ -771,7 +771,7 @@
                         <th style="width:50px;">#</th>
                         <th style="width:150px;">工单号</th>
                         <th style="width:160px;">客户信息</th>
-                        <th style="min-width:240px;">故障描述</th>
+                        <th style="min-width:240px;">问题描述</th>
                         <th style="width:100px;">流程</th>
                         <th style="width:150px;">提交时间</th>
                         <th style="width:200px;">操作</th>
@@ -1002,9 +1002,9 @@ $(function(){
         }
         html += '</div>';
 
-        // 故障描述
+        // 问题描述
         html += '<div class="desc-card">';
-        html += '<div class="desc-label">故障描述</div>';
+        html += '<div class="desc-label">问题描述</div>';
         html += '<div class="desc-body">' + d.description + '</div>';
         html += '</div>';
 

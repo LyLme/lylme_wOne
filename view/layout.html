@@ -32,7 +32,7 @@
             <div class="col-md-6 text-end">
                 <small>
                     <a href="/contact" class="text-white-50 me-3">联系我们</a>
-                    <a href="/repair" class="btn-repair-top"><i class="fa fa-wrench"></i> 在线报修</a>
+                    <a href="/repair" class="btn-repair-top"><i class="fa fa-wrench"></i> 预约上门</a>
                 </small>
             </div>
         </div>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="footer-desc">{$site_name}，{$site_slogan}。</p>
+               <p class="footer-desc">{$site_name}，{$site_slogan}。</p>
                 <div class="footer-contact">
                     <p><i class="fa fa-map-marker-alt"></i>{$contact_address}</p>
                     <p><i class="fa fa-phone-alt"></i>{$contact_phone|default=''}</p>
@@ -233,9 +233,9 @@
 
 <!-- 侧边栏悬浮按钮 -->
 <div class="side-buttons">
-    <a href="/repair" class="side-btn side-btn-repair" title="在线报修">
+    <a href="/repair" class="side-btn side-btn-repair" title="预约上门">
         <i class="fa fa-wrench"></i>
-        <span>报修</span>
+        <span>上门</span>
     </a>
     <a href="tel:{$service_phone|default=$contact_phone}" class="side-btn side-btn-phone" title="拨打电话">
         <i class="fa fa-phone-alt"></i>

@@ -10,22 +10,22 @@ use think\facade\View;
 use think\facade\Filesystem;
 
 /**
- * 前台在线报修控制器
+ * 前台预约上门控制器
  */
 class Repair extends FrontBase
 {
     /**
-     * 报修首页
+     * 服务首页
      */
     public function index()
     {
         return View::fetch('index/repair', [
-            'page_title' => '在线报修 - ' . $this->site_name,
+            'page_title' => '预约上门 - ' . $this->site_name,
         ]);
     }
 
     /**
-     * 提交报修
+     * 提交申请
      */
     public function submit()
     {
@@ -50,8 +50,8 @@ class Repair extends FrontBase
             'client_name.require' => '请输入联系人姓名',
             'client_name.max'     => '联系人姓名最多30个字符',
             'phone.require'       => '请输入联系电话',
-            'fault_desc.require'  => '请输入故障现象描述',
-            'fault_desc.max'      => '故障描述最多1000个字符',
+            'fault_desc.require'  => '请输入问题描述',
+            'fault_desc.max'      => '问题描述最多1000个字符',
         ];
         $validateObj = new \think\Validate();
         $validateObj->rule($validate)->message($messages);
@@ -101,28 +101,28 @@ class Repair extends FrontBase
                 'ip'          => $this->request->ip(),
             ]);
 
-            // 记录时间轴
-            RepairTimeline::record(
-                $order->id,
-                RepairTimeline::ACTION_CREATED,
-                '提交报修',
-                '用户提交报修工单：' . mb_substr($data['fault_desc'], 0, 50),
-                0,
-                $data['client_name'],
-                'user'
-            );
+        // 记录时间轴
+        RepairTimeline::record(
+            $order->id,
+            RepairTimeline::ACTION_CREATED,
+            '提交申请',
+            '用户提交服务工单：' . mb_substr($data['fault_desc'], 0, 50),
+            0,
+            $data['client_name'],
+            'user'
+        );
 
-            // 异步通知
-            async_notify(function () use ($data, $order) {
-                \app\service\Notification::sendMessage([
-                    'name'        => $data['client_name'],
-                    'phone'       => $data['phone'],
-                    'content'     => '新报修工单：' . $order->order_no . "\n故障描述：" . $data['fault_desc'],
-                    'create_time' => date('Y-m-d H:i:s'),
-                ]);
-            });
+        // 异步通知
+        async_notify(function () use ($data, $order) {
+            \app\service\Notification::sendMessage([
+                'name'        => $data['client_name'],
+                'phone'       => $data['phone'],
+                'content'     => '新服务工单：' . $order->order_no . "\n问题描述：" . $data['fault_desc'],
+                'create_time' => date('Y-m-d H:i:s'),
+            ]);
+        });
 
-            return json(['code' => 0, 'msg' => '报修提交成功', 'data' => ['order_no' => $order->order_no]]);
+        return json(['code' => 0, 'msg' => '提交成功', 'data' => ['order_no' => $order->order_no]]);
         } catch (\Exception $e) {
             return json(['code' => 1, 'msg' => $this->errMsg($e, '提交失败：')]);
         }
@@ -314,8 +314,8 @@ class Repair extends FrontBase
             'client_name.require' => '请输入联系人姓名',
             'client_name.max'     => '联系人姓名最多30个字符',
             'phone.require'       => '请输入联系电话',
-            'fault_desc.require'  => '请输入故障现象描述',
-            'fault_desc.max'      => '故障描述最多1000个字符',
+            'fault_desc.require'  => '请输入问题描述',
+            'fault_desc.max'      => '问题描述最多1000个字符',
         ];
         $validateObj = new \think\Validate();
         $validateObj->rule($validate)->message($messages);
@@ -366,7 +366,7 @@ class Repair extends FrontBase
 
             // 记录编辑事件
             $changes = [];
-            if ($oldDesc !== $data['fault_desc']) $changes[] = '故障描述已更新';
+            if ($oldDesc !== $data['fault_desc']) $changes[] = '问题描述已更新';
             if ($oldPhone !== $data['phone']) $changes[] = '联系电话已更新';
             if ($oldName !== $data['client_name']) $changes[] = '联系人已更新';
             RepairTimeline::record(

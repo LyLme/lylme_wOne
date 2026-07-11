@@ -116,7 +116,7 @@
             </div>
             <div class="stat-info">
                 <div class="stat-number">{$stats.repair_count|default=0}</div>
-                <div class="stat-label">报修单</div>
+                <div class="stat-label">服务单</div>
             </div>
         </div>
     </div>
@@ -142,7 +142,7 @@
                 <h5 class="mb-0"><i class="fa fa-chart-line me-2"></i>近30天数据趋势</h5>
                 <div class="btn-group btn-group-sm chart-toggle-group" role="group">
                     <button type="button" class="btn active" data-chart="all">全部</button>
-                    <button type="button" class="btn" data-chart="repair">报修</button>
+                    <button type="button" class="btn" data-chart="repair">服务</button>
                     <button type="button" class="btn" data-chart="message">留言</button>
                     <button type="button" class="btn" data-chart="article">文章</button>
                 </div>
@@ -241,7 +241,7 @@ $(function () {
                 axisPointer: { type: 'line' }
             },
             legend: {
-                data: ['报修工单', '用户留言', '文章发布'],
+                data: ['服务工单', '用户留言', '文章发布'],
                 bottom: 0
             },
             grid: {
@@ -262,7 +262,7 @@ $(function () {
             },
             series: [
                 {
-                    name: '报修工单',
+                    name: '服务工单',
                     type: 'line',
                     smooth: true,
                     data: trend.repair,
@@ -299,7 +299,7 @@ $(function () {
             var selected = {};
             allSeries.forEach(function (s) {
                 selected[s.name] = (type === 'all' ||
-                    (type === 'repair' && s.name === '报修工单') ||
+                    (type === 'repair' && s.name === '服务工单') ||
                     (type === 'message' && s.name === '用户留言') ||
                     (type === 'article' && s.name === '文章发布'));
             });

@@ -6,7 +6,7 @@ namespace app\model;
 use think\Model;
 
 /**
- * 报修工单时间轴记录模型
+ * 服务工单时间轴记录模型
  */
 class RepairTimeline extends Model
 {
@@ -26,7 +26,7 @@ class RepairTimeline extends Model
     ];
     
     // 操作类型常量
-    const ACTION_CREATED   = 'created';   // 提交报修
+    const ACTION_CREATED   = 'created';   // 提交申请
     const ACTION_ACCEPTED  = 'accepted';  // 已接单
     const ACTION_PAUSED    = 'paused';    // 已暂停
     const ACTION_RESUMED   = 'resumed';   // 恢复处理
@@ -41,7 +41,7 @@ class RepairTimeline extends Model
     public static function getActionText(string $action): string
     {
         return match ($action) {
-            self::ACTION_CREATED   => '提交报修',
+            self::ACTION_CREATED   => '提交申请',
             self::ACTION_ACCEPTED  => '已接单',
             self::ACTION_PAUSED    => '已暂停',
             self::ACTION_RESUMED   => '恢复处理',
