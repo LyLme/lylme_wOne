@@ -44,6 +44,24 @@ class Cases extends FrontBase
     }
 
     /**
+     * 案例默认空数据（防止模板访问不存在的 key 报错）
+     */
+    private function emptyCaseInfo(): array
+    {
+        return [
+            'industry'     => '',
+            'devices'      => '',
+            'service_date' => '',
+            'requirement'  => '',
+            'solution'     => '',
+            'result'       => '',
+            'images'       => '',
+            'cover'        => '',
+            'client_name'  => '',
+        ];
+    }
+
+    /**
      * 案例列表页
      */
     public function index()
@@ -69,12 +87,13 @@ class Cases extends FrontBase
                 'page'      => $page,
             ]);
 
+        $emptyInfo = $this->emptyCaseInfo();
         $caseData = [];
         foreach ($list->items() as $item) {
             $info = CaseInfo::where('article_id', $item->id)->find();
             $caseData[] = [
                 'article' => $item->toArray(),
-                'info'    => $info ? $info->toArray() : [],
+                'info'    => $info ? $info->toArray() : $emptyInfo,
             ];
         }
 
@@ -103,7 +122,7 @@ class Cases extends FrontBase
         $article->incViewCount();
 
         $caseInfo = CaseInfo::where('article_id', $id)->find();
-        $caseInfo = $caseInfo ? $caseInfo->toArray() : [];
+        $caseInfo = $caseInfo ? $caseInfo->toArray() : $this->emptyCaseInfo();
 
         $relatedCases = Article::where('status', 1)
             ->where('type', 'case')

@@ -99,7 +99,7 @@
                 <div class="case-meta">
                     <span><i class="fa fa-calendar-alt"></i> {$article.create_time|date='Y-m-d'}</span>
                     <span><i class="fa fa-eye"></i> {$article.view_count|default=0} 次浏览</span>
-                    {if $case_info.industry}
+                    {if isset($case_info.industry)}
                     <span><i class="fa fa-industry"></i>
                         {if $case_info.industry=='government'}政府机关
                         {elseif $case_info.industry=='education'}教育机构
@@ -118,7 +118,7 @@
                         <div class="label">客户名称：</div>
                         <div class="value">{$case_info.client_name|default=$article.title}</div>
                     </div>
-                    {if $case_info.industry}
+                    {if isset($case_info.industry)}
                     <div class="case-info-item">
                         <div class="label">所属行业：</div>
                         <div class="value">

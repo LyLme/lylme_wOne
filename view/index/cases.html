@@ -159,7 +159,7 @@
                         {/if}
                     </div>
                     <div class="case-info">
-                        {if $item.info.industry}
+                        {if isset($item.info.industry)}
                         <span class="case-industry">
                             {if $item.info.industry=='government'}政府机关
                             {elseif $item.info.industry=='education'}教育机构
