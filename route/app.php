@@ -77,6 +77,7 @@ Route::group($adminPath, function () {
     Route::get('login', 'admin.Login/index')->name('admin_login');
     Route::post('login', 'admin.Login/doLogin')->name('admin_dologin');
     Route::get('logout', 'admin.Login/logout')->name('admin_logout');
+    Route::get('captcha', 'admin.Login/captcha')->name('admin_captcha');
 
     // 后台首页：访问 /admin 或 /admin/ 自动跳转到 /admin/index
     Route::get('/', function() {

@@ -54,9 +54,18 @@ class Login extends Base
 
         $username = $this->request->post('username', '');
         $password = $this->request->post('password', '');
+        $captcha  = $this->request->post('captcha', '');
 
         if (empty($username) || empty($password)) {
             return $this->error('请输入用户名和密码');
+        }
+
+        // 验证码校验（不区分大小写）
+        if (empty($captcha)) {
+            return $this->error('请输入验证码');
+        }
+        if (!captcha_check($captcha)) {
+            return $this->error('验证码错误');
         }
 
         // 查询管理员（先不限制状态，以便区分"账号禁用"和"密码错误"）
@@ -142,5 +151,13 @@ class Login extends Base
         }
         Session::delete('admin_info');
         return redirect('/' . config('app.admin_path', 'admin') . '/login');
+    }
+
+    /**
+     * 输出验证码图片
+     */
+    public function captcha()
+    {
+        return captcha();
     }
 }

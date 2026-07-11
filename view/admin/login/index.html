@@ -72,6 +72,20 @@
         .login-body .btn-login:hover {
             opacity: .9;
         }
+        .input-icon.captcha-row {
+            display: flex;
+            gap: 10px;
+        }
+        .input-icon.captcha-row input {
+            flex: 1;
+            padding-left: 42px;
+        }
+        .captcha-img {
+            height: 46px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
         .alert-msg {
             display: none;
             margin-bottom: 15px;
@@ -101,6 +115,12 @@
             <div class="input-icon">
                 <i class="fa fa-lock"></i>
                 <input type="password" class="form-control" name="password" placeholder="请输入密码" required>
+            </div>
+
+            <div class="input-icon captcha-row">
+                <i class="fa fa-shield-alt"></i>
+                <input type="text" class="form-control" name="captcha" placeholder="验证码" maxlength="5" required autocomplete="off">
+                <img src="" class="captcha-img" id="captchaImg" alt="验证码" title="点击刷新验证码">
             </div>
 
             <button type="submit" class="btn btn-login mt-3" id="loginBtn">
@@ -134,6 +154,19 @@ $(document).ajaxComplete(function(event, jqXHR) {
 <script>var ADMIN_PATH = '/{$admin_path|default="admin"}';</script>
 <script>
 $(function () {
+    var captchaUrl = ADMIN_PATH + '/captcha';
+
+    // 初始化/刷新验证码
+    function refreshCaptcha() {
+        $('#captchaImg').attr('src', captchaUrl + '?' + Date.now());
+    }
+    refreshCaptcha();
+
+    // 点击验证码图片刷新
+    $('#captchaImg').on('click', function () {
+        refreshCaptcha();
+    });
+
     $('#loginForm').on('submit', function (e) {
         e.preventDefault();
         var $btn = $('#loginBtn');
@@ -152,11 +185,14 @@ $(function () {
                 } else {
                     $err.text(res.msg).slideDown();
                     $btn.prop('disabled', false).html('<i class="fa fa-sign-in-alt"></i> 登 录');
+                    // 登录失败刷新验证码
+                    refreshCaptcha();
                 }
             },
             error: function () {
                 $err.text('网络错误，请重试').slideDown();
                 $btn.prop('disabled', false).html('<i class="fa fa-sign-in-alt"></i> 登 录');
+                refreshCaptcha();
             }
         });
     });
