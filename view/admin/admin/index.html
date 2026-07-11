@@ -140,10 +140,10 @@
                     <label class="form-label">角色 <span class="text-danger">*</span></label>
                     <select class="form-select" id="role">
                         <option value="{:app\\model\\AdminUser::ROLE_ADMIN}">普通管理员</option>
-                        <option value="{:app\\model\\AdminUser::ROLE_EDITOR}">编辑</option>
+                        <option value="{:app\\model\\AdminUser::ROLE_EDITOR}">员工</option>
                         <option value="{:app\\model\\AdminUser::ROLE_SUPER}">超级管理员</option>
                     </select>
-                    <small class="text-muted">超级管理员可管理其他管理员；编辑仅可管理内容</small>
+                    <small class="text-muted">超级管理员可管理其他管理员；员工仅可管理内容</small>
                 </div>
                 <div class="mb-3" id="statusWrap">
                     <label class="form-label">状态</label>

@@ -123,7 +123,7 @@ class Article extends Base
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
-        $this->checkSuperAdmin();
+        // $this->checkSuperAdmin();  允许员工删除文章
         $id = $this->request->post('id', 0);
         if (empty($id)) return $this->error('参数错误');
 
@@ -142,7 +142,7 @@ class Article extends Base
     public function toggleStatus()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
-        // $this->checkSuperAdmin();
+        // $this->checkSuperAdmin(); 允许员工启用/禁用文章
         $id     = $this->request->post('id', 0);
         $status = $this->request->post('status', 1);
 

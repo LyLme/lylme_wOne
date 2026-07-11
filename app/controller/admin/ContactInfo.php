@@ -90,7 +90,7 @@ class ContactInfo extends Base
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
-        // $this->checkSuperAdmin();  允许编辑角色删除
+        // $this->checkSuperAdmin();  允许员工删除
 
         $id = (int)$this->request->post('id', 0);
         if ($id <= 0) return $this->error('参数错误');

@@ -71,7 +71,7 @@ class ProductCategory extends Base
     public function delete()
     {
         if (!$this->request->isPost()) return $this->error('非法请求');
-        // $this->checkSuperAdmin(); 允许编辑角色删除
+        // $this->checkSuperAdmin(); 允许员工删除
         $id = $this->request->post('id', 0);
         if (empty($id)) return $this->error('参数错误');
 

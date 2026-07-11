@@ -24,7 +24,7 @@ class AdminUser extends Model
     // 角色常量
     const ROLE_SUPER = 0; // 超级管理员
     const ROLE_ADMIN = 1; // 普通管理员
-    const ROLE_EDITOR = 2; // 编辑
+    const ROLE_EDITOR = 2; // 员工
 
     /**
      * 角色文本
@@ -34,7 +34,7 @@ class AdminUser extends Model
         return match ($role) {
             self::ROLE_SUPER  => '超级管理员',
             self::ROLE_ADMIN  => '普通管理员',
-            self::ROLE_EDITOR => '编辑',
+            self::ROLE_EDITOR => '员工',
             default           => '未知',
         };
     }
